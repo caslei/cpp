@@ -36,4 +36,5 @@ _reg_optimiser.h
 
 nifti_image:
 
-image size = nx * ny * nz * nt (4D array)
+image size:     nx * ny * nz * nt (4D array)
+image datatype: datatype

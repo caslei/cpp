@@ -1,0 +1,6 @@
+memset()
+sizeof()
+sprintf()
+static_cast<>()
+fabs()
+
