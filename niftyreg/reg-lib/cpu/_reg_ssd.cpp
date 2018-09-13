@@ -64,21 +64,20 @@ void reg_ssd::InitialiseMeasure(nifti_image *refImgPtr,
       {
          //sets max value over both images to be 1 and min value over both images to be 0
          //scales values such that identical values in the images are still identical after scaling
-         float maxF = reg_tools_getMaxValue(this->floatingImagePointer,i);
-         float maxR = reg_tools_getMaxValue(this->referenceImagePointer, i);
+         float maxF = reg_tools_getMaxValue(this->floatingImagePointer, i);
          float minF = reg_tools_getMinValue(this->floatingImagePointer, i);
-         float minR = reg_tools_getMinValue(this->referenceImagePointer,i);
+         float maxR = reg_tools_getMaxValue(this->referenceImagePointer, i);
+         float minR = reg_tools_getMinValue(this->referenceImagePointer, i);
          float maxFR = fmax(maxF, maxR);
          float minFR = fmin(minF, minR);
          float rangeFR = maxFR - minFR;
-         reg_intensityRescale(this->referenceImagePointer,
-                              i,
-                              (minR - minFR)/rangeFR,
-                              1 - ((maxFR - maxR) / rangeFR));
-         reg_intensityRescale(this->floatingImagePointer,
-                              i,
-                              (minF - minFR) / rangeFR,
-                              1 - ((maxFR - maxF) / rangeFR));
+
+         if(rangeFR < 1.0e-5 && rangeFR > -1.0e-5) { rangeFR = 1.0;} // avoid dividing zero
+         
+         reg_intensityRescale(this->referenceImagePointer, i,
+                              (minR - minFR) / rangeFR, 1 - ((maxFR - maxR) / rangeFR)  );
+         reg_intensityRescale(this->floatingImagePointer, i,
+                              (minF - minFR) / rangeFR, 1 - ((maxFR - maxF) / rangeFR)  );
       }
    }
 #ifdef MRF_USE_SAD
@@ -105,6 +104,8 @@ void reg_ssd::SetNormaliseTimepoint(int timepoint, bool normalise)
 {
 	this->normaliseTimePoint[timepoint]=normalise;
 }
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 template<class DTYPE>
@@ -118,6 +119,7 @@ double reg_getSSDValue(nifti_image *referenceImage,
 {
 #ifdef _WIN32
    long voxel;
+   // the number of pixels in single image (nx*ny*nz)
    long voxelNumber = (long)referenceImage->nx*referenceImage->ny*referenceImage->nz;
 #else
    size_t voxel;
@@ -144,10 +146,9 @@ double reg_getSSDValue(nifti_image *referenceImage,
       if(timePointWeight[time] > 0.0)
       {
          // Create pointers to the current time point of the reference and warped images
-         DTYPE *currentRefPtr=&referencePtr[time*voxelNumber];
-         DTYPE *currentWarPtr=&warpedPtr[time*voxelNumber];
+         DTYPE *currentRefPtr=&referencePtr[time*voxelNumber]; // starting point for image array
+         DTYPE *currentWarPtr=&warpedPtr[time*voxelNumber];    // starting point for image array
 
-         double SSD_local=0., n=0.;
 #if defined (_OPENMP)
 #pragma omp parallel for default(none) \
    shared(referenceImage, warpedImage, currentRefPtr, currentWarPtr, mask, \
@@ -156,16 +157,17 @@ double reg_getSSDValue(nifti_image *referenceImage,
    reduction(+:SSD_local) \
    reduction(+:n)
 #endif
+
+         double SSD_local=0., n=0.;
+
          for(voxel=0; voxel<voxelNumber; ++voxel)
          {
             // Check if the current voxel belongs to the mask
             if(mask[voxel]>-1)
             {
                // Ensure that both ref and warped values are defined
-               refValue = (double)(currentRefPtr[voxel] * referenceImage->scl_slope +
-                                   referenceImage->scl_inter);
-               warValue = (double)(currentWarPtr[voxel] * warpedImage->scl_slope +
-                                   warpedImage->scl_inter);
+               refValue = (double)(currentRefPtr[voxel] * referenceImage->scl_slope + referenceImage->scl_inter);
+               warValue = (double)(currentWarPtr[voxel] * warpedImage->scl_slope + warpedImage->scl_inter);
 
                if(refValue==refValue && warValue==warValue)
                {
@@ -201,8 +203,12 @@ double reg_getSSDValue(nifti_image *referenceImage,
    }
    return SSD_global;
 }
+
+
 template double reg_getSSDValue<float>(nifti_image *,nifti_image *,double *,nifti_image *,int *, float *, nifti_image *);
 template double reg_getSSDValue<double>(nifti_image *,nifti_image *,double *,nifti_image *,int *, float *, nifti_image *);
+
+
 /* *************************************************************** */
 double reg_ssd::GetSimilarityMeasureValue()
 {
@@ -314,9 +320,10 @@ void reg_getVoxelBasedSSDGradient(nifti_image *referenceImage,
    size_t voxelNumber = (size_t)referenceImage->nx*referenceImage->ny*referenceImage->nz;
 #endif
    // Pointers to the image data
-   DTYPE *refImagePtr = static_cast<DTYPE *>(referenceImage->data);
-   DTYPE *currentRefPtr=&refImagePtr[current_timepoint*voxelNumber];
+   DTYPE *refImagePtr = static_cast<DTYPE *>(referenceImage->data); // pointer to data array
    DTYPE *warImagePtr = static_cast<DTYPE *>(warpedImage->data);
+
+   DTYPE *currentRefPtr=&refImagePtr[current_timepoint*voxelNumber]; // starting point of data array
    DTYPE *currentWarPtr=&warImagePtr[current_timepoint*voxelNumber];
 
    // Pointers to the spatial gradient of the warped image
@@ -348,7 +355,7 @@ void reg_getVoxelBasedSSDGradient(nifti_image *referenceImage,
    {
       if (mask[voxel]>-1)
       {
-         if (currentRefPtr[voxel] == currentRefPtr[voxel] && currentWarPtr[voxel] == currentWarPtr[voxel])
+         if (currentRefPtr[voxel] == currentRefPtr[voxel] && currentWarPtr[voxel] == currentWarPtr[voxel]) // ???
             activeVoxel_num += 1.0;
       }
    }
@@ -364,16 +371,17 @@ void reg_getVoxelBasedSSDGradient(nifti_image *referenceImage,
    localWeightPtr, adjusted_weight) \
    private(voxel, refValue, warValue, common)
 #endif
+
    for(voxel=0; voxel<voxelNumber; voxel++)
    {
       if(mask[voxel]>-1)
       {
-         refValue = (double)(currentRefPtr[voxel] * referenceImage->scl_slope +
-                             referenceImage->scl_inter);
-         warValue = (double)(currentWarPtr[voxel] * warpedImage->scl_slope +
-                             warpedImage->scl_inter);
+         refValue = (double)(currentRefPtr[voxel] * referenceImage->scl_slope + referenceImage->scl_inter);
+         warValue = (double)(currentWarPtr[voxel] * warpedImage->scl_slope + warpedImage->scl_inter);
+
          if(refValue==refValue && warValue==warValue)
          {
+
 #ifdef MRF_USE_SAD
             common = refValue>warValue?-1.f:1.f;
             common *= (refValue - warValue);
@@ -387,8 +395,9 @@ void reg_getVoxelBasedSSDGradient(nifti_image *referenceImage,
 
             common *= adjusted_weight;
 
-            if(spatialGradPtrX[voxel]==spatialGradPtrX[voxel])
+            if(spatialGradPtrX[voxel]==spatialGradPtrX[voxel]) // ???
                measureGradPtrX[voxel] += (DTYPE)(common * spatialGradPtrX[voxel]);
+             
             if(spatialGradPtrY[voxel]==spatialGradPtrY[voxel])
                measureGradPtrY[voxel] += (DTYPE)(common * spatialGradPtrY[voxel]);
 
@@ -401,12 +410,19 @@ void reg_getVoxelBasedSSDGradient(nifti_image *referenceImage,
       }
    }
 }
+
+
+
 /* *************************************************************** */
 template void reg_getVoxelBasedSSDGradient<float>
 (nifti_image *,nifti_image *,nifti_image *,nifti_image *,nifti_image *, int *, int, double, nifti_image *);
 template void reg_getVoxelBasedSSDGradient<double>
 (nifti_image *,nifti_image *,nifti_image *,nifti_image *,nifti_image *, int *, int, double, nifti_image *);
 /* *************************************************************** */
+
+
+
+
 void reg_ssd::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
 {
    // Check if the specified time point exists and is active
