@@ -1,0 +1,39 @@
+
+
+
+
+_reg_f3d2.h <--- _reg_f3d_sym.h <--- _reg_f3d.h <--- _reg_base.h
+
+
+_reg_base.h is derived from several files as follows:
+
+(1): image utilizes
+_reg_resampling.h
+_reg_tools.h
+_reg_ReadWriteImage.h
+_reg_stringFormat.h
+
+float.h
+
+(2): image transform
+_reg_globalTrans.h
+_reg_localTrans.h
+_reg_localTrans_jac.h
+_reg_localTrans_regul.h
+
+(3): similarity measurei (all derived from _reg_measure.h)
+_reg_nmi.h <--- _reg_measure.h <--- _reg_tools.h
+_reg_dti.h
+_reg_ssd.h
+_reg_mind.h
+_reg_kld.h
+_reg_lncc.h
+
+(4): optimization
+_reg_optimiser.h
+
+
+
+nifti_image:
+
+image size = nx * ny * nz * nt (4D array)
