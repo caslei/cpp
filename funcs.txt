@@ -3,4 +3,6 @@ sizeof()
 sprintf()
 static_cast<>()
 fabs()
-
+malloc()
+calloc()
+free()

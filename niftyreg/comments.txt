@@ -36,5 +36,25 @@ _reg_optimiser.h
 
 nifti_image:
 
-image size:     nx * ny * nz * nt (4D array)
-image datatype: datatype
+nx
+ny
+nz
+nt:
+dx
+dy
+dz
+
+data: 
+datatype: image datatype 
+scl_slope
+scl_inter
+sto_xyz
+qto_ijk
+qto_xyz
+
+
+
+
+
+
+                
