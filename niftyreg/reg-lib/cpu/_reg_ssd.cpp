@@ -546,27 +546,30 @@ void GetDiscretisedValueSSD_core3D(nifti_image *controlPointGridImage,
    size_t voxIndex, voxIndex_t;
 
    int label_1D_number = (discretise_radius / discretise_step) * 2 + 1;
-   int label_2D_number = label_1D_number*label_1D_number;
-   int label_nD_number = label_2D_number*label_1D_number;
+   int label_2D_number = label_1D_number*label_1D_number; // label_1D_number^2
+   int label_nD_number = label_2D_number*label_1D_number; // label_1D_number^3
 
    //output matrix = discretisedValue (first dimension displacement label, second dim. control point)
    float gridVox[3], imageVox[3];
    float currentValue;
+
    // Define the transformation matrices
    mat44 *grid_vox2mm = &controlPointGridImage->qto_xyz;
    if(controlPointGridImage->sform_code>0)
       grid_vox2mm = &controlPointGridImage->sto_xyz;
    mat44 *image_mm2vox = &refImage->qto_ijk;
+
    if(refImage->sform_code>0)
       image_mm2vox = &refImage->sto_ijk;
    mat44 grid2img_vox = reg_mat44_mul(image_mm2vox, grid_vox2mm);
 
    // Compute the block size
    int blockSize[3]={
-      (int)reg_ceil(controlPointGridImage->dx / refImage->dx),
+      (int)reg_ceil(controlPointGridImage->dx / refImage->dx), // 每个网格覆盖的像素个数
       (int)reg_ceil(controlPointGridImage->dy / refImage->dy),
       (int)reg_ceil(controlPointGridImage->dz / refImage->dz),
    };
+
    int voxelBlockNumber = blockSize[0] * blockSize[1] * blockSize[2] * refImage->nt;
    int currentControlPoint = 0;
 
@@ -586,34 +589,33 @@ void GetDiscretisedValueSSD_core3D(nifti_image *controlPointGridImage,
    };
 
    int warPaddedDim[4] = {
-      warImage->nx + 2 * warPaddedOffset[0] + blockSize[0],
-      warImage->ny + 2 * warPaddedOffset[1] + blockSize[1],
+      warImage->nx + 2 * warPaddedOffset[0] + blockSize[0], // warImage->nx + 2 * discretise_radius + 3 * blockSize[0], 
+      warImage->ny + 2 * warPaddedOffset[1] + blockSize[1], // upper 2 blockSize, lower 1 blockSize
       warImage->nz + 2 * warPaddedOffset[2] + blockSize[2],
       warImage->nt
    };
 
    //DTYPE padding_value = std::numeric_limits<DTYPE>::quiet_NaN();
-   DTYPE padding_value = 0.0;
-
    size_t warPaddedVoxelNumber = (size_t)warPaddedDim[0] * warPaddedDim[1] * warPaddedDim[2];
-   DTYPE *paddedWarImgPtr = (DTYPE *)calloc(warPaddedVoxelNumber*warPaddedDim[3], sizeof(DTYPE));
+   DTYPE *paddedWarImgPtr = (DTYPE *)calloc(warPaddedVoxelNumber*warPaddedDim[3], sizeof(DTYPE)); // 申请内存空间
 
-   for(voxIndex=0; voxIndex<warPaddedVoxelNumber*warPaddedDim[3]; ++voxIndex)
+   DTYPE padding_value = 0.0;
+   for(voxIndex=0; voxIndex<warPaddedVoxelNumber*warPaddedDim[3]; ++voxIndex) // 内存空间置 0
       paddedWarImgPtr[voxIndex]=padding_value;
   
   voxIndex=0;
   voxIndex_t=0;
-
   for(t=0; t<warImage->nt; ++t)
   {
     for(z=warPaddedOffset[2]; z<warPaddedDim[2]-warPaddedOffset[2]-blockSize[2]; ++z)
     {
       for(y=warPaddedOffset[1]; y<warPaddedDim[1]-warPaddedOffset[1]-blockSize[1]; ++y)
       {
+	// the index of 4D array
         voxIndex= t * warPaddedVoxelNumber + (z*warPaddedDim[1]+y)*warPaddedDim[0]+warPaddedOffset[0];
         for(x=warPaddedOffset[0]; x<warPaddedDim[0]-warPaddedOffset[0]-blockSize[0]; ++x)
         {
-           paddedWarImgPtr[voxIndex]=warImgPtr[voxIndex_t];
+           paddedWarImgPtr[voxIndex]=warImgPtr[voxIndex_t]; // 将图像数据放入一个边缘加宽的数组中
            ++voxIndex;
            ++voxIndex_t;
         }
@@ -623,7 +625,7 @@ void GetDiscretisedValueSSD_core3D(nifti_image *controlPointGridImage,
 
    int definedValueNumber;
 
-   // Loop over all control points
+   // Loop over all control points (cp), don't use the first and last 'cp'
    for(cpz=1; cpz<controlPointGridImage->nz-1; ++cpz){
       gridVox[2] = cpz;
       for(cpy=1; cpy<controlPointGridImage->ny-1; ++cpy){
