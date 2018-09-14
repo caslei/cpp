@@ -573,9 +573,6 @@ void GetDiscretisedValueSSD_core3D(nifti_image *controlPointGridImage,
    int voxelBlockNumber = blockSize[0] * blockSize[1] * blockSize[2] * refImage->nt;
    int currentControlPoint = 0;
 
-   // Allocate some static memory
-   float* refBlockValue = (float *) malloc(voxelBlockNumber*sizeof(float));
-
    // Pointers to the input image
    size_t voxelNumber = (size_t)refImage->nx*refImage->ny*refImage->nz;
    DTYPE *refImgPtr = static_cast<DTYPE *>(refImage->data);
@@ -597,7 +594,8 @@ void GetDiscretisedValueSSD_core3D(nifti_image *controlPointGridImage,
 
    //DTYPE padding_value = std::numeric_limits<DTYPE>::quiet_NaN();
    size_t warPaddedVoxelNumber = (size_t)warPaddedDim[0] * warPaddedDim[1] * warPaddedDim[2];
-   DTYPE *paddedWarImgPtr = (DTYPE *)calloc(warPaddedVoxelNumber*warPaddedDim[3], sizeof(DTYPE)); // 申请内存空间
+   // 申请内存空间，存放变换后的浮动图像
+   DTYPE *paddedWarImgPtr = (DTYPE *)calloc(warPaddedVoxelNumber*warPaddedDim[3], sizeof(DTYPE)); 
 
    DTYPE padding_value = 0.0;
    for(voxIndex=0; voxIndex<warPaddedVoxelNumber*warPaddedDim[3]; ++voxIndex) // 内存空间置 0
@@ -615,7 +613,7 @@ void GetDiscretisedValueSSD_core3D(nifti_image *controlPointGridImage,
         voxIndex= t * warPaddedVoxelNumber + (z*warPaddedDim[1]+y)*warPaddedDim[0]+warPaddedOffset[0];
         for(x=warPaddedOffset[0]; x<warPaddedDim[0]-warPaddedOffset[0]-blockSize[0]; ++x)
         {
-           paddedWarImgPtr[voxIndex]=warImgPtr[voxIndex_t]; // 将图像数据放入一个边缘加宽的数组中
+           paddedWarImgPtr[voxIndex]=warImgPtr[voxIndex_t]; // 将变换后的浮动图像数据放入一个边缘加宽的数组中
            ++voxIndex;
            ++voxIndex_t;
         }
@@ -623,6 +621,9 @@ void GetDiscretisedValueSSD_core3D(nifti_image *controlPointGridImage,
     }
   }
 
+   // Allocate some static memory 存放参考图像的 block
+   float* refBlockValue = (float *) malloc(voxelBlockNumber*sizeof(float));
+   
    int definedValueNumber;
 
    // Loop over all control points (cp), don't use the first and last 'cp'
@@ -634,7 +635,8 @@ void GetDiscretisedValueSSD_core3D(nifti_image *controlPointGridImage,
 
          for(cpx=1; cpx<controlPointGridImage->nx-1; ++cpx){
             gridVox[0] = cpx;
-            // Compute the corresponding image voxel position
+            // Compute the corresponding image voxel position 
+	    // from grid index to image index
             reg_mat44_mul(&grid2img_vox, gridVox, imageVox);
             imageVox[0]=reg_round(imageVox[0]);
             imageVox[1]=reg_round(imageVox[1]);
@@ -649,11 +651,14 @@ void GetDiscretisedValueSSD_core3D(nifti_image *controlPointGridImage,
                   {
                      if(x>-1 && x<refImage->nx && y>-1 && y<refImage->ny && z>-1 && z<refImage->nz) 
                      {
-                        voxIndex = (z*refImage->ny+y)*refImage->nx+x;
-                        if(mask[voxIndex]>-1){
+                        voxIndex = (z*refImage->ny+y)*refImage->nx+x; // 1D index for 3D array
+                        if(mask[voxIndex]>-1)
+			{
                            for(t=0; t<refImage->nt; ++t){
+			      // 将参考图像放入一个指定区域(mask)的数组中
                               voxIndex_t = t*voxelNumber + voxIndex;
                               refBlockValue[blockIndex] = refImgPtr[voxIndex_t];
+
                               if(refBlockValue[blockIndex]==refBlockValue[blockIndex])
                                  ++definedValueNumber;
                               blockIndex++;
@@ -661,7 +666,7 @@ void GetDiscretisedValueSSD_core3D(nifti_image *controlPointGridImage,
                         }
                         else{
                            for(t=0; t<refImage->nt; ++t){
-                              refBlockValue[blockIndex] = padding_value;
+                              refBlockValue[blockIndex] = padding_value; // 指定区域外的数组置为0
                               blockIndex++;
                            } // t
                         }
