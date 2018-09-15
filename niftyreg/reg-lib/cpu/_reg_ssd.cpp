@@ -683,6 +683,7 @@ void GetDiscretisedValueSSD_core3D(nifti_image *controlPointGridImage,
                   } // x
                } // y
             } // z
+
             // Loop over the discretised value
             if(definedValueNumber>0){
 
@@ -705,6 +706,7 @@ void GetDiscretisedValueSSD_core3D(nifti_image *controlPointGridImage,
                for(cc=0; cc<label_1D_number; ++cc){
                   discretisedIndex = cc * label_2D_number;
                   c = paddedImageVox[2]-discretise_radius + cc*discretise_step;
+
                   for(b=paddedImageVox[1]-discretise_radius; b<=paddedImageVox[1]+discretise_radius; b+=discretise_step){
                      for(a=paddedImageVox[0]-discretise_radius; a<=paddedImageVox[0]+discretise_radius; a+=discretise_step){
 
@@ -716,6 +718,7 @@ void GetDiscretisedValueSSD_core3D(nifti_image *controlPointGridImage,
                            for(y=b-blockSize[1]/2; y<b+blockSize[1]/2; ++y){
                               for(x=a-blockSize[0]/2; x<a+blockSize[0]/2; ++x){
                                  voxIndex = (z*warPaddedDim[1]+y)*warPaddedDim[0]+x;
+
                                  for(t=0; t<warPaddedDim[3]; ++t){
                                     voxIndex_t = t*warPaddedVoxelNumber + voxIndex;
                                     warpedValue = paddedWarImgPtr[voxIndex_t];
@@ -753,6 +756,7 @@ void GetDiscretisedValueSSD_core3D(nifti_image *controlPointGridImage,
       int definedValueNumber=0;
       float *discretisedValuePtr = &discretisedValue[node * label_nD_number];
       float meanValue=0;
+
       for(int label=0; label<label_nD_number;++label){
          if(discretisedValuePtr[label]==discretisedValuePtr[label]){
             ++definedValueNumber;
@@ -805,8 +809,6 @@ void GetDiscretisedValueSSD_core3D(nifti_image *controlPointGridImage,
 }
 
 
-
-
 /* *************************************************************** */
 /* *************************************************************** */
 template <class DTYPE>
@@ -828,13 +830,16 @@ void GetDiscretisedValueSSD_core3D_2(nifti_image *controlPointGridImage,
    float gridVox[3], imageVox[3];
    float currentValue;
    double currentSum;
+  
    // Define the transformation matrices
    mat44 *grid_vox2mm = &controlPointGridImage->qto_xyz;
    if(controlPointGridImage->sform_code>0)
       grid_vox2mm = &controlPointGridImage->sto_xyz;
+
    mat44 *image_mm2vox = &refImage->qto_ijk;
    if(refImage->sform_code>0)
       image_mm2vox = &refImage->sto_ijk;
+   
    mat44 grid2img_vox = reg_mat44_mul(image_mm2vox, grid_vox2mm);
 
    // Compute the block size
@@ -843,6 +848,7 @@ void GetDiscretisedValueSSD_core3D_2(nifti_image *controlPointGridImage,
       (int)reg_ceil(controlPointGridImage->dy / refImage->dy),
       (int)reg_ceil(controlPointGridImage->dz / refImage->dz),
    };
+ 
    const int voxelBlockNumber = blockSize[0] * blockSize[1] * blockSize[2];
    const int voxelBlockNumber_t = blockSize[0] * blockSize[1] * blockSize[2] * refImage->nt;
    int currentControlPoint = 0;
