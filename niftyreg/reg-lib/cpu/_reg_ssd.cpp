@@ -11,8 +11,6 @@
 
 #include "_reg_ssd.h"
 
-//#define USE_LOG_SSD
-//#define MRF_USE_SAD
 
 /* *************************************************************** */
 /* *************************************************************** */
@@ -24,6 +22,9 @@ reg_ssd::reg_ssd()
    reg_print_msg_debug("reg_ssd constructor called");
 #endif
 }
+
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 void reg_ssd::InitialiseMeasure(nifti_image *refImgPtr,
@@ -80,9 +81,11 @@ void reg_ssd::InitialiseMeasure(nifti_image *refImgPtr,
                               (minF - minFR) / rangeFR, 1 - ((maxFR - maxF) / rangeFR)  );
       }
    }
+
 #ifdef MRF_USE_SAD
    reg_print_msg_warn("SAD is used instead of SSD");
 #endif
+   
 #ifndef NDEBUG
 	char text[255];
 	reg_print_msg_debug("reg_ssd::InitialiseMeasure().");
@@ -173,11 +176,11 @@ double reg_getSSDValue(nifti_image *referenceImage,
 
                if(refValue==refValue && warValue==warValue)
                {
-#ifdef MRF_USE_SAD
+                 #ifdef MRF_USE_SAD
                   diff = fabs(refValue-warValue);
-#else
+                 #else
                   diff = reg_pow2(refValue-warValue);
-#endif
+                 #endif
                   // Jacobian determinant modulation of the ssd if required
                   if(jacDetPtr!=NULL)
                   {
@@ -211,6 +214,7 @@ template double reg_getSSDValue<float>(nifti_image *,nifti_image *,double *,nift
 template double reg_getSSDValue<double>(nifti_image *,nifti_image *,double *,nifti_image *,int *, float *, nifti_image *);
 
 
+/* *************************************************************** */
 /* *************************************************************** */
 double reg_ssd::GetSimilarityMeasureValue()
 {
@@ -386,12 +390,12 @@ void reg_getVoxelBasedSSDGradient(nifti_image *referenceImage,
          if(refValue==refValue && warValue==warValue)
          {
 
-#ifdef MRF_USE_SAD
+           #ifdef MRF_USE_SAD
             common = refValue>warValue?-1.f:1.f;
             common *= (refValue - warValue);
-#else
+           #else
             common = -2.0 * (refValue - warValue);
-#endif
+           #endif
 
             if(jacDetPtr!=NULL)
                common *= jacDetPtr[voxel];
@@ -428,6 +432,8 @@ template void reg_getVoxelBasedSSDGradient<double>
 
 
 
+/* *************************************************************** */
+/* *************************************************************** */
 void reg_ssd::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
 {
    // Check if the specified time point exists and is active
@@ -721,11 +727,11 @@ void GetDiscretisedValueSSD_core3D(nifti_image *controlPointGridImage,
                                  for(t=0; t<warPaddedDim[3]; ++t){
                                     voxIndex_t = t*warPaddedVoxelNumber + voxIndex;
                                     warpedValue = paddedWarImgPtr[voxIndex_t];
-#ifdef MRF_USE_SAD
+                                   #ifdef MRF_USE_SAD
                                     currentValue = fabs(warpedValue-refBlockValue[blockIndex]);
-#else
+                                   #else
                                     currentValue = reg_pow2(warpedValue-refBlockValue[blockIndex]);
-#endif
+                                   #endif
                                     if(currentValue==currentValue){
                                        currentSum -= currentValue;
                                        ++definedValueNumber;
@@ -1062,19 +1068,6 @@ void GetDiscretisedValueSSD_core3D_2(nifti_image *controlPointGridImage,
 
 
 /* *************************************************************** */
-//template <class DTYPE>
-//void GetDiscretisedValueSSD_core2D(nifti_image *controlPointGridImage,
-//                                   float *discretisedValue,
-//                                   int discretise_radius,
-//                                   int discretise_step,
-//                                   nifti_image *refImage,
-//                                   nifti_image *warImage,
-//                                   int *mask)
-//{
-//    reg_print_fct_warn("GetDiscretisedValue_core2D");
-//    reg_print_msg_warn("No yet implemented");
-//    reg_exit();
-//}
 /* *************************************************************** */
 void reg_ssd::GetDiscretisedValue(nifti_image *controlPointGridImage,
                                   float *discretisedValue,
@@ -1117,35 +1110,6 @@ void reg_ssd::GetDiscretisedValue(nifti_image *controlPointGridImage,
       reg_print_fct_error("reg_ssd::GetDiscretisedValue");
       reg_print_msg_error("Not implemented in 2D yet");
       reg_exit();
-      //        switch(this->referenceImagePointer->datatype)
-      //        {
-      //        case NIFTI_TYPE_FLOAT32:
-      //            GetDiscretisedValueSSD_core2D<float>
-      //                    (controlPointGridImage,
-      //                     discretisedValue,
-      //                     discretise_radius,
-      //                     discretise_step,
-      //                     this->referenceImagePointer,
-      //                     this->warpedFloatingImagePointer,
-      //                     this->referenceMaskPointer
-      //                     );
-      //            break;
-      //        case NIFTI_TYPE_FLOAT64:
-      //            GetDiscretisedValueSSD_core2D<double>
-      //                    (controlPointGridImage,
-      //                     discretisedValue,
-      //                     discretise_radius,
-      //                     discretise_step,
-      //                     this->referenceImagePointer,
-      //                     this->warpedFloatingImagePointer,
-      //                     this->referenceMaskPointer
-      //                     );
-      //            break;
-      //        default:
-      //            reg_print_fct_error("reg_ssd::GetDiscretisedValue");
-      //            reg_print_msg_error("Unsupported datatype");
-      //            reg_exit();
-      //        }
    }
 }
 /* *************************************************************** */
