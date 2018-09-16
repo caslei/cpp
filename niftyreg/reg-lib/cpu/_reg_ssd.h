@@ -39,6 +39,7 @@ public:
 
    /// @brief Define if the specified time point should be normalised
    void SetNormaliseTimepoint(int timepoint, bool normalise);
+
    /// @brief Returns the ssd value
    virtual double GetSimilarityMeasureValue();
    /// @brief Compute the voxel based ssd gradient

@@ -315,7 +315,7 @@ void reg_getVoxelBasedSSDGradient(nifti_image *referenceImage,
                                   double timepoint_weight,
                                   nifti_image *localWeightSimImage
                                   )
-{
+{/*{{{*/
    if(current_timepoint<0 || current_timepoint>=referenceImage->nt){/*{{{*/
       reg_print_fct_error("reg_getVoxelBasedNMIGradient2D");
       reg_print_msg_error("The specified active timepoint is not defined in the ref/war images");
@@ -418,7 +418,7 @@ void reg_getVoxelBasedSSDGradient(nifti_image *referenceImage,
          }
       }
    }
-}
+}/*}}}*/
 
 
 
@@ -431,11 +431,10 @@ template void reg_getVoxelBasedSSDGradient<double>
 
 
 
-
 /* *************************************************************** */
 /* *************************************************************** */
 void reg_ssd::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
-{
+{/*{{{*/
    // Check if the specified time point exists and is active
    reg_measure::GetVoxelBasedSimilarityMeasureGradient(current_timepoint);
    if(this->timePointWeight[current_timepoint]==0.0)  return;
@@ -445,11 +444,11 @@ void reg_ssd::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
    if(this->warpedFloatingImagePointer->datatype != dtype ||
       this->warpedFloatingGradientImagePointer->datatype != dtype ||
       this->forwardVoxelBasedGradientImagePointer->datatype != dtype )
-   {
+   {/*{{{*/
       reg_print_fct_error("reg_ssd::GetVoxelBasedSimilarityMeasureGradient");
       reg_print_msg_error("Input images are exepected to be of the same type");
       reg_exit();
-   }
+   }/*}}}*/
 
    // Compute the gradient of the ssd for the forward transformation
    switch(dtype)
@@ -532,7 +531,7 @@ void reg_ssd::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
          reg_exit();
       }
    }
-}
+}/*}}}*/
 
 
 /* *************************************************************** */
@@ -545,7 +544,7 @@ void GetDiscretisedValueSSD_core3D(nifti_image *controlPointGridImage,
                                    nifti_image *refImage,
                                    nifti_image *warImage,
                                    int *mask)
-{
+{/*{{{*/
    int cpx, cpy, cpz, t, x, y, z, a, b, c, blockIndex, discretisedIndex;
    size_t voxIndex, voxIndex_t;
 
@@ -811,7 +810,7 @@ void GetDiscretisedValueSSD_core3D(nifti_image *controlPointGridImage,
 
       } // node with undefined label
    } // node
-}
+}/*}}}*/
 
 
 /* *************************************************************** */
@@ -824,7 +823,7 @@ void GetDiscretisedValueSSD_core3D_2(nifti_image *controlPointGridImage,
                                      nifti_image *refImage,
                                      nifti_image *warImage,
                                      int *mask)
-{
+{/*{{{*/
    //
    int cpx, cpy, cpz, t, x, y, z, a, b, c, blockIndex, blockIndex_t, discretisedIndex;
    size_t voxIndex, voxIndex_t;
@@ -1063,7 +1062,7 @@ void GetDiscretisedValueSSD_core3D_2(nifti_image *controlPointGridImage,
 
       } // node with undefined label
    } // node
-}
+}/*}}}*/
 
 
 
@@ -1073,7 +1072,7 @@ void reg_ssd::GetDiscretisedValue(nifti_image *controlPointGridImage,
                                   float *discretisedValue,
                                   int discretise_radius,
                                   int discretise_step)
-{
+{/*{{{*/
    if(referenceImagePointer->nz > 1) {
       switch(this->referenceImagePointer->datatype)
       {
@@ -1110,6 +1109,6 @@ void reg_ssd::GetDiscretisedValue(nifti_image *controlPointGridImage,
       reg_print_fct_error("reg_ssd::GetDiscretisedValue");
       reg_print_msg_error("Not implemented in 2D yet");
       reg_exit();
-   }
+   }/*}}}*/
 }
 /* *************************************************************** */
