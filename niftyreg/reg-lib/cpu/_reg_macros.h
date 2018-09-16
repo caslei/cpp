@@ -8,6 +8,7 @@
  * Macros中函数的特点是：
  * (1) 所有函数都有 '##' 和'virtual'构成
  * (2) this->name中的this指代啥？？？
+ * (3) #define宏，续航符 '\'
  */
 #ifndef _REG_MACROS_H
 #define _REG_MACROS_H
