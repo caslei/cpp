@@ -14,14 +14,13 @@
 
 /* *************************************************************** */
 /* *************************************************************** */
-reg_ssd::reg_ssd()
-   : reg_measure()
-{
+reg_ssd::reg_ssd() : reg_measure() //构造函数
+{/*{{{*/
    memset(this->normaliseTimePoint,0,255*sizeof(bool) );
 #ifndef NDEBUG
    reg_print_msg_debug("reg_ssd constructor called");
 #endif
-}
+}/*}}}*/
 
 
 
@@ -38,7 +37,7 @@ void reg_ssd::InitialiseMeasure(nifti_image *refImgPtr,
                                 nifti_image *warRefImgPtr,
                                 nifti_image *warRefGraPtr,
                                 nifti_image *bckVoxBasedGraPtr)
-{
+{/*{{{*/
    // Set the pointers using the parent class function
    reg_measure::InitialiseMeasure(refImgPtr,
                                   floImgPtr,
@@ -59,9 +58,11 @@ void reg_ssd::InitialiseMeasure(nifti_image *refImgPtr,
       reg_print_msg_error("This number of time point should be the same for both input images");
       reg_exit();
    }
+
    // Input images are normalised between 0 and 1
    for(int i=0; i<this->referenceImagePointer->nt; ++i)
-   {if(this->timePointWeight[i] > 0.0 && normaliseTimePoint[i])
+   {
+      if(this->timePointWeight[i] > 0.0 && normaliseTimePoint[i])
       {
          //sets max value over both images to be 1 and min value over both images to be 0
          //scales values such that identical values in the images are still identical after scaling
@@ -74,19 +75,16 @@ void reg_ssd::InitialiseMeasure(nifti_image *refImgPtr,
          float rangeFR = maxFR - minFR;
 
          if(rangeFR < 1.0e-5 && rangeFR > -1.0e-5) { rangeFR = 1.0;} // avoid dividing zero
-         
-         reg_intensityRescale(this->referenceImagePointer, i,
-                              (minR - minFR) / rangeFR, 1 - ((maxFR - maxR) / rangeFR)  );
-         reg_intensityRescale(this->floatingImagePointer, i,
-                              (minF - minFR) / rangeFR, 1 - ((maxFR - maxF) / rangeFR)  );
+         reg_intensityRescale(this->referenceImagePointer, i, (minR - minFR) / rangeFR, 1 - ((maxFR - maxR) / rangeFR)  );
+         reg_intensityRescale(this->floatingImagePointer, i, (minF - minFR) / rangeFR, 1 - ((maxFR - maxF) / rangeFR)  );
       }
    }
 
-#ifdef MRF_USE_SAD
-   reg_print_msg_warn("SAD is used instead of SSD");
-#endif
+   #ifdef MRF_USE_SAD
+     reg_print_msg_warn("SAD is used instead of SSD");
+   #endif
    
-#ifndef NDEBUG
+   #ifndef NDEBUG
 	char text[255];
 	reg_print_msg_debug("reg_ssd::InitialiseMeasure().");
 	for(int i=0; i<this->referenceImagePointer->nt; ++i)
@@ -99,29 +97,33 @@ void reg_ssd::InitialiseMeasure(nifti_image *refImgPtr,
 		if(this->normaliseTimePoint[i])
 			sprintf(text, "%s %i", text, i);
 	reg_print_msg_debug(text);
-#endif
-}
+    #endif
+}/*}}}*/
+
+
 
 
 /* *************************************************************** */
 /* *************************************************************** */
 void reg_ssd::SetNormaliseTimepoint(int timepoint, bool normalise)
-{
+{/*{{{*/
 	this->normaliseTimePoint[timepoint]=normalise;
-}
+}/*}}}*/
+
+
 
 
 /* *************************************************************** */
 /* *************************************************************** */
 template<class DTYPE>
 double reg_getSSDValue(nifti_image *referenceImage,
-							  nifti_image *warpedImage,
-							  double *timePointWeight,
-							  nifti_image *jacobianDetImage,
-							  int *mask,
-							  float *currentValue,
-							  nifti_image *localWeightSimImage)
-{
+			  nifti_image *warpedImage,
+			  double *timePointWeight,
+			  nifti_image *jacobianDetImage,
+			  int *mask,
+			  float *currentValue,
+			  nifti_image *localWeightSimImage)
+{/*{{{*/
 #ifdef _WIN32
    long voxel;
    // the number of pixels in single image (nx*ny*nz)
@@ -207,7 +209,7 @@ double reg_getSSDValue(nifti_image *referenceImage,
       }
    }
    return SSD_global;
-}
+}/*}}}*/
 
 
 template double reg_getSSDValue<float>(nifti_image *,nifti_image *,double *,nifti_image *,int *, float *, nifti_image *);
@@ -217,7 +219,7 @@ template double reg_getSSDValue<double>(nifti_image *,nifti_image *,double *,nif
 /* *************************************************************** */
 /* *************************************************************** */
 double reg_ssd::GetSimilarityMeasureValue()
-{
+{/*{{{*/
    // Check that all the specified image are of the same datatype
    if(this->warpedFloatingImagePointer->datatype != this->referenceImagePointer->datatype)
    {
@@ -297,7 +299,7 @@ double reg_ssd::GetSimilarityMeasureValue()
       }
    }
    return SSDValue;
-}
+}/*}}}*/
 
 
 /* *************************************************************** */
@@ -314,11 +316,11 @@ void reg_getVoxelBasedSSDGradient(nifti_image *referenceImage,
                                   nifti_image *localWeightSimImage
                                   )
 {
-   if(current_timepoint<0 || current_timepoint>=referenceImage->nt){
+   if(current_timepoint<0 || current_timepoint>=referenceImage->nt){/*{{{*/
       reg_print_fct_error("reg_getVoxelBasedNMIGradient2D");
       reg_print_msg_error("The specified active timepoint is not defined in the ref/war images");
       reg_exit();
-   }
+   }/*}}}*/
    // Create pointers to the reference and warped images
 #ifdef _WIN32
    long voxel;
@@ -379,7 +381,6 @@ void reg_getVoxelBasedSSDGradient(nifti_image *referenceImage,
 #endif
 
    double refValue, warValue, common;
-
    for(voxel=0; voxel<voxelNumber; voxel++)
    {
       if(mask[voxel]>-1)
@@ -389,7 +390,6 @@ void reg_getVoxelBasedSSDGradient(nifti_image *referenceImage,
 
          if(refValue==refValue && warValue==warValue)
          {
-
            #ifdef MRF_USE_SAD
             common = refValue>warValue?-1.f:1.f;
             common *= (refValue - warValue);
