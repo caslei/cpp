@@ -592,9 +592,13 @@ T reg_mat44_det(mat44 const* A)
         + static_cast<double>(A->m[3][0]) * static_cast<double>(A->m[2][1]) * static_cast<double>(A->m[1][2]) * static_cast<double>(A->m[0][3]);
     return static_cast<T>(D);
 }
+
+
 template float reg_mat44_det<float>(mat44 const* A);
 template double reg_mat44_det<double>(mat44 const* A);
-/* *************************************************************** */
+
+
+
 /* *************************************************************** */
 template<class T>
 T reg_mat33_det(mat33 const* A)
@@ -604,9 +608,14 @@ T reg_mat33_det(mat33 const* A)
         (static_cast<double>(A->m[0][2]) * (static_cast<double>(A->m[1][0]) * static_cast<double>(A->m[2][1]) - static_cast<double>(A->m[1][1]) * static_cast<double>(A->m[2][0]))));
     return static_cast<T>(D);
 }
+
+
+
 template float reg_mat33_det<float>(mat33 const* A);
 template double reg_mat33_det<double>(mat33 const* A);
-/* *************************************************************** */
+
+
+
 /* *************************************************************** */
 void reg_mat33_to_nan(mat33 *A)
 {
@@ -614,7 +623,9 @@ void reg_mat33_to_nan(mat33 *A)
       for(int j=0;j<3;++j)
          A->m[i][j] = std::numeric_limits<float>::quiet_NaN();
 }
-/* *************************************************************** */
+
+
+
 /* *************************************************************** */
 mat33 reg_mat44_to_mat33(mat44 const* A)
 {
@@ -647,15 +658,15 @@ mat44 reg_mat44_mul(mat44 const* A, mat44 const* B)
     }
     return R;
 }
+
+
 /* *************************************************************** */
 mat44 operator*(mat44 A, mat44 B)
 {
     return reg_mat44_mul(&A, &B);
 }
 /* *************************************************************** */
-void reg_mat33_mul(mat44 const* mat,
-    float const* in,
-    float *out)
+void reg_mat33_mul(mat44 const* mat, float const* in, float *out)
 {
     out[0] = static_cast<float>(
         static_cast<double>(in[0])*static_cast<double>(mat->m[0][0]) +
@@ -667,10 +678,10 @@ void reg_mat33_mul(mat44 const* mat,
         static_cast<double>(mat->m[1][3]));
     return;
 }
+
+
 /* *************************************************************** */
-void reg_mat33_mul(mat33 const* mat,
-    float const* in,
-    float *out)
+void reg_mat33_mul(mat33 const* mat, float const* in, float *out)
 {
     out[0] = static_cast<float>(
         static_cast<double>(in[0])*static_cast<double>(mat->m[0][0]) +
@@ -775,8 +786,7 @@ mat33 reg_mat33_minus(mat33 const* A, mat33 const* B)
 void reg_mat33_diagonalize(mat33 const* A, mat33 * Q, mat33 * D)
 {
     // A must be a symmetric matrix.
-    // returns Q and D such that
-    // Diagonal matrix D = QT * A * Q;  and  A = Q*D*QT
+    // returns Q and D such that Diagonal matrix D = QT * A * Q;  and  A = Q*D*QT
     const int maxsteps = 24;  // certainly wont need that many.
     int k0, k1, k2;
     float o[3], m[3];
@@ -942,9 +952,7 @@ float reg_mat44_norm_inf(mat44 const* mat)
 }
 /* *************************************************************** */
 /* *************************************************************** */
-void reg_mat44_mul(mat44 const* mat,
-    float const* in,
-    float *out)
+void reg_mat44_mul(mat44 const* mat, float const* in, float *out)
 {
     out[0] = static_cast<float>(static_cast<double>(mat->m[0][0]) * static_cast<double>(in[0]) +
         static_cast<double>(mat->m[0][1]) * static_cast<double>(in[1]) +
@@ -961,9 +969,7 @@ void reg_mat44_mul(mat44 const* mat,
 }
 /* *************************************************************** */
 /* *************************************************************** */
-void reg_mat44_mul(mat44 const* mat,
-    double const* in,
-    double *out)
+void reg_mat44_mul(mat44 const* mat, double const* in, double *out)
 {
     double matD[4][4];
     for (int i = 0; i < 4; ++i)
@@ -1008,7 +1014,8 @@ mat44 reg_mat44_mul(mat44 const* A, double scalar)
     return out;
 }
 /* *************************************************************** */
-void reg_mat44_disp(mat44 *mat, char * title){
+void reg_mat44_disp(mat44 *mat, char * title)
+{
     printf("%s:\n%.7g\t%.7g\t%.7g\t%.7g\n%.7g\t%.7g\t%.7g\t%.7g\n%.7g\t%.7g\t%.7g\t%.7g\n%.7g\t%.7g\t%.7g\t%.7g\n", title,
         mat->m[0][0], mat->m[0][1], mat->m[0][2], mat->m[0][3],
         mat->m[1][0], mat->m[1][1], mat->m[1][2], mat->m[1][3],
@@ -1018,7 +1025,8 @@ void reg_mat44_disp(mat44 *mat, char * title){
 
 /* *************************************************************** */
 /* *************************************************************** */
-void reg_mat33_disp(mat33 *mat, char * title){
+void reg_mat33_disp(mat33 *mat, char * title)
+{
     printf("%s:\n%g\t%g\t%g\n%g\t%g\t%g\n%g\t%g\t%g\n", title,
         mat->m[0][0], mat->m[0][1], mat->m[0][2],
         mat->m[1][0], mat->m[1][1], mat->m[1][2],
