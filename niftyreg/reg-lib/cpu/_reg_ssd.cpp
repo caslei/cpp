@@ -392,6 +392,7 @@ void reg_getVoxelBasedSSDGradient(nifti_image *referenceImage,
 #else
             common = -2.0 * (refValue - warValue);
 #endif
+
             if(jacDetPtr!=NULL)
                common *= jacDetPtr[voxel];
             else if(localWeightPtr!=NULL)
