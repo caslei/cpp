@@ -5,6 +5,14 @@
  * Also contains an interface class between reg_base and the measure class
  */
 
+/*
+ * reg_measure类主要函数为：
+ * virtual --> GetSimilarityMeasureValue() =0
+ * virtual --> GetVoxelBasedSimilarityMeasureGradient()
+ * virtual --> virtual void GetDiscretisedValue()
+ * virtual --> ~reg_measure()
+ */
+
 #ifndef _REG_MEASURE_H
 #define _REG_MEASURE_H
 
@@ -28,7 +36,7 @@ public:
                           nifti_image *warRefImgPtr = NULL,
                           nifti_image *warRefGraPtr = NULL,
                           nifti_image *bckVoxBasedGraPtr = NULL)
-   {
+   {/*{{{*/
       this->isSymmetric=false;
       this->referenceImagePointer=refImgPtr;
       this->referenceTimePoint=this->referenceImagePointer->nt;
@@ -38,6 +46,7 @@ public:
       this->warpedFloatingGradientImagePointer=warFloGraPtr;
       this->forwardVoxelBasedGradientImagePointer=forVoxBasedGraPtr;
       this->forwardLocalWeightSimImagePointer=localWeightSimPtr;
+
       if(maskFloPtr != NULL && warRefImgPtr!=NULL && warRefGraPtr!=NULL && bckVoxBasedGraPtr!=NULL) {
          this->isSymmetric=true;
          this->floatingMaskPointer=maskFloPtr;
@@ -54,36 +63,41 @@ public:
 #ifndef NDEBUG
       printf("[NiftyReg DEBUG] reg_measure::InitialiseMeasure()\n");
 #endif
-   }
+   }/*}}}*/
+
    /// @brief Returns the registration measure of similarity value
    virtual double GetSimilarityMeasureValue() = 0;
+
    /// @brief Compute the voxel based measure of similarity gradient
    virtual void GetVoxelBasedSimilarityMeasureGradient(int current_timepoint){
-      if(current_timepoint<0 || current_timepoint>=this->referenceImagePointer->nt){
+      if(current_timepoint<0 || current_timepoint>=this->referenceImagePointer->nt){/*{{{*/
          reg_print_fct_error("reg_measure::GetVoxelBasedSimilarityMeasureGradient");
          reg_print_msg_error("The specified active timepoint is not defined in the ref/war images");
          reg_exit();
       }
-   }
+   }/*}}}*/
+
    /// @brief Here
    virtual void GetDiscretisedValue(nifti_image *, float *, int , int) {}
+
    void SetTimepointWeight(int timepoint, double weight)
-   {
+   {/*{{{*/
       this->timePointWeight[timepoint]=weight;
-   }
+   }/*}}}*/
+
    double *GetTimepointsWeights(void)
-   {
+   {/*{{{*/
       return this->timePointWeight;
-   }
+   }/*}}}*/
 /************************************************************************/
    nifti_image* GetReferenceImage(void)
-   {
+   {/*{{{*/
       return this->referenceImagePointer;
-   }
+   }/*}}}*/
    int* GetReferenceMask(void)
-   {
+   {/*{{{*/
       return this->referenceMaskPointer;
-   }
+   }/*}}}*/
 /************************************************************************/
 protected:
    nifti_image *referenceImagePointer;
