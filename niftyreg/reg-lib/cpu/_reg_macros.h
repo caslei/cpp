@@ -4,6 +4,11 @@
  * of class memebers
  */
 
+/*
+ * Macros中函数的特点是：
+ * (1) 所有函数都有 '##' 和'virtual'构成
+ * (2) this->name中的this指代啥？？？
+ */
 #ifndef _REG_MACROS_H
 #define _REG_MACROS_H
 
@@ -35,6 +40,8 @@ virtual type Get##name () { \
   virtual void name##On () { this->Set##name(static_cast<type>(1));}   \
   virtual void name##Off () { this->Set##name(static_cast<type>(0));}
 
+
+
 #define SetVector3Macro(name,type) \
 virtual void Set##name (type _arg1, type _arg2, type _arg3) \
   { \
@@ -49,6 +56,8 @@ virtual void Set##name (type _arg[3]) \
   { \
   this->Set##name (_arg[0], _arg[1], _arg[2]);\
   }
+
+
 
 #define GetVector3Macro(name,type) \
 virtual type *Get##name () \
@@ -66,6 +75,8 @@ virtual void Get##name (type _arg[3]) \
   this->Get##name (_arg[0], _arg[1], _arg[2]);\
   }
 
+
+
 #define SetClampMacro(name,type,min,max) \
 virtual void Set##name (type _arg) \
   { \
@@ -82,6 +93,8 @@ virtual type Get##name##MaxValue () \
   { \
   return max; \
   }
+
+
 
 #define SetStringMacro(name) \
 virtual void Set##name (const char* _arg) \
