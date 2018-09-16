@@ -30,17 +30,13 @@ void reg_checkAndCorrectDimension(nifti_image *image)
    if(image->nw<1 || image->dim[7]<1) image->dim[7]=image->nw=1;
    //Correcting the dim of the images
    for(int i=1;i<8;++i) {
-       if(image->dim[i]>1) {
-            image->dim[0]=image->ndim=i;
-       }
+       if(image->dim[i]>1) { image->dim[0]=image->ndim=i; }
    }
    // Set the slope to 1 if undefined
    if(image->scl_slope==0) image->scl_slope=1.f;
    // Ensure that no spacing is set to zero
-   if(image->ny==1 && (image->dy==0 || image->pixdim[2]==0))
-      image->dy=image->pixdim[2]=1;
-   if(image->nz==1 && (image->dz==0 || image->pixdim[3]==0))
-      image->dz=image->pixdim[3]=1;
+   if(image->ny==1 && (image->dy==0 || image->pixdim[2]==0)) image->dy=image->pixdim[2]=1;
+   if(image->nz==1 && (image->dz==0 || image->pixdim[3]==0)) image->dz=image->pixdim[3]=1;
    // Create the qform matrix if required
    if(image->qform_code==0 && image->sform_code==0)
    {
@@ -57,18 +53,17 @@ void reg_checkAndCorrectDimension(nifti_image *image)
       image->qto_ijk=nifti_mat44_inverse(image->qto_xyz);
    }
    // Set the voxel spacing to millimeters
-   if(image->xyz_units==NIFTI_UNITS_MICRON)
+   if(image->xyz_units==NIFTI_UNITS_MICRON) //单位为微米
    {
-      for(int d=1; d<=image->ndim; ++d)
-         image->pixdim[d] /= 1000.f;
+      for(int d=1; d<=image->ndim; ++d) image->pixdim[d] /= 1000.f;
       image->xyz_units=NIFTI_UNITS_MM;
    }
-   if(image->xyz_units==NIFTI_UNITS_METER)
+   if(image->xyz_units==NIFTI_UNITS_METER) //单位为米
    {
-      for(int d=1; d<=image->ndim; ++d)
-         image->pixdim[d] *= 1000.f;
+      for(int d=1; d<=image->ndim; ++d) image->pixdim[d] *= 1000.f;
       image->xyz_units=NIFTI_UNITS_MM;
    }
+
    image->dx=image->pixdim[1];
    image->dy=image->pixdim[2];
    image->dz=image->pixdim[3];
@@ -77,35 +72,28 @@ void reg_checkAndCorrectDimension(nifti_image *image)
    image->dv=image->pixdim[6];
    image->dw=image->pixdim[7];
 }
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 bool reg_isAnImageFileName(char *name)
 {
    std::string n(name);
-   if(n.find( ".nii") != std::string::npos)
-      return true;
-   if(n.find( ".nii.gz") != std::string::npos)
-      return true;
-   if(n.find( ".hdr") != std::string::npos)
-      return true;
-   if(n.find( ".img") != std::string::npos)
-      return true;
-   if(n.find( ".img.gz") != std::string::npos)
-      return true;
-   if(n.find( ".nrrd") != std::string::npos)
-      return true;
-   if(n.find( ".png") != std::string::npos)
-      return true;
+   if(n.find( ".nii") != std::string::npos) return true;
+   if(n.find( ".nii.gz") != std::string::npos) return true;
+   if(n.find( ".hdr") != std::string::npos) return true;
+   if(n.find( ".img") != std::string::npos) return true;
+   if(n.find( ".img.gz") != std::string::npos) return true;
+   if(n.find( ".nrrd") != std::string::npos) return true;
+   if(n.find( ".png") != std::string::npos) return true;
    return false;
 }
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 template<class DTYPE>
-void reg_intensityRescale_core(nifti_image *image,
-                               int timePoint,
-                               float newMin,
-                               float newMax
-                               )
+void reg_intensityRescale_core(nifti_image *image, int timePoint, float newMin, float newMax)
 {
    DTYPE *imagePtr = static_cast<DTYPE *>(image->data);
    unsigned int voxelNumber = image->nx*image->ny*image->nz;
@@ -191,11 +179,7 @@ void reg_intensityRescale_core(nifti_image *image,
    image->scl_inter=0.f;
 }
 /* *************************************************************** */
-void reg_intensityRescale(nifti_image *image,
-                          int timepoint,
-                          float newMin,
-                          float newMax
-                          )
+void reg_intensityRescale(nifti_image *image, int timepoint, float newMin, float newMax)
 {
    switch(image->datatype)
    {
@@ -234,9 +218,9 @@ void reg_intensityRescale(nifti_image *image,
 template<class DTYPE>
 void reg_tools_removeSCLInfo_core(nifti_image *image)
 {
-   if(image->scl_slope==1.f && image->scl_inter==0.f)
-      return;
+   if(image->scl_slope==1.f && image->scl_inter==0.f) return;
    DTYPE *imgPtr = static_cast<DTYPE *>(image->data);
+   
    for(size_t i=0;i<image->nvox; ++i){
       *imgPtr=*imgPtr*(DTYPE)image->scl_slope+(DTYPE)image->scl_inter;
       imgPtr++;
@@ -244,6 +228,8 @@ void reg_tools_removeSCLInfo_core(nifti_image *image)
    image->scl_slope=1.f;
    image->scl_inter=0.f;
 }
+
+
 /* *************************************************************** */
 void reg_tools_removeSCLInfo(nifti_image *image)
 {
@@ -282,8 +268,7 @@ void reg_tools_removeSCLInfo(nifti_image *image)
 }
 /* *************************************************************** */
 /* *************************************************************** */
-void reg_getRealImageSpacing(nifti_image *image,
-                             float *spacingValues)
+void reg_getRealImageSpacing(nifti_image *image, float *spacingValues)
 {
    float indexVoxel1[3]= {0,0,0};
    float indexVoxel2[3], realVoxel1[3], realVoxel2[3];
@@ -313,10 +298,7 @@ void reg_getRealImageSpacing(nifti_image *image,
 //set the scl_slope and sct_inter of the image to 1 and 0 (SSD uses actual image data values),
 //and sets cal_min and cal_max to have the min/max image data values
 template<class T,class DTYPE>
-void reg_thresholdImage2(nifti_image *image,
-                         T lowThr,
-                         T upThr
-                         )
+void reg_thresholdImage2(nifti_image *image, T lowThr, T upThr)
 {
    DTYPE *imagePtr = static_cast<DTYPE *>(image->data);
    T currentMin=std::numeric_limits<T>::max();
@@ -348,10 +330,7 @@ void reg_thresholdImage2(nifti_image *image,
 }
 /* *************************************************************** */
 template<class T>
-void reg_thresholdImage(nifti_image *image,
-                        T lowThr,
-                        T upThr
-                        )
+void reg_thresholdImage(nifti_image *image, T lowThr, T upThr)
 {
    switch(image->datatype)
    {
@@ -385,8 +364,12 @@ void reg_thresholdImage(nifti_image *image,
       reg_exit();
    }
 }
+
+
 template void reg_thresholdImage<float>(nifti_image *, float, float);
 template void reg_thresholdImage<double>(nifti_image *, double, double);
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 template <class PrecisionTYPE, class DTYPE>
@@ -406,6 +389,9 @@ PrecisionTYPE reg_getMaximalLength2D(nifti_image *image)
    }
    return max;
 }
+
+
+
 /* *************************************************************** */
 template <class PrecisionTYPE, class DTYPE>
 PrecisionTYPE reg_getMaximalLength3D(nifti_image *image)
@@ -426,6 +412,9 @@ PrecisionTYPE reg_getMaximalLength3D(nifti_image *image)
    }
    return max;
 }
+
+
+
 /* *************************************************************** */
 template <class PrecisionTYPE>
 PrecisionTYPE reg_getMaximalLength(nifti_image *image)
@@ -456,9 +445,15 @@ PrecisionTYPE reg_getMaximalLength(nifti_image *image)
    }
    return EXIT_SUCCESS;
 }
+
+
+
 /* *************************************************************** */
 template float reg_getMaximalLength<float>(nifti_image *);
 template double reg_getMaximalLength<double>(nifti_image *);
+
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 template <class NewTYPE, class DTYPE>
@@ -556,10 +551,7 @@ template void reg_tools_changeDatatype<double>(nifti_image *, int);
 /* *************************************************************** */
 /* *************************************************************** */
 template <class TYPE1>
-void reg_tools_operationImageToImage(nifti_image *img1,
-                                     nifti_image *img2,
-                                     nifti_image *res,
-                                     int type)
+void reg_tools_operationImageToImage(nifti_image *img1, nifti_image *img2, nifti_image *res, int type)
 {
    TYPE1 *img1Ptr = static_cast<TYPE1 *>(img1->data);
    TYPE1 *resPtr = static_cast<TYPE1 *>(res->data);
@@ -636,9 +628,7 @@ void reg_tools_operationImageToImage(nifti_image *img1,
    }
 }
 /* *************************************************************** */
-void reg_tools_addImageToImage(nifti_image *img1,
-                               nifti_image *img2,
-                               nifti_image *res)
+void reg_tools_addImageToImage(nifti_image *img1, nifti_image *img2, nifti_image *res)
 {
    if(img1->datatype != res->datatype || img2->datatype != res->datatype)
    {
@@ -685,9 +675,7 @@ void reg_tools_addImageToImage(nifti_image *img1,
    }
 }
 /* *************************************************************** */
-void reg_tools_substractImageToImage(nifti_image *img1,
-                                     nifti_image *img2,
-                                     nifti_image *res)
+void reg_tools_substractImageToImage(nifti_image *img1, nifti_image *img2, nifti_image *res)
 {
    if(img1->datatype != res->datatype || img2->datatype != res->datatype)
    {
@@ -734,9 +722,7 @@ void reg_tools_substractImageToImage(nifti_image *img1,
    }
 }
 /* *************************************************************** */
-void reg_tools_multiplyImageToImage(nifti_image *img1,
-                                    nifti_image *img2,
-                                    nifti_image *res)
+void reg_tools_multiplyImageToImage(nifti_image *img1, nifti_image *img2, nifti_image *res)
 {
    if(img1->datatype != res->datatype || img2->datatype != res->datatype)
    {
@@ -783,9 +769,7 @@ void reg_tools_multiplyImageToImage(nifti_image *img1,
    }
 }
 /* *************************************************************** */
-void reg_tools_divideImageToImage(nifti_image *img1,
-                                  nifti_image *img2,
-                                  nifti_image *res)
+void reg_tools_divideImageToImage(nifti_image *img1, nifti_image *img2, nifti_image *res)
 {
    if(img1->datatype != res->datatype || img2->datatype != res->datatype)
    {
@@ -834,10 +818,7 @@ void reg_tools_divideImageToImage(nifti_image *img1,
 /* *************************************************************** */
 /* *************************************************************** */
 template <class TYPE1>
-void reg_tools_operationValueToImage(nifti_image *img1,
-                                     nifti_image *res,
-                                     float val,
-                                     int type)
+void reg_tools_operationValueToImage(nifti_image *img1, nifti_image *res, float val, int type)
 {
    TYPE1 *img1Ptr = static_cast<TYPE1 *>(img1->data);
    TYPE1 *resPtr = static_cast<TYPE1 *>(res->data);
@@ -903,9 +884,7 @@ void reg_tools_operationValueToImage(nifti_image *img1,
    }
 }
 /* *************************************************************** */
-void reg_tools_addValueToImage(nifti_image *img1,
-                               nifti_image *res,
-                               float val)
+void reg_tools_addValueToImage(nifti_image *img1, nifti_image *res, float val)
 {
    if(img1->datatype != res->datatype)
    {
@@ -952,9 +931,7 @@ void reg_tools_addValueToImage(nifti_image *img1,
    }
 }
 /* *************************************************************** */
-void reg_tools_substractValueToImage(nifti_image *img1,
-                                     nifti_image *res,
-                                     float val)
+void reg_tools_substractValueToImage(nifti_image *img1, nifti_image *res, float val)
 {
    if(img1->datatype != res->datatype)
    {
@@ -1001,9 +978,7 @@ void reg_tools_substractValueToImage(nifti_image *img1,
    }
 }
 /* *************************************************************** */
-void reg_tools_multiplyValueToImage(nifti_image *img1,
-                                    nifti_image *res,
-                                    float val)
+void reg_tools_multiplyValueToImage(nifti_image *img1, nifti_image *res, float val)
 {
    if(img1->datatype != res->datatype)
    {
@@ -1050,9 +1025,7 @@ void reg_tools_multiplyValueToImage(nifti_image *img1,
    }
 }
 /* *************************************************************** */
-void reg_tools_divideValueToImage(nifti_image *img1,
-                                  nifti_image *res,
-                                  float val)
+void reg_tools_divideValueToImage(nifti_image *img1, nifti_image *res, float val)
 {
    if(img1->datatype != res->datatype)
    {
