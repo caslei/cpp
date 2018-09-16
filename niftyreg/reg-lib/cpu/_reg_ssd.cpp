@@ -432,15 +432,13 @@ void reg_ssd::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
 {
    // Check if the specified time point exists and is active
    reg_measure::GetVoxelBasedSimilarityMeasureGradient(current_timepoint);
-   if(this->timePointWeight[current_timepoint]==0.0)
-      return;
+   if(this->timePointWeight[current_timepoint]==0.0)  return;
 
    // Check if all required input images are of the same data type
    int dtype = this->referenceImagePointer->datatype;
    if(this->warpedFloatingImagePointer->datatype != dtype ||
-         this->warpedFloatingGradientImagePointer->datatype != dtype ||
-         this->forwardVoxelBasedGradientImagePointer->datatype != dtype
-         )
+      this->warpedFloatingGradientImagePointer->datatype != dtype ||
+      this->forwardVoxelBasedGradientImagePointer->datatype != dtype )
    {
       reg_print_fct_error("reg_ssd::GetVoxelBasedSimilarityMeasureGradient");
       reg_print_msg_error("Input images are exepected to be of the same type");
@@ -486,9 +484,8 @@ void reg_ssd::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
    {
       dtype = this->floatingImagePointer->datatype;
       if(this->warpedReferenceImagePointer->datatype != dtype ||
-            this->warpedReferenceGradientImagePointer->datatype != dtype ||
-            this->backwardVoxelBasedGradientImagePointer->datatype != dtype
-            )
+         this->warpedReferenceGradientImagePointer->datatype != dtype ||
+         this->backwardVoxelBasedGradientImagePointer->datatype != dtype )
       {
          reg_print_fct_error("reg_ssd::GetVoxelBasedSimilarityMeasureGradient");
          reg_print_msg_error("Input images are exepected to be of the same type");
@@ -558,10 +555,11 @@ void GetDiscretisedValueSSD_core3D(nifti_image *controlPointGridImage,
    mat44 *grid_vox2mm = &controlPointGridImage->qto_xyz;
    if(controlPointGridImage->sform_code>0)
       grid_vox2mm = &controlPointGridImage->sto_xyz;
-   mat44 *image_mm2vox = &refImage->qto_ijk;
 
+   mat44 *image_mm2vox = &refImage->qto_ijk;
    if(refImage->sform_code>0)
       image_mm2vox = &refImage->sto_ijk;
+
    mat44 grid2img_vox = reg_mat44_mul(image_mm2vox, grid_vox2mm);
 
    // Compute the block size
@@ -624,7 +622,6 @@ void GetDiscretisedValueSSD_core3D(nifti_image *controlPointGridImage,
 
    // Allocate some static memory 存放参考图像的 block
    float* refBlockValue = (float *) malloc(voxelBlockNumber*sizeof(float));
-   
    int definedValueNumber;
 
    // Loop over all control points (cp), don't use the first and last 'cp'
@@ -632,12 +629,11 @@ void GetDiscretisedValueSSD_core3D(nifti_image *controlPointGridImage,
       gridVox[2] = cpz;
       for(cpy=1; cpy<controlPointGridImage->ny-1; ++cpy){
          gridVox[1] = cpy;
-         currentControlPoint=(cpz*controlPointGridImage->ny+cpy)*controlPointGridImage->nx+1;
 
+         currentControlPoint=(cpz*controlPointGridImage->ny+cpy)*controlPointGridImage->nx+1;
          for(cpx=1; cpx<controlPointGridImage->nx-1; ++cpx){
             gridVox[0] = cpx;
-            // Compute the corresponding image voxel position 
-	    // from grid index to image index
+            // Compute the corresponding image voxel position from grid index to image index
             reg_mat44_mul(&grid2img_vox, gridVox, imageVox);
             imageVox[0]=reg_round(imageVox[0]);
             imageVox[1]=reg_round(imageVox[1]);
@@ -665,7 +661,8 @@ void GetDiscretisedValueSSD_core3D(nifti_image *controlPointGridImage,
                               blockIndex++;
                            } //t
                         }
-                        else{
+                        else
+			{
                            for(t=0; t<refImage->nt; ++t){
                               refBlockValue[blockIndex] = padding_value; // 指定区域外的数组置为0
                               blockIndex++;
@@ -686,7 +683,8 @@ void GetDiscretisedValueSSD_core3D(nifti_image *controlPointGridImage,
             } // z
 
             // Loop over the discretised value
-            if(definedValueNumber>0){
+            if(definedValueNumber>0)
+	    {
 
                DTYPE warpedValue;
                int paddedImageVox[3] = {
@@ -696,6 +694,7 @@ void GetDiscretisedValueSSD_core3D(nifti_image *controlPointGridImage,
                };
                int cc;
                double currentSum;
+
 #if defined (_OPENMP)
 #pragma omp parallel for default(none) \
    shared(label_1D_number, label_2D_number, label_nD_number, discretise_step, discretise_radius, \
@@ -714,7 +713,6 @@ void GetDiscretisedValueSSD_core3D(nifti_image *controlPointGridImage,
                         blockIndex = 0;
                         currentSum = 0.;
                         definedValueNumber = 0;
-
                         for(z=c-blockSize[2]/2; z<c+blockSize[2]/2; ++z){
                            for(y=b-blockSize[1]/2; y<b+blockSize[1]/2; ++y){
                               for(x=a-blockSize[0]/2; x<a+blockSize[0]/2; ++x){
@@ -855,22 +853,21 @@ void GetDiscretisedValueSSD_core3D_2(nifti_image *controlPointGridImage,
    int currentControlPoint = 0;
 
    // Pointers to the input image
-   const size_t voxelNumber = (size_t)refImage->nx*
-         refImage->ny*refImage->nz;
+   const size_t voxelNumber = (size_t)refImage->nx*refImage->ny*refImage->nz;
    DTYPE *refImgPtr = static_cast<DTYPE *>(refImage->data);
    DTYPE *warImgPtr = static_cast<DTYPE *>(warImage->data);
 
    DTYPE padding_value = 0.0;
-
    int definedValueNumber, idBlock, timeV;
 
    int threadNumber = 1;
    int tid = 0;
+
 #if defined (_OPENMP)
    threadNumber=omp_get_max_threads();
 #endif
 
-   // Allocate some static memory
+   // Allocate some static memory. 申请2D数组用于存放中间图像
    float** refBlockValue = (float **) malloc(threadNumber*sizeof(float *));
    for(a=0;a<threadNumber;++a)
       refBlockValue[a] = (float *) malloc(voxelBlockNumber_t*sizeof(float));
@@ -885,6 +882,7 @@ void GetDiscretisedValueSSD_core3D_2(nifti_image *controlPointGridImage,
    voxIndex, idBlock, blockIndex, definedValueNumber, tid, \
    timeV, voxIndex_t, blockIndex_t, discretisedIndex, currentSum, currentValue)
 #endif
+
    for(cpz=0; cpz<controlPointGridImage->nz; ++cpz){
 #if defined (_OPENMP)
       tid=omp_get_thread_num();
@@ -894,8 +892,7 @@ void GetDiscretisedValueSSD_core3D_2(nifti_image *controlPointGridImage,
          gridVox[1] = cpy;
          for(cpx=0; cpx<controlPointGridImage->nx; ++cpx){
             gridVox[0] = cpx;
-            currentControlPoint=controlPointGridImage->ny*controlPointGridImage->nx*cpz +
-                  controlPointGridImage->nx*cpy+cpx;
+            currentControlPoint=controlPointGridImage->ny*controlPointGridImage->nx*cpz + controlPointGridImage->nx*cpy+cpx;
 
             // Compute the corresponding image voxel position
             reg_mat44_mul(&grid2img_vox, gridVox, imageVox);
@@ -905,7 +902,7 @@ void GetDiscretisedValueSSD_core3D_2(nifti_image *controlPointGridImage,
 
             //INIT
             for(idBlock=0;idBlock<voxelBlockNumber_t;idBlock++) {
-               refBlockValue[tid][idBlock]=padding_value;
+               refBlockValue[tid][idBlock]=padding_value;//每个图像具有的网格点数，t个图像，
             }
 
             // Extract the block in the reference image
@@ -954,17 +951,18 @@ void GetDiscretisedValueSSD_core3D_2(nifti_image *controlPointGridImage,
                                        voxIndex_t = t*voxelNumber + voxIndex;
                                        blockIndex_t = t*voxelBlockNumber + blockIndex;
                                        if(warImgPtr[voxIndex_t]==warImgPtr[voxIndex_t]) {
-#ifdef MRF_USE_SAD
-                                          currentValue = fabs(warImgPtr[voxIndex_t]-refBlockValue[tid][blockIndex_t]);
-#else
-                                          currentValue = reg_pow2(warImgPtr[voxIndex_t]-refBlockValue[tid][blockIndex_t]);
-#endif
-                                       } else {
-#ifdef MRF_USE_SAD
-                                          currentValue = fabs(0-refBlockValue[tid][blockIndex_t]);
-#else
-                                          currentValue = reg_pow2(0-refBlockValue[tid][blockIndex_t]);
-#endif
+                                          #ifdef MRF_USE_SAD
+                                             currentValue = fabs(warImgPtr[voxIndex_t]-refBlockValue[tid][blockIndex_t]);
+                                          #else
+                                             currentValue = reg_pow2(warImgPtr[voxIndex_t]-refBlockValue[tid][blockIndex_t]);
+                                          #endif
+                                       } 
+				       else {
+                                          #ifdef MRF_USE_SAD
+                                             currentValue = fabs(0-refBlockValue[tid][blockIndex_t]);
+                                          #else
+                                             currentValue = reg_pow2(0-refBlockValue[tid][blockIndex_t]);
+                                          #endif
                                        }
 
                                        if(currentValue==currentValue){
@@ -976,11 +974,11 @@ void GetDiscretisedValueSSD_core3D_2(nifti_image *controlPointGridImage,
                                  else {
                                     for(t=0; t<warImage->nt; ++t){
                                        blockIndex_t = t*voxelBlockNumber + blockIndex;
-#ifdef MRF_USE_SAD
+                                      #ifdef MRF_USE_SAD
                                        currentValue = fabs(0-refBlockValue[tid][blockIndex_t]);
-#else
+                                      #else
                                        currentValue = reg_pow2(0-refBlockValue[tid][blockIndex_t]);
-#endif
+                                      #endif
                                        if(currentValue==currentValue){
                                           currentSum -= currentValue;
                                           ++definedValueNumber;
@@ -1060,6 +1058,9 @@ void GetDiscretisedValueSSD_core3D_2(nifti_image *controlPointGridImage,
       } // node with undefined label
    } // node
 }
+
+
+
 /* *************************************************************** */
 //template <class DTYPE>
 //void GetDiscretisedValueSSD_core2D(nifti_image *controlPointGridImage,
