@@ -12,9 +12,7 @@
 #include <time.h>
 
 /* *************************************************************** */
-/* *************************************************************** */
-/** @brief Interface between the registration class and the optimiser
- */
+/** @brief Interface between the registration class and the optimiser */
 class InterfaceOptimiser
 {
 public:
@@ -31,11 +29,15 @@ protected:
    /// @brief Interface destructor
    ~InterfaceOptimiser() {}
 };
+
+
+
 /* *************************************************************** */
-/* *************************************************************** */
-/** @class reg_optimiser
+/*
+ * @class reg_optimiser
  * @brief Standard gradient acent optimisation
  */
+
 template <class T>
 class reg_optimiser
 {
@@ -44,12 +46,14 @@ protected:
    size_t dofNumber;
    size_t dofNumber_b;
    size_t ndim;
+
    T *currentDOF; // pointer to the cpp nifti image array
    T *currentDOF_b; // pointer to the cpp nifti image array (backward)
    T *bestDOF;
    T *bestDOF_b;
    T *gradient;
    T *gradient_b;
+
    bool optimiseX;
    bool optimiseY;
    bool optimiseZ;
@@ -57,96 +61,44 @@ protected:
    size_t currentIterationNumber;
    double bestObjFunctionValue;
    double currentObjFunctionValue;
-   InterfaceOptimiser *objFunc;
+
+   InterfaceOptimiser *objFunc; //设计模式：工厂模式
 
 public:
    reg_optimiser();
    virtual ~reg_optimiser();
    virtual void StoreCurrentDOF();
    virtual void RestoreBestDOF();
-   virtual size_t GetDOFNumber(){
-      return this->dofNumber;
-   }
 
-   virtual size_t GetDOFNumber_b(){
-      return this->dofNumber_b;
-   }
+   virtual size_t GetDOFNumber(){ return this->dofNumber; }
+   virtual size_t GetDOFNumber_b(){ return this->dofNumber_b; }
 
-   virtual size_t GetNDim(){
-      return this->ndim;
-   }
+   virtual size_t GetNDim(){ return this->ndim; }
 
-   virtual size_t GetVoxNumber(){
-      return this->dofNumber/this->ndim;
-   }
+   virtual size_t GetVoxNumber(){ return this->dofNumber/this->ndim; }
+   virtual size_t GetVoxNumber_b(){ return this->dofNumber_b/this->ndim; }
 
-   virtual size_t GetVoxNumber_b(){
-      return this->dofNumber_b/this->ndim;
-   }
+   virtual T* GetBestDOF(){ return this->bestDOF; }
+   virtual T* GetBestDOF_b() { return this->bestDOF_b; }
 
-   virtual T* GetBestDOF(){
-      return this->bestDOF;
-   }
-   
-   virtual T* GetBestDOF_b()
-   {
-      return this->bestDOF_b;
-   }
-   virtual T* GetCurrentDOF()
-   {
-      return this->currentDOF;
-   }
-   virtual T* GetCurrentDOF_b()
-   {
-      return this->currentDOF_b;
-   }
-   virtual T* GetGradient()
-   {
-      return this->gradient;
-   }
-   virtual T* GetGradient_b()
-   {
-      return this->gradient_b;
-   }
-   virtual bool GetOptimiseX()
-   {
-      return this->optimiseX;
-   }
-   virtual bool GetOptimiseY()
-   {
-      return this->optimiseY;
-   }
-   virtual bool GetOptimiseZ()
-   {
-      return this->optimiseZ;
-   }
-   virtual size_t GetMaxIterationNumber()
-   {
-      return this->maxIterationNumber;
-   }
-   virtual size_t GetCurrentIterationNumber()
-   {
-      return this->currentIterationNumber;
-   }
-   virtual size_t ResetCurrentIterationNumber()
-   {
-      return this->currentIterationNumber=0;
-   }
-   virtual double GetBestObjFunctionValue()
-   {
-      return this->bestObjFunctionValue;
-   }
-   virtual void SetBestObjFunctionValue(double i)
-   {
-      this->bestObjFunctionValue=i;
-   }
-   virtual double GetCurrentObjFunctionValue(){
-      return this->currentObjFunctionValue;
-   }
+   virtual T* GetCurrentDOF() { return this->currentDOF; }
+   virtual T* GetCurrentDOF_b() { return this->currentDOF_b; }
 
-   virtual void IncrementCurrentIterationNumber(){
-      this->currentIterationNumber++;
-   }
+   virtual T* GetGradient() { return this->gradient; }
+   virtual T* GetGradient_b() { return this->gradient_b; }
+
+   virtual bool GetOptimiseX() { return this->optimiseX; }
+   virtual bool GetOptimiseY() { return this->optimiseY; }
+   virtual bool GetOptimiseZ() { return this->optimiseZ; }
+
+   virtual size_t GetMaxIterationNumber() { return this->maxIterationNumber; }
+   virtual size_t GetCurrentIterationNumber() { return this->currentIterationNumber; }
+   virtual size_t ResetCurrentIterationNumber() { return this->currentIterationNumber=0; }
+   virtual double GetBestObjFunctionValue() { return this->bestObjFunctionValue; }
+   virtual void SetBestObjFunctionValue(double i) { this->bestObjFunctionValue=i; }
+   virtual double GetCurrentObjFunctionValue(){ return this->currentObjFunctionValue; }
+
+   virtual void IncrementCurrentIterationNumber(){ this->currentIterationNumber++; }
    
    virtual void Initialise(size_t nvox,
                            int dim,
@@ -155,20 +107,23 @@ public:
                            bool optZ,
                            size_t maxit,
                            size_t start,
-                           InterfaceOptimiser *o,
+                           InterfaceOptimiser *o, // InterfaceOptimiser类对象？？？会不会是待优化的目标函数
                            T *cppData,
                            T *gradData=NULL,
                            size_t nvox_b=0,
                            T *cppData_b=NULL,
                            T *gradData_b=NULL);
-   virtual void Optimise(T maxLength,
-                         T smallLength,
-                         T &startLength);
+   virtual void Optimise(T maxLength, T smallLength, T &startLength);
    virtual void Perturbation(float length);
 
    // Function used for testing
    virtual void reg_test_optimiser();
 };
+
+
+
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 /** @class reg_conjugateGradient
@@ -189,6 +144,7 @@ protected:
 public:
    reg_conjugateGradient();
    ~reg_conjugateGradient();
+
    virtual void Initialise(size_t nvox,
                            int dim,
                            bool optX,
@@ -202,14 +158,16 @@ public:
                            size_t nvox_b=0,
                            T *cppData_b=NULL,
                            T *gradData_b=NULL);
-   virtual void Optimise(T maxLength,
-                         T smallLength,
-                         T &startLength);
+   virtual void Optimise(T maxLength, T smallLength, T &startLength);
    virtual void Perturbation(float length);
 
    // Function used for testing
    virtual void reg_test_optimiser();
 };
+
+
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 /** @class Global optimisation class
@@ -228,6 +186,7 @@ protected:
 public:
    reg_lbfgs();
    ~reg_lbfgs();
+
    virtual void Initialise(size_t nvox,
                            int dim,
                            bool optX,
@@ -241,13 +200,15 @@ public:
                            size_t nvox_b=0,
                            T *cppData_b=NULL,
                            T *gradData_b=NULL);
-   virtual void Optimise(T maxLength,
-                         T smallLength,
-                         T &startLength);
+   virtual void Optimise(T maxLength, T smallLength, T &startLength);
    virtual void UpdateGradientValues();
 };
+
+
+
+
 /* *************************************************************** */
+#include "_reg_optimiser.cpp" // 为啥需要包含还没有具体实现的cpp文件？？？
 /* *************************************************************** */
-#include "_reg_optimiser.cpp"
 
 #endif // _REG_OPTIMISER_H
