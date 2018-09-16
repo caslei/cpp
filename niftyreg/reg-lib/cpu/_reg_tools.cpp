@@ -1115,8 +1115,7 @@ void reg_tools_kernelConvolution_core(nifti_image *image,
             densityPtr[index] = (intensityPtr[index]==intensityPtr[index])?1:0;
             densityPtr[index] *= (mask[index]>=0)?1:0;
             nanImagePtr[index] = static_cast<bool>(densityPtr[index]);
-            if(nanImagePtr[index]==0)
-               intensityPtr[index]=static_cast<DTYPE>(0);
+            if(nanImagePtr[index]==0) intensityPtr[index]=static_cast<DTYPE>(0);
          }
          // Loop over the x, y and z dimensions
          for(int n=0; n<3; n++)
@@ -1270,8 +1269,7 @@ void reg_tools_kernelConvolution_core(nifti_image *image,
                         break;
                      case 1:
                         realIndex = (planeIndex/imageDim[0]) *
-                              imageDim[0]*imageDim[1] +
-                              planeIndex%imageDim[0];
+                              imageDim[0]*imageDim[1] + planeIndex%imageDim[0];
                         break;
                      case 2:
                         realIndex = planeIndex;
@@ -1319,9 +1317,7 @@ void reg_tools_kernelConvolution_core(nifti_image *image,
                                                          static_cast<float>(bufferIntensity[k+2]),
                                                          static_cast<float>(bufferIntensity[k+3]));
                               density_sse = _mm_set_ps(bufferDensity[k],
-                                    bufferDensity[k+1],
-                                    bufferDensity[k+2],
-                                    bufferDensity[k+3]);
+                                    bufferDensity[k+1], bufferDensity[k+2], bufferDensity[k+3]);
                               k+=4;
                               intensity_sum_sse.m = _mm_add_ps(_mm_mul_ps(kernel_sse, intensity_sse), intensity_sum_sse.m);
                               density_sum_sse.m = _mm_add_ps(_mm_mul_ps(kernel_sse, density_sse), density_sum_sse.m);
@@ -1507,34 +1503,24 @@ void reg_tools_labelKernelConvolution_core(nifti_image *image,
             {
                for(currentXYZposition[0]=0; currentXYZposition[0]<dim_array[0]; currentXYZposition[0]++)
                {
-
                   tmp_lab.clear();
                   index=currentXYZposition[0]+(currentXYZposition[1]+currentXYZposition[2]*dim_array[1])*dim_array[0];
 
                   // Calculate allowed kernel shifts
-                  kernelXsize=(int)(sqrtf(gaussX_var)*6.0f) % 2 != 0 ?
-                           (int)(sqrtf(gaussX_var)*6.0f) : (int)(sqrtf(gaussX_var)*6.0f)+1;
+                  kernelXsize=(int)(sqrtf(gaussX_var)*6.0f) % 2 != 0 ? (int)(sqrtf(gaussX_var)*6.0f) : (int)(sqrtf(gaussX_var)*6.0f)+1;
                   kernelXshift=(int)(kernelXsize/2.0f);
-                  shiftXstart=((currentXYZposition[0]<kernelXshift)?
-                           -currentXYZposition[0]:-kernelXshift);
-                  shiftXstop=((currentXYZposition[0]>=(dim_array[0]-kernelXshift))?
-                           (int)dim_array[0]-currentXYZposition[0]-1:kernelXshift);
+                  shiftXstart=((currentXYZposition[0]<kernelXshift)? -currentXYZposition[0]:-kernelXshift);
+                  shiftXstop=((currentXYZposition[0]>=(dim_array[0]-kernelXshift))? (int)dim_array[0]-currentXYZposition[0]-1:kernelXshift);
 
-                  kernelYsize=(int)(sqrtf(gaussY_var)*6.0f) % 2 != 0 ?
-                           (int)(sqrtf(gaussY_var)*6.0f) : (int)(sqrtf(gaussY_var)*6.0f)+1;
+                  kernelYsize=(int)(sqrtf(gaussY_var)*6.0f) % 2 != 0 ? (int)(sqrtf(gaussY_var)*6.0f) : (int)(sqrtf(gaussY_var)*6.0f)+1;
                   kernelYshift=(int)(kernelYsize/2.0f);
-                  shiftYstart=((currentXYZposition[1]<kernelYshift)?
-                           -currentXYZposition[1]:-kernelYshift);
-                  shiftYstop=((currentXYZposition[1]>=(dim_array[1]-kernelYshift))?
-                           (int)dim_array[1]-currentXYZposition[1]-1:kernelYshift);
+                  shiftYstart=((currentXYZposition[1]<kernelYshift)? -currentXYZposition[1]:-kernelYshift);
+                  shiftYstop=((currentXYZposition[1]>=(dim_array[1]-kernelYshift))? (int)dim_array[1]-currentXYZposition[1]-1:kernelYshift);
 
-                  kernelZsize=(int)(sqrtf(gaussZ_var)*6.0f) % 2 != 0 ?
-                           (int)(sqrtf(gaussZ_var)*6.0f) : (int)(sqrtf(gaussZ_var)*6.0f)+1;
+                  kernelZsize=(int)(sqrtf(gaussZ_var)*6.0f) % 2 != 0 ? (int)(sqrtf(gaussZ_var)*6.0f) : (int)(sqrtf(gaussZ_var)*6.0f)+1;
                   kernelZshift=(int)(kernelZsize/2.0f);
-                  shiftZstart=((currentXYZposition[2]<kernelZshift)?
-                           -currentXYZposition[2]:-kernelZshift);
-                  shiftZstop=((currentXYZposition[2]>=(dim_array[2]-kernelZshift))?
-                           (int)dim_array[2]-currentXYZposition[2]-1:kernelZshift);
+                  shiftZstart=((currentXYZposition[2]<kernelZshift)? -currentXYZposition[2]:-kernelZshift);
+                  shiftZstop=((currentXYZposition[2]>=(dim_array[2]-kernelZshift))?(int)dim_array[2]-currentXYZposition[2]-1:kernelZshift);
 
                   if(nanImagePtr[index]!=0){
                      for(shiftx=shiftXstart; shiftx<=shiftXstop; shiftx++)
@@ -1545,8 +1531,7 @@ void reg_tools_labelKernelConvolution_core(nifti_image *image,
                            {
 
                               // Data Blur
-                              indexNeighbour=index+(shiftx*shiftdirection[0])+
-                                    (shifty*shiftdirection[1])+(shiftz*shiftdirection[2]);
+                              indexNeighbour=index+(shiftx*shiftdirection[0])+(shifty*shiftdirection[1])+(shiftz*shiftdirection[2]);
                               if(nanImagePtr[indexNeighbour]!=0){
                                  kernelval=expf((float)(-0.5f *(powf(shiftx,2)/gaussX_var
                                                                 +powf(shifty,2)/gaussY_var
@@ -1614,36 +1599,28 @@ void reg_tools_labelKernelConvolution(nifti_image *image,
    switch(image->datatype)
    {
    case NIFTI_TYPE_UINT8:
-      reg_tools_labelKernelConvolution_core<unsigned char>
-            (image,varianceX,varianceY,varianceZ,mask,timePoint);
+      reg_tools_labelKernelConvolution_core<unsigned char>(image,varianceX,varianceY,varianceZ,mask,timePoint);
       break;
    case NIFTI_TYPE_INT8:
-      reg_tools_labelKernelConvolution_core<char>
-            (image,varianceX,varianceY,varianceZ,mask,timePoint);
+      reg_tools_labelKernelConvolution_core<char>(image,varianceX,varianceY,varianceZ,mask,timePoint);
       break;
    case NIFTI_TYPE_UINT16:
-      reg_tools_labelKernelConvolution_core<unsigned short>
-            (image,varianceX,varianceY,varianceZ,mask,timePoint);
+      reg_tools_labelKernelConvolution_core<unsigned short>(image,varianceX,varianceY,varianceZ,mask,timePoint);
       break;
    case NIFTI_TYPE_INT16:
-      reg_tools_labelKernelConvolution_core<short>
-            (image,varianceX,varianceY,varianceZ,mask,timePoint);
+      reg_tools_labelKernelConvolution_core<short>(image,varianceX,varianceY,varianceZ,mask,timePoint);
       break;
    case NIFTI_TYPE_UINT32:
-      reg_tools_labelKernelConvolution_core<unsigned int>
-            (image,varianceX,varianceY,varianceZ,mask,timePoint);
+      reg_tools_labelKernelConvolution_core<unsigned int>(image,varianceX,varianceY,varianceZ,mask,timePoint);
       break;
    case NIFTI_TYPE_INT32:
-      reg_tools_labelKernelConvolution_core<int>
-            (image,varianceX,varianceY,varianceZ,mask,timePoint);
+      reg_tools_labelKernelConvolution_core<int>(image,varianceX,varianceY,varianceZ,mask,timePoint);
       break;
    case NIFTI_TYPE_FLOAT32:
-      reg_tools_labelKernelConvolution_core<float>
-            (image,varianceX,varianceY,varianceZ,mask,timePoint);
+      reg_tools_labelKernelConvolution_core<float>(image,varianceX,varianceY,varianceZ,mask,timePoint);
       break;
    case NIFTI_TYPE_FLOAT64:
-      reg_tools_labelKernelConvolution_core<double>
-            (image,varianceX,varianceY,varianceZ,mask,timePoint);
+      reg_tools_labelKernelConvolution_core<double>(image,varianceX,varianceY,varianceZ,mask,timePoint);
       break;
    default:
       reg_print_fct_error("reg_tools_labelKernelConvolution");
@@ -1654,12 +1631,7 @@ void reg_tools_labelKernelConvolution(nifti_image *image,
 }
 /* *************************************************************** */
 
-void reg_tools_kernelConvolution(nifti_image *image,
-                                 float *sigma,
-                                 int kernelType,
-                                 int *mask,
-                                 bool *timePoint,
-                                 bool *axis)
+void reg_tools_kernelConvolution(nifti_image *image, float *sigma, int kernelType, int *mask, bool *timePoint, bool *axis)
 {
 
 
@@ -1707,6 +1679,9 @@ void reg_tools_kernelConvolution(nifti_image *image,
    delete []axisToSmooth;
    delete []activeTimePoint;
 }
+
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 template <class PrecisionTYPE, class ImageTYPE>
@@ -1751,6 +1726,7 @@ void reg_downsampleImage1(nifti_image *image, int type, bool *downsampleAxis)
    image->dx=image->pixdim[1];
    image->dy=image->pixdim[2];
    image->dz=image->pixdim[3];
+
    if(image->nt<1 || image->dim[4]<1) image->nt=image->dim[4]=1;
    if(image->nu<1 || image->dim[5]<1) image->nu=image->dim[5]=1;
    if(image->nv<1 || image->dim[6]<1) image->nv=image->dim[6]=1;
@@ -1854,6 +1830,8 @@ void reg_downsampleImage1(nifti_image *image, int type, bool *downsampleAxis)
    }
    free(oldValues);
 }
+
+
 /* *************************************************************** */
 template <class PrecisionTYPE>
 void reg_downsampleImage(nifti_image *image, int type, bool *downsampleAxis)
@@ -1890,8 +1868,13 @@ void reg_downsampleImage(nifti_image *image, int type, bool *downsampleAxis)
       reg_exit();
    }
 }
+
+
+
 template void reg_downsampleImage<float>(nifti_image *, int, bool *);
 template void reg_downsampleImage<double>(nifti_image *, int, bool *);
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 template <class DTYPE>
@@ -1906,6 +1889,8 @@ void reg_tools_binarise_image1(nifti_image *image)
       dataPtr++;
    }
 }
+
+
 /* *************************************************************** */
 void reg_tools_binarise_image(nifti_image *image)
 {
@@ -1941,6 +1926,9 @@ void reg_tools_binarise_image(nifti_image *image)
       reg_exit();
    }
 }
+
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 template <class DTYPE>
@@ -1953,6 +1941,9 @@ void reg_tools_binarise_image1(nifti_image *image, float threshold)
       dataPtr++;
    }
 }
+
+
+
 /* *************************************************************** */
 void reg_tools_binarise_image(nifti_image *image, float threshold)
 {
@@ -1988,6 +1979,9 @@ void reg_tools_binarise_image(nifti_image *image, float threshold)
       reg_exit();
    }
 }
+
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 template <class DTYPE>
@@ -2009,6 +2003,9 @@ void reg_tools_binaryImage2int1(nifti_image *image, int *array, int &activeVoxel
       }
    }
 }
+
+
+
 /* *************************************************************** */
 void reg_tools_binaryImage2int(nifti_image *image, int *array, int &activeVoxelNumber)
 {
@@ -2044,6 +2041,9 @@ void reg_tools_binaryImage2int(nifti_image *image, int *array, int &activeVoxelN
       reg_exit();
    }
 }
+
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 template <class ATYPE,class BTYPE>
@@ -2087,6 +2087,9 @@ double reg_tools_getMeanRMS2(nifti_image *imageA, nifti_image *imageB)
    }
    return sum/(double)(imageA->nx*imageA->ny*imageA->nz);
 }
+
+
+
 /* *************************************************************** */
 template <class ATYPE>
 double reg_tools_getMeanRMS1(nifti_image *imageA, nifti_image *imageB)
@@ -2115,6 +2118,9 @@ double reg_tools_getMeanRMS1(nifti_image *imageA, nifti_image *imageB)
       reg_exit();
    }
 }
+
+
+
 /* *************************************************************** */
 double reg_tools_getMeanRMS(nifti_image *imageA, nifti_image *imageB)
 {
@@ -2142,6 +2148,9 @@ double reg_tools_getMeanRMS(nifti_image *imageA, nifti_image *imageB)
       reg_exit();
    }
 }
+
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 template <class DTYPE>
@@ -2151,8 +2160,10 @@ int reg_createImagePyramid(nifti_image *inputImage, nifti_image **pyramid, int u
    pyramid[levelToPerform-1]=nifti_copy_nim_info(inputImage);
    pyramid[levelToPerform-1]->data = (void *)calloc(pyramid[levelToPerform-1]->nvox,
          pyramid[levelToPerform-1]->nbyper);
+   
    memcpy(pyramid[levelToPerform-1]->data, inputImage->data,
          pyramid[levelToPerform-1]->nvox* pyramid[levelToPerform-1]->nbyper);
+
    reg_tools_changeDatatype<DTYPE>(pyramid[levelToPerform-1]);
    reg_tools_removeSCLInfo(pyramid[levelToPerform-1]);
 
@@ -2171,11 +2182,9 @@ int reg_createImagePyramid(nifti_image *inputImage, nifti_image **pyramid, int u
    {
       // Allocation of the image
       pyramid[l]=nifti_copy_nim_info(pyramid[l+1]);
-      pyramid[l]->data = (void *)calloc(pyramid[l]->nvox,
-                                        pyramid[l]->nbyper);
+      pyramid[l]->data = (void *)calloc(pyramid[l]->nvox, pyramid[l]->nbyper);
 
-      memcpy(pyramid[l]->data, pyramid[l+1]->data,
-            pyramid[l]->nvox* pyramid[l]->nbyper);
+      memcpy(pyramid[l]->data, pyramid[l+1]->data, pyramid[l]->nvox* pyramid[l]->nbyper);
 
       // Downsample the image if appropriate
       bool downsampleAxis[8]= {false,true,true,true,false,false,false,false};
@@ -2186,8 +2195,14 @@ int reg_createImagePyramid(nifti_image *inputImage, nifti_image **pyramid, int u
    }
    return EXIT_SUCCESS;
 }
+
+
+
 template int reg_createImagePyramid<float>(nifti_image *, nifti_image **, unsigned int , unsigned int);
 template int reg_createImagePyramid<double>(nifti_image *, nifti_image **, unsigned int , unsigned int);
+
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 template <class DTYPE>
@@ -2195,11 +2210,14 @@ int reg_createMaskPyramid(nifti_image *inputMaskImage, int **maskPyramid, int un
 {
    // FINEST LEVEL OF REGISTRATION
    nifti_image **tempMaskImagePyramid=(nifti_image **)malloc(levelToPerform*sizeof(nifti_image *));
+
    tempMaskImagePyramid[levelToPerform-1]=nifti_copy_nim_info(inputMaskImage);
    tempMaskImagePyramid[levelToPerform-1]->data = (void *)calloc(tempMaskImagePyramid[levelToPerform-1]->nvox,
          tempMaskImagePyramid[levelToPerform-1]->nbyper);
+
    memcpy(tempMaskImagePyramid[levelToPerform-1]->data, inputMaskImage->data,
          tempMaskImagePyramid[levelToPerform-1]->nvox* tempMaskImagePyramid[levelToPerform-1]->nbyper);
+
    reg_tools_binarise_image(tempMaskImagePyramid[levelToPerform-1]);
    reg_tools_changeDatatype<unsigned char>(tempMaskImagePyramid[levelToPerform-1]);
 
@@ -2215,10 +2233,10 @@ int reg_createMaskPyramid(nifti_image *inputMaskImage, int **maskPyramid, int un
    activeVoxelNumber[levelToPerform-1]=tempMaskImagePyramid[levelToPerform-1]->nx *
          tempMaskImagePyramid[levelToPerform-1]->ny *
          tempMaskImagePyramid[levelToPerform-1]->nz;
+
    maskPyramid[levelToPerform-1]=(int *)malloc(activeVoxelNumber[levelToPerform-1] * sizeof(int));
    reg_tools_binaryImage2int(tempMaskImagePyramid[levelToPerform-1],
-         maskPyramid[levelToPerform-1],
-         activeVoxelNumber[levelToPerform-1]);
+         maskPyramid[levelToPerform-1], activeVoxelNumber[levelToPerform-1]);
 
    // Images for each subsequent levels are allocated and downsampled if appropriate
    for(int l=levelToPerform-2; l>=0; l--)
@@ -2227,6 +2245,7 @@ int reg_createMaskPyramid(nifti_image *inputMaskImage, int **maskPyramid, int un
       tempMaskImagePyramid[l]=nifti_copy_nim_info(tempMaskImagePyramid[l+1]);
       tempMaskImagePyramid[l]->data = (void *)calloc(tempMaskImagePyramid[l]->nvox,
                                                      tempMaskImagePyramid[l]->nbyper);
+
       memcpy(tempMaskImagePyramid[l]->data, tempMaskImagePyramid[l+1]->data,
             tempMaskImagePyramid[l]->nvox* tempMaskImagePyramid[l]->nbyper);
 
@@ -2238,20 +2257,23 @@ int reg_createMaskPyramid(nifti_image *inputMaskImage, int **maskPyramid, int un
       reg_downsampleImage<DTYPE>(tempMaskImagePyramid[l], 0, downsampleAxis);
 
       activeVoxelNumber[l]=tempMaskImagePyramid[l]->nx *
-            tempMaskImagePyramid[l]->ny *
-            tempMaskImagePyramid[l]->nz;
+            tempMaskImagePyramid[l]->ny * tempMaskImagePyramid[l]->nz;
+
       maskPyramid[l]=(int *)malloc(activeVoxelNumber[l] * sizeof(int));
-      reg_tools_binaryImage2int(tempMaskImagePyramid[l],
-                                maskPyramid[l],
-                                activeVoxelNumber[l]);
+      reg_tools_binaryImage2int(tempMaskImagePyramid[l], maskPyramid[l], activeVoxelNumber[l]);
    }
    for(unsigned int l=0; l<levelToPerform; ++l)
       nifti_image_free(tempMaskImagePyramid[l]);
    free(tempMaskImagePyramid);
    return EXIT_SUCCESS;
 }
+
+
 template int reg_createMaskPyramid<float>(nifti_image *, int **, unsigned int , unsigned int , int *);
 template int reg_createMaskPyramid<double>(nifti_image *, int **, unsigned int , unsigned int , int *);
+
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 template <class TYPE1, class TYPE2>
@@ -2271,6 +2293,8 @@ int reg_tools_nanMask_image2(nifti_image *image, nifti_image *maskImage, nifti_i
    }
    return EXIT_SUCCESS;
 }
+
+
 /* *************************************************************** */
 template <class TYPE1>
 int reg_tools_nanMask_image1(nifti_image *image, nifti_image *maskImage, nifti_image *outputImage)
@@ -2278,29 +2302,21 @@ int reg_tools_nanMask_image1(nifti_image *image, nifti_image *maskImage, nifti_i
    switch(maskImage->datatype)
    {
    case NIFTI_TYPE_UINT8:
-      return reg_tools_nanMask_image2<TYPE1,unsigned char>
-            (image, maskImage, outputImage);
+      return reg_tools_nanMask_image2<TYPE1,unsigned char>(image, maskImage, outputImage);
    case NIFTI_TYPE_INT8:
-      return reg_tools_nanMask_image2<TYPE1,char>
-            (image, maskImage, outputImage);
+      return reg_tools_nanMask_image2<TYPE1,char>(image, maskImage, outputImage);
    case NIFTI_TYPE_UINT16:
-      return reg_tools_nanMask_image2<TYPE1,unsigned short>
-            (image, maskImage, outputImage);
+      return reg_tools_nanMask_image2<TYPE1,unsigned short>(image, maskImage, outputImage);
    case NIFTI_TYPE_INT16:
-      return reg_tools_nanMask_image2<TYPE1,short>
-            (image, maskImage, outputImage);
+      return reg_tools_nanMask_image2<TYPE1,short>(image, maskImage, outputImage);
    case NIFTI_TYPE_UINT32:
-      return reg_tools_nanMask_image2<TYPE1,unsigned int>
-            (image, maskImage, outputImage);
+      return reg_tools_nanMask_image2<TYPE1,unsigned int>(image, maskImage, outputImage);
    case NIFTI_TYPE_INT32:
-      return reg_tools_nanMask_image2<TYPE1,int>
-            (image, maskImage, outputImage);
+      return reg_tools_nanMask_image2<TYPE1,int>(image, maskImage, outputImage);
    case NIFTI_TYPE_FLOAT32:
-      return reg_tools_nanMask_image2<TYPE1,float>
-            (image, maskImage, outputImage);
+      return reg_tools_nanMask_image2<TYPE1,float>(image, maskImage, outputImage);
    case NIFTI_TYPE_FLOAT64:
-      return reg_tools_nanMask_image2<TYPE1,double>
-            (image, maskImage, outputImage);
+      return reg_tools_nanMask_image2<TYPE1,double>(image, maskImage, outputImage);
    default:
       reg_print_fct_error("reg_tools_nanMask_image1");
       reg_print_msg_error("The image data type is not supported");
@@ -2327,29 +2343,21 @@ int reg_tools_nanMask_image(nifti_image *image, nifti_image *maskImage, nifti_im
    switch(image->datatype)
    {
    case NIFTI_TYPE_UINT8:
-      return reg_tools_nanMask_image1<unsigned char>
-            (image, maskImage, outputImage);
+      return reg_tools_nanMask_image1<unsigned char>(image, maskImage, outputImage);
    case NIFTI_TYPE_INT8:
-      return reg_tools_nanMask_image1<char>
-            (image, maskImage, outputImage);
+      return reg_tools_nanMask_image1<char>(image, maskImage, outputImage);
    case NIFTI_TYPE_UINT16:
-      return reg_tools_nanMask_image1<unsigned short>
-            (image, maskImage, outputImage);
+      return reg_tools_nanMask_image1<unsigned short>(image, maskImage, outputImage);
    case NIFTI_TYPE_INT16:
-      return reg_tools_nanMask_image1<short>
-            (image, maskImage, outputImage);
+      return reg_tools_nanMask_image1<short>(image, maskImage, outputImage);
    case NIFTI_TYPE_UINT32:
-      return reg_tools_nanMask_image1<unsigned int>
-            (image, maskImage, outputImage);
+      return reg_tools_nanMask_image1<unsigned int>(image, maskImage, outputImage);
    case NIFTI_TYPE_INT32:
-      return reg_tools_nanMask_image1<int>
-            (image, maskImage, outputImage);
+      return reg_tools_nanMask_image1<int>(image, maskImage, outputImage);
    case NIFTI_TYPE_FLOAT32:
-      return reg_tools_nanMask_image1<float>
-            (image, maskImage, outputImage);
+      return reg_tools_nanMask_image1<float>(image, maskImage, outputImage);
    case NIFTI_TYPE_FLOAT64:
-      return reg_tools_nanMask_image1<double>
-            (image, maskImage, outputImage);
+      return reg_tools_nanMask_image1<double>(image, maskImage, outputImage);
    default:
       reg_print_fct_error("reg_tools_nanMask_image");
       reg_print_msg_error("The image data type is not supported");
@@ -2363,33 +2371,34 @@ int reg_tools_removeNanFromMask_core(nifti_image *image, int *mask)
 {
    size_t voxelNumber = (size_t)image->nx*image->ny*image->nz;
    TYPE *imagePtr = static_cast<TYPE *>(image->data);
+
    for(int t=0; t<image->nt; ++t){
       for(size_t i=0; i<voxelNumber; ++i){
          TYPE value=*imagePtr++;
-         if(value!=value)
-            mask[i]=-1;
+         if(value!=value) mask[i]=-1;
       }
    }
    return EXIT_SUCCESS;
 }
+
+
+
 /* *************************************************************** */
-int reg_tools_removeNanFromMask(nifti_image *image,
-                                int *mask)
+int reg_tools_removeNanFromMask(nifti_image *image, int *mask)
 {
    switch(image->datatype)
    {
    case NIFTI_TYPE_FLOAT32:
-      return reg_tools_removeNanFromMask_core<float>
-            (image, mask);
+      return reg_tools_removeNanFromMask_core<float>(image, mask);
    case NIFTI_TYPE_FLOAT64:
-      return reg_tools_removeNanFromMask_core<double>
-            (image, mask);
+      return reg_tools_removeNanFromMask_core<double>(image, mask);
    default:
       reg_print_fct_error("reg_tools_removeNanFromMask");
       reg_print_msg_error("The image data type is not supported");
       reg_exit();
    }
 }
+
 
 /* *************************************************************** */
 /* *************************************************************** */
@@ -2404,8 +2413,7 @@ DTYPE reg_tools_getMinValue_core(nifti_image *image, int timepoint)
    DTYPE minValue=std::numeric_limits<DTYPE>::max();
    if(image->scl_slope==0) image->scl_slope=1.f;
 
-   size_t voxelNumber = (size_t)image->nx*
-         image->ny*image->nz;
+   size_t voxelNumber = (size_t)image->nx*image->ny*image->nz;
    // Loop over all voxel to find the lowest value
    for(int time=0; time<image->nt; ++time){
       if(time==timepoint || timepoint==-1){
@@ -2421,6 +2429,8 @@ DTYPE reg_tools_getMinValue_core(nifti_image *image, int timepoint)
    // The lowest value is returned
    return minValue;
 }
+
+
 /* *************************************************************** */
 float reg_tools_getMinValue(nifti_image *image, int timepoint)
 {
@@ -2449,6 +2459,8 @@ float reg_tools_getMinValue(nifti_image *image, int timepoint)
       reg_exit();
    }
 }
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 template <class DTYPE>
@@ -2462,8 +2474,7 @@ DTYPE reg_tools_getMaxValue_core(nifti_image *image, int timepoint)
    DTYPE maxValue=std::numeric_limits<DTYPE>::min();
    if(image->scl_slope==0) image->scl_slope=1.f;
 
-   size_t voxelNumber = (size_t)image->nx *
-         image->ny * image->nz;
+   size_t voxelNumber = (size_t)image->nx * image->ny * image->nz;
    // Loop over all voxel to find the lowest value
    for(int time=0; time<image->nt; ++time){
       if(time==timepoint || timepoint==-1){
@@ -2574,6 +2585,8 @@ float reg_tools_getSTDValue_core(nifti_image *image)
    // The lowest value is returned
    return stdValue;
 }
+
+
 /* *************************************************************** */
 float reg_tools_getSTDValue(nifti_image *image)
 {
@@ -2602,6 +2615,8 @@ float reg_tools_getSTDValue(nifti_image *image)
       reg_exit();
    }
 }
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 template <class DTYPE>
@@ -2614,12 +2629,10 @@ void reg_flippAxis_type(int nx,
                         int nw,
                         void *inputArray,
                         void *outputArray,
-                        std::string cmd
-                        )
+                        std::string cmd)
 {
    // Allocate the outputArray if it is not allocated yet
-   if(outputArray==NULL)
-      outputArray=(void *)malloc(nx*ny*nz*nt*nu*nv*nw*sizeof(DTYPE));
+   if(outputArray==NULL) outputArray=(void *)malloc(nx*ny*nz*nt*nu*nv*nw*sizeof(DTYPE));
 
    // Parse the cmd to check which axis have to be flipped
    char *axisName=(char *)"x\0y\0z\0t\0u\0v\0w\0";
@@ -2672,10 +2685,7 @@ void reg_flippAxis_type(int nx,
    return;
 }
 /* *************************************************************** */
-void reg_flippAxis(nifti_image *image,
-                   void *outputArray,
-                   std::string cmd
-                   )
+void reg_flippAxis(nifti_image *image, void *outputArray, std::string cmd)
 {
    // Check the image data type
    switch(image->datatype)
@@ -2727,6 +2737,9 @@ void reg_flippAxis(nifti_image *image,
    }
    return;
 }
+
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 template<class DTYPE>
@@ -2819,6 +2832,8 @@ void reg_getDisplacementFromDeformation_3D(nifti_image *field)
       }
    }
 }
+
+
 /* *************************************************************** */
 int reg_getDisplacementFromDeformation(nifti_image *field)
 {
@@ -2863,10 +2878,8 @@ int reg_getDisplacementFromDeformation(nifti_image *field)
    field->intent_code=NIFTI_INTENT_VECTOR;
    memset(field->intent_name, 0, 16);
    strcpy(field->intent_name,"NREG_TRANS");
-   if(field->intent_p1==DEF_FIELD)
-      field->intent_p1=DISP_FIELD;
-   if(field->intent_p1==DEF_VEL_FIELD)
-      field->intent_p1=DISP_VEL_FIELD;
+   if(field->intent_p1==DEF_FIELD) field->intent_p1=DISP_FIELD;
+   if(field->intent_p1==DEF_VEL_FIELD) field->intent_p1=DISP_VEL_FIELD;
    return EXIT_SUCCESS;
 }
 /* *************************************************************** */
@@ -3009,18 +3022,13 @@ int reg_getDeformationFromDisplacement(nifti_image *field)
    field->intent_code=NIFTI_INTENT_VECTOR;
    memset(field->intent_name, 0, 16);
    strcpy(field->intent_name,"NREG_TRANS");
-   if(field->intent_p1==DISP_FIELD)
-      field->intent_p1=DEF_FIELD;
-   if(field->intent_p1==DISP_VEL_FIELD)
-      field->intent_p1=DEF_VEL_FIELD;
+   if(field->intent_p1==DISP_FIELD) field->intent_p1=DEF_FIELD;
+   if(field->intent_p1==DISP_VEL_FIELD) field->intent_p1=DEF_VEL_FIELD;
    return EXIT_SUCCESS;
 }
 /* *************************************************************** */
 template <class DTYPE>
-void reg_setGradientToZero_core(nifti_image *image,
-                               bool x_axis,
-                               bool y_axis,
-                               bool z_axis)
+void reg_setGradientToZero_core(nifti_image *image, bool x_axis, bool y_axis, bool z_axis)
 {
    size_t voxel_number = (size_t)image->nx*image->ny*image->nz;
    DTYPE *ptr = static_cast<DTYPE *>(image->data);
@@ -3041,10 +3049,7 @@ void reg_setGradientToZero_core(nifti_image *image,
    return;
 }
 /* *************************************************************** */
-void reg_setGradientToZero(nifti_image *image,
-                           bool x_axis,
-                           bool y_axis,
-                           bool z_axis=false)
+void reg_setGradientToZero(nifti_image *image, bool x_axis, bool y_axis, bool z_axis=false)
 {
    // Ensure that the specified image is a 5D image
    if(image->ndim != 5)
@@ -3070,9 +3075,7 @@ void reg_setGradientToZero(nifti_image *image,
 /* *************************************************************** */
 /* *************************************************************** */
 template <class DTYPE>
-double reg_test_compare_arrays(DTYPE *ptrA,
-                              DTYPE *ptrB,
-                              size_t nvox)
+double reg_test_compare_arrays(DTYPE *ptrA, DTYPE *ptrB, size_t nvox)
 {
    double maxDifference=0.0;
 
@@ -3111,20 +3114,22 @@ double reg_test_compare_arrays(DTYPE *ptrA,
    }
    return maxDifference;
 }
+
+
 template double reg_test_compare_arrays<float>(float *ptrA, float *ptrB, size_t nvox);
 template double reg_test_compare_arrays<double>(double *ptrA, double *ptrB, size_t nvox);
+
+
 /* *************************************************************** */
 template <class DTYPE>
-double reg_test_compare_images1(nifti_image *imgA,
-                               nifti_image *imgB)
+double reg_test_compare_images1(nifti_image *imgA, nifti_image *imgB)
 {
    DTYPE *imgAPtr = static_cast<DTYPE *>(imgA->data);
    DTYPE *imgBPtr = static_cast<DTYPE *>(imgB->data);
    return reg_test_compare_arrays<DTYPE>(imgAPtr,imgBPtr,imgA->nvox);
 }
 /* *************************************************************** */
-double reg_test_compare_images(nifti_image *imgA,
-                              nifti_image *imgB)
+double reg_test_compare_images(nifti_image *imgA, nifti_image *imgB)
 {
    if(imgA->datatype!=imgB->datatype)
    {
