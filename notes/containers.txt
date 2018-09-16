@@ -1,0 +1,657 @@
+// https://www.cnblogs.com/smiler/p/4457622.html
+
+
+c++ list, vector, map, set 区别与用法比较
+List封装了链表,Vector封装了数组, list和vector得最主要的区别在于vector使用连续内存存储的，他支持[]运算符，而list是以链表形式实现的，不支持[]。
+
+Vector对于随机访问的速度很快，但是对于插入尤其是在头部插入元素速度很慢，在尾部插入速度很快。List对于随机访问速度慢得多，因为可能要遍历整个链表才能做到，但是对于插入就快的多了，不需要拷贝和移动数据，只需要改变指针的指向就可以了。另外对于新添加的元素，Vector有一套算法，而List可以任意加入。
+Map,Set属于标准关联容器，使用了非常高效的平衡检索二叉树：红黑树，他的插入删除效率比其他序列容器高是因为不需要做内存拷贝和内存移动，而直接替换指向节点的指针即可。
+Set和Vector的区别在于Set不包含重复的数据。Set和Map的区别在于Set只含有Key，而Map有一个Key和Key所对应的Value两个元素。
+Map和Hash_Map的区别是Hash_Map使用了Hash算法来加快查找过程，但是需要更多的内存来存放这些Hash桶元素，因此可以算得上是采用空间来换取时间策略。
+
+ 
+
+ 
+
+ 
+
+1 vector
+
+    向量 相当于一个数组
+    在内存中分配一块连续的内存空间进行存储。支持不指定vector大小的存储。STL内部实现时，首先分配一个非常大的内存空间预备进行存储，即capacituy（）函数返回的大小，当超过此分配的空间时再整体重新放分配一块内存存储，这给人以vector可以不指定vector即一个连续内存的大小的感觉。通常此默认的内存分配能完成大部分情况下的存储。
+   优点：(1) 不指定一块内存大小的数组的连续存储，即可以像数组一样操作，但可以对此数组
+               进行动态操作。通常体现在push_back() pop_back()
+               (2) 随机访问方便，即支持[ ]操作符和vector.at()
+               (3) 节省空间。
+   缺点：(1) 在内部进行插入删除操作效率低。
+               (2) 只能在vector的最后进行push和pop，不能在vector的头进行push和pop。
+               (3) 当动态添加的数据超过vector默认分配的大小时要进行整体的重新分配、拷贝与释
+                     放 
+
+2 list
+    双向链表
+    每一个结点都包括一个信息快Info、一个前驱指针Pre、一个后驱指针Post。可以不分配必须的内存大小方便的进行添加和删除操作。使用的是非连续的内存空间进行存储。
+   优点：(1) 不使用连续内存完成动态操作。
+               (2) 在内部方便的进行插入和删除操作
+               (3) 可在两端进行push、pop
+   缺点：(1) 不能进行内部的随机访问，即不支持[ ]操作符和vector.at()
+               (2) 相对于verctor占用内存多
+
+3 deque
+   双端队列 double-end queue
+   deque是在功能上合并了vector和list。
+   优点：(1) 随机访问方便，即支持[ ]操作符和vector.at()
+               (2) 在内部方便的进行插入和删除操作
+               (3) 可在两端进行push、pop
+   缺点：(1) 占用内存多
+
+使用区别：
+     1 如果你需要高效的随即存取，而不在乎插入和删除的效率，使用vector 
+     2 如果你需要大量的插入和删除，而不关心随即存取，则应使用list 
+     3 如果你需要随即存取，而且关心两端数据的插入和删除，则应使用deque
+
+
+
+
+C++STL中vector容器的用法 
+ 
+http://xiamaogeng.blog.163.com/blog/static/1670023742010102494039234/
+ 
+vector是C++标准模板库中的部分内容，它是一个多功能的，能够操作多种数据结构和算法的模板类和函数库。vector之所以被认为是一个容器，是因为它能够像容器一样存放各种类型的对象，简单地说vector是一个能够存放任意类型的动态数组，能够增加和压缩数据。为了可以使用vector，必须在你的头文件中包含下面的代码：
+#include <vector>
+
+vector属于std命名域的，因此需要通过命名限定，如下完成你的代码：
+
+using std::vector;     vector<int> v;
+
+或者连在一起，使用全名：
+
+std::vector<int> v;
+
+建议使用全局的命名域方式：
+
+using namespace std;
+
+1.vector的声明
+
+   vector<ElemType> c;   创建一个空的vector
+
+   vector<ElemType> c1(c2); 创建一个vector c1，并用c2去初始化c1
+
+   vector<ElemType> c(n) ; 创建一个含有n个ElemType类型数据的vector;
+
+   vector<ElemType> c(n,elem); 创建一个含有n个ElemType类型数据的vector,并全部初始化为elem;
+
+   c.~vector<ElemType>(); 销毁所有数据,释放资源;
+
+2.vector容器中常用的函数。(c为一个容器对象）
+
+    c.push_back(elem);   在容器最后位置添加一个元素elem
+
+    c.pop_back();            删除容器最后位置处的元素
+
+    c.at(index);                返回指定index位置处的元素
+
+    c.begin();                   返回指向容器最开始位置数据的指针
+
+    c.end();                      返回指向容器最后一个数据单元的指针+1
+
+    c.front();                     返回容器最开始单元数据的引用
+
+    c.back();                     返回容器最后一个数据的引用
+
+    c.max_size();              返回容器的最大容量
+
+    c.size();                      返回当前容器中实际存放元素的个数
+
+    c.capacity();               同c.size()
+
+     c.resize();                   重新设置vector的容量
+
+    c.reserve();                同c.resize()
+
+    c.erase(p);               删除指针p指向位置的数据，返回下指向下一个数据位置的指针（迭代器）
+
+    c.erase(begin,end)     删除begin,end区间的数据，返回指向下一个数据位置的指针（迭代器）
+
+    c.clear();                    清除所有数据
+
+    c.rbegin();                  将vector反转后的开始指针返回(其实就是原来的end-1)
+
+    c.rend();                     将vector反转后的结束指针返回(其实就是原来的begin-1)
+
+    c.empty();                   判断容器是否为空，若为空返回true，否则返回false
+
+    c1.swap(c2);               交换两个容器中的数据
+
+    c.insert(p,elem);          在指针p指向的位置插入数据elem,返回指向elem位置的指针       
+
+    c.insert(p,n,elem);      在位置p插入n个elem数据，无返回值
+
+    c.insert(p,begin,end) 在位置p插入在区间[begin,end)的数据，无返回值
+
+3.vector中的操作
+
+    operator[] 如： c.[i];
+
+    同at()函数的作用相同，即取容器中的数据。
+
+
+
+C++ STLList队列用法（实例）
+http://www.cnblogs.com/madlas/articles/1364503.html
+ 
+C++ STL List队列用法（实例）
+2007-12-15 12:54
+#include <iostream>
+#include <list>
+#include <numeric>
+#include <algorithm>
+
+using namespace std;
+
+//创建一个list容器的实例LISTINT
+typedef list<int> LISTINT;
+
+//创建一个list容器的实例LISTCHAR
+typedef list<char> LISTCHAR;
+
+void main(void)
+{
+    //--------------------------
+    //用list容器处理整型数据
+    //--------------------------
+    //用LISTINT创建一个名为listOne的list对象
+    LISTINT listOne;
+    //声明i为迭代器
+    LISTINT::iterator i;
+
+    //从前面向listOne容器中添加数据
+    listOne.push_front (2);
+    listOne.push_front (1);
+
+    //从后面向listOne容器中添加数据
+    listOne.push_back (3);
+    listOne.push_back (4);
+
+    //从前向后显示listOne中的数据
+    cout<<"listOne.begin()--- listOne.end():"<<endl;
+    for (i = listOne.begin(); i != listOne.end(); ++i)
+        cout << *i << " ";
+    cout << endl;
+
+    //从后向后显示listOne中的数据
+LISTINT::reverse_iterator ir;
+    cout<<"listOne.rbegin()---listOne.rend():"<<endl;
+    for (ir =listOne.rbegin(); ir!=listOne.rend();ir++) {
+        cout << *ir << " ";
+    }
+    cout << endl;
+
+    //使用STL的accumulate(累加)算法
+    int result = accumulate(listOne.begin(), listOne.end(),0);
+    cout<<"Sum="<<result<<endl;
+    cout<<"------------------"<<endl;
+
+    //--------------------------
+    //用list容器处理字符型数据
+    //--------------------------
+
+    //用LISTCHAR创建一个名为listOne的list对象
+    LISTCHAR listTwo;
+    //声明i为迭代器
+    LISTCHAR::iterator j;
+
+    //从前面向listTwo容器中添加数据
+    listTwo.push_front ('A');
+    listTwo.push_front ('B');
+
+    //从后面向listTwo容器中添加数据
+    listTwo.push_back ('x');
+    listTwo.push_back ('y');
+
+    //从前向后显示listTwo中的数据
+    cout<<"listTwo.begin()---listTwo.end():"<<endl;
+    for (j = listTwo.begin(); j != listTwo.end(); ++j)
+        cout << char(*j) << " ";
+    cout << endl;
+
+    //使用STL的max_element算法求listTwo中的最大元素并显示
+    j=max_element(listTwo.begin(),listTwo.end());
+    cout << "The maximum element in listTwo is: "<<char(*j)<<endl;
+}
+
+#include <iostream>
+#include <list>
+
+using namespace std;
+typedef list<int> INTLIST;
+
+//从前向后显示list队列的全部元素
+void put_list(INTLISTlist, char *name)
+{
+    INTLIST::iterator plist;
+
+    cout << "The contents of " << name << " : ";
+    for(plist = list.begin(); plist != list.end(); plist++)
+        cout << *plist << " ";
+    cout<<endl;
+}
+
+//测试list容器的功能
+void main(void)
+{
+//list1对象初始为空
+    INTLIST list1;  
+    //list2对象最初有10个值为6的元素
+    INTLIST list2(10,6);
+    //list3对象最初有3个值为6的元素
+    INTLIST list3(list2.begin(),--list2.end());
+
+    //声明一个名为i的双向迭代器
+    INTLIST::iterator i;
+
+    //从前向后显示各list对象的元素
+    put_list(list1,"list1");
+    put_list(list2,"list2");
+    put_list(list3,"list3");
+   
+//从list1序列后面添加两个元素
+list1.push_back(2);
+list1.push_back(4);
+cout<<"list1.push_back(2) andlist1.push_back(4):"<<endl;
+    put_list(list1,"list1");
+
+//从list1序列前面添加两个元素
+list1.push_front(5);
+list1.push_front(7);
+cout<<"list1.push_front(5) andlist1.push_front(7):"<<endl;
+    put_list(list1,"list1");
+
+//在list1序列中间插入数据
+list1.insert(++list1.begin(),3,9);
+cout<<"list1.insert(list1.begin()+1,3,9):"<<endl;
+    put_list(list1,"list1");
+
+//测试引用类函数
+cout<<"list1.front()="<<list1.front()<<endl;
+cout<<"list1.back()="<<list1.back()<<endl;
+
+//从list1序列的前后各移去一个元素
+list1.pop_front();
+list1.pop_back();
+cout<<"list1.pop_front() andlist1.pop_back():"<<endl;
+    put_list(list1,"list1");
+
+//清除list1中的第2个元素
+list1.erase(++list1.begin());
+cout<<"list1.erase(++list1.begin()):"<<endl;
+    put_list(list1,"list1");
+
+//对list2赋值并显示
+list2.assign(8,1);
+cout<<"list2.assign(8,1):"<<endl;
+    put_list(list2,"list2");
+
+//显示序列的状态信息
+cout<<"list1.max_size(): "<<list1.max_size()<<endl;
+cout<<"list1.size(): "<<list1.size()<<endl;
+cout<<"list1.empty(): "<<list1.empty()<<endl;
+
+//list序列容器的运算
+    put_list(list1,"list1");
+    put_list(list3,"list3");
+cout<<"list1>list3: "<<(list1>list3)<<endl;
+cout<<"list1<list3: "<<(list1<list3)<<endl;
+
+//对list1容器排序
+list1.sort();
+    put_list(list1,"list1");
+   
+//结合处理
+list1.splice(++list1.begin(),list3);
+    put_list(list1,"list1");
+    put_list(list3,"list3");
+}
+
+ 
+ 
+ 
+C++map 映照容器 http://www.cppblog.com/vontroy/archive/2010/05/16/115501.html map映照容器的元素数据是一个键值和一个映照数据组成的，键值与映照数据之间具有一一映照的关系。
+        map映照容器的数据结构是采用红黑树来实现的，插入键值的元素不允许重复，比较函数只对元素的键值进行比较，元素的各项数据可通过键值检索出来。
+        使用map容器需要头文件包含语句“#include<map>”，map文件也包含了对multimap多重映照容器的定义。
+        
+1、map创建、元素插入和遍历访问
+        创建map对象，键值与映照数据的类型由自己定义。在没有指定比较函数时，元素的插入位置是按键值由小到大插入到黑白树中去的，下面这个程序详细说明了如何操作map容器。
+ 1#include <map>
+ 2#include <string>
+ 3#include <iostream>
+ 4
+ 5using std :: cout ;
+ 6using std :: endl ;
+ 7using std :: string ;
+ 8using std :: map ;
+ 9
+10int main()
+11{
+12     //定义map对象，当前没有任何元素
+13     map<string,float> m ;
+14     
+15     //插入元素，按键值的由小到大放入黑白树中
+16     m["Jack"] = 98.5 ;
+17     m["Bomi"] = 96.0 ;
+18     m["Kate"] = 97.5 ;
+19     
+20     //先前遍历元素
+21     map<string,float> :: iterator it ;
+22     for(it = m.begin() ; it != m.end() ; it ++)
+23     {
+24          cout << (*it).first << " : " << (*it).second << endl ;
+25     }
+26     
+27     return 0 ;
+28}
+29
+        运行结果：
+                          Bomi ：96
+                          Jack  ：98.5
+                          Kate  ：97.5
+        程序编译试，会产生代号为“warning C4786” 的警告， “4786” 是标记符超长警告的代号。可以在程序的头文件包含代码的前面使用"#pragma waring(disable:4786)" 宏语句，强制编译器忽略该警告。4786号警告对程序的正确性和运行并无影响。
+2、删除元素
+        map映照容器的 erase() 删除元素函数，可以删除某个迭代器位置上的元素、等于某个键值的元素、一个迭代器区间上的所有元素，当然，也可使用clear()方法清空map映照容器。
+        下面这个程序演示了删除map容器中键值为28的元素：
+ 1#include <map>
+ 2#include <string>
+ 3#include <iostream>
+ 4
+ 5using std :: cout ;
+ 6using std :: endl ;
+ 7using std :: string ;
+ 8using std :: map ;
+ 9
+10int main()
+11{
+12    //定义map对象，当前没有任何元素
+13    map<int, char> m ;
+14    //插入元素，按键值的由小到大放入黑白树中
+15    m[25] = 'm' ;
+16    m[28] = 'k' ;
+17    m[10] = 'x' ;
+18    m[30] = 'a' ;
+19    //删除键值为28的元素
+20    m.erase(28) ;
+21    //向前遍历元素
+22    map<int, char> :: iterator it ;
+23    for(it = m.begin() ; it != m.end() ; it ++)
+24    {
+25        //输出键值与映照数据
+26        cout << (*it).first << " : " << (*it).second << endl ;
+27    }
+28    return 0 ;
+29}
+30
+运行结果：
+                     10 : x
+                     25 : m
+                     30 : a
+3、元素反向遍历
+      可以用反向迭代器reverse_iterator反向遍历map映照容器中的数据，它需要rbegin()方法和rend()方法指出反向遍历的起始位置和终止位置。
+ 1#include <map>
+ 2#include <string>
+ 3#include <iostream>
+ 4
+ 5using std :: cout ;
+ 6using std :: endl ;
+ 7using std :: string ;
+ 8using std :: map ;
+ 9
+10int main()
+11{
+12    //定义map对象，当前没有任何元素
+13    map<int, char> m ;
+14    //插入元素，按键值的由小到大放入黑白树中
+15    m[25] = 'm' ;
+16    m[28] = 'k' ;
+17    m[10] = 'x' ;
+18    m[30] = 'a' ;
+19    //反向遍历元素
+20    map<int, char> :: reverse_iterator rit ;
+21    for( rit = m.rbegin() ; rit != m.rend() ; rit ++)
+22    {
+23        //输入键值与映照数据
+24        cout << (*rit).first << " : " << (*rit).second << endl ;
+25    }
+26    return 0 ;
+27}
+28
+运行结果：
+                  30 : a
+                  28 : k
+                  25 : m
+                  10 : x
+4、元素的搜索
+       使用find()方法来搜索某个键值，如果搜索到了，则返回该键值所在的迭代器位置，否则，返回end()迭代器位置。由于map采用黑白树数据结构来实现，所以搜索速度是极快的。
+       下面这个程序搜索键值为28的元素：
+ 1#include <map>
+ 2#include <string>
+ 3#include <iostream>
+ 4
+ 5using std :: cout ;
+ 6using std :: endl ;
+ 7using std :: string ;
+ 8using std :: map ;
+ 9
+10int main()
+11{
+12    //定义map对象，当前没有任何元素
+13    map<int, char> m ;
+14    //插入元素，按键值的由小到大放入黑白树中
+15    m[25] = 'm' ;
+16    m[28] = 'k' ;
+17    m[10] = 'x' ;
+18    m[30] = 'a' ;
+19    map<int, char> :: iterator it ;
+20    it = m.find(28) ;
+21    if(it != m.end())  //搜索到该键值
+22            cout << (*it).first << " : " << ( *it ).second << endl ;
+23    else
+24            cout << "not found it" << endl ;
+25    return 0 ;
+26}
+27
+5、自定义比较函数
+        将元素插入到map中去的时候，map会根据设定的比较函数将该元素放到该放的节点上去。在定义map的时候，如果没有指定比较函数，那么采用默认的比较函数，即按键值由小到大的顺序插入元素。在很多情况下，需要自己编写比较函数。
+        编写方法有两种。
+        （1）如果元素不是结构体，那么，可以编写比较函数。下面这个程序编写的比较规则是要求按键值由大到小的顺序将元素插入到map中
+ 1#include <map>
+ 2#include <string>
+ 3#include <iostream>
+ 4
+ 5using std :: cout ;
+ 6using std :: endl ;
+ 7using std :: string ;
+ 8using std :: map ;
+ 9
+10//自定义比较函数 myComp
+11struct myComp
+12{
+13    bool operator() (const int &a, const int &b)
+14    {
+15        if(a != b) return a > b ;
+16        else  return a > b ;
+17    }
+18} ;
+19
+20int main()
+21{
+22    //定义map对象，当前没有任何元素
+23    map<int, char> m ;
+24    //插入元素，按键值的由小到大放入黑白树中
+25    m[25] = 'm' ;
+26    m[28] = 'k' ;
+27    m[10] = 'x' ;
+28    m[30] = 'a' ;
+29    //使用前向迭代器中序遍历map
+30    map<int, char,myComp> :: iterator it ;
+31    for(it = m.begin() ; it != m.end() ; it ++)
+32            cout << (*it).first << " : " << (*it).second << endl ;
+33    return 0 ;
+34}
+35
+运行结果：
+                  30 ：a
+                  28 ：k
+                  25 ：m
+                  10 ：x
+       （2）如果元素是结构体，那么，可以直接把比较函数写在结构体内。下面的程序详细说明了如何操作：
+ 1#include <map>
+ 2#include <string>
+ 3#include <iostream>
+ 4
+ 5using std :: cout ;
+ 6using std :: endl ;
+ 7using std :: string ;
+ 8using std :: map ;
+ 9
+10struct Info
+11{
+12    string name ;
+13    float score ;
+14    //重载 “<”操作符，自定义排列规则
+15    bool operator < (const Info &a) const
+16    {
+17        //按score由大到小排列。如果要由小到大排列，使用“>”号即可
+18        return a.score < score ;
+19    }
+20} ;
+21
+22int main()
+23{
+24    //定义map对象，当前没有任何元素
+25    map<Info, int> m ;
+26    //定义Info结构体变量
+27    Info info ;
+28    //插入元素，按键值的由小到大放入黑白树中
+29    info.name = "Jack" ;
+30    info.score = 60 ;
+31    m[info] = 25 ;
+32    info.name = "Bomi" ;
+33    info.score = 80 ;
+34    m[info] = 10 ;
+35    info.name = "Peti" ;
+36    info.score = 66.5 ;
+37    m[info] = 30 ;
+38    //使用前向迭代器中序遍历map
+39    map<Info,int> :: iterator it ;
+40    for(it = m.begin() ; it != m.end() ; it ++)
+41    {
+42            cout << (*it).second << " : " ;
+43            cout << ((*it).first).name << " : " << ((*it).first).score << endl ;
+44    }
+45    return 0 ;
+46}
+47
+运行结果：
+                  10 ：Bomi   80
+                  30 ：Peti     66.5
+                  25 ：Jack    60
+6、用map实现数字分离
+      对数字的各位进行分离，采用取余等数学方法是很耗时的。而把数字当成字符串，使用map的映照功能，很方便地实现了数字分离。下面这个程序将一个字符串中的字符当成数字，并将各位的数值相加，最后输出各位的和。
+ 1#include <string>
+ 2#include <map>
+ 3#include <iostream>
+ 4
+ 5using std :: cout ;
+ 6using std :: endl ;
+ 7using std :: string ;
+ 8using std :: map ;
+ 9
+10int main()
+11{
+12    //定义map对象，当前没有任何元素
+13    map<char, int> m ;
+14
+15    //赋值：字符映射数字
+16    m['0'] = 0 ;
+17    m['1'] = 1 ;
+18    m['2'] = 2 ;
+19    m['3'] = 3 ;
+20    m['4'] = 4 ;
+21    m['5'] = 5 ;
+22    m['6'] = 6 ;
+23    m['7'] = 7 ;
+24    m['8'] = 8 ;
+25    m['9'] = 9 ;
+26    /**//*上面的10条赋值语句可采用下面这个循环简化代码编写
+27    for(int j = 0 ; j < 10 ; j++)
+28    {
+29            m['0' + j] = j ;
+30    }
+31    */
+32    string sa, sb ;
+33    sa = "6234" ;
+34    int i ;
+35    int sum = 0 ;
+36    for ( i = 0 ; i < sa.length() ; i++ )
+37            sum += m[sa[i]] ;
+38    cout << "sum = " << sum << endl ;
+39    return 0 ;
+40}
+41
+7、数字映照字符的map写法
+      在很多情况下，需要实现将数字映射为相应的字符，看看下面的程序：
+ 1#include <string>
+ 2#include <map>
+ 3#include <iostream>
+ 4
+ 5using std :: cout ;
+ 6using std :: endl ;
+ 7using std :: string ;
+ 8using std :: map ;
+ 9
+10int main()
+11{
+12    //定义map对象，当前没有任何元素
+13    map<int, char> m ;
+14
+15    //赋值：字符映射数字
+16    m[0] = '0' ;
+17    m[1] = '1' ;
+18    m[2] = '2' ;
+19    m[3] = '3' ;
+20    m[4] = '4' ;
+21    m[5] = '5' ;
+22    m[6] = '6' ;
+23    m[7] = '7' ;
+24    m[8] = '8' ;
+25    m[9] = '9' ;
+26    /**//*上面的10条赋值语句可采用下面这个循环简化代码编写
+27    for(int j = 0 ; j < 10 ; j++)
+28    {
+29            m[j] = '0' + j ;
+30    }
+31    */
+32    int n = 7 ;
+33    string s = "The number is " ;
+34    cout << s + m[n] << endl ;
+35    return 0 ;
+36}
+37
+运行结果：
+                  The number is 7
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
