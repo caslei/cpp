@@ -16,7 +16,9 @@ printf()
 exit()
 strtod()
 std::numeric_limits<T>::has_infinity
-
+std::numeric_limits<T>::quiet_NaN()
+sqrt()
+memcpy()
 
 
 
