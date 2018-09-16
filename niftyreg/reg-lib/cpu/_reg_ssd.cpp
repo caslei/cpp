@@ -9,6 +9,14 @@
  *
  */
 
+/*
+ * reg_ssd::GetSimilarityMeasureValue() <-- reg_getSSDValue()
+ * reg_ssd::GetVoxelBassedSimilarityMeasureGradient() <-- reg_getVoxelBassedSSDGradient()
+ * reg_ssd::GetDiscretisedValue() <-- GetDicretisedValueSSD_core3D_2
+ *
+ * 未知用途函数： GetDiscretisedValueSSD_core3D()
+ */
+
 #include "_reg_ssd.h"
 
 
@@ -218,7 +226,7 @@ template double reg_getSSDValue<double>(nifti_image *,nifti_image *,double *,nif
 
 /* *************************************************************** */
 /* *************************************************************** */
-double reg_ssd::GetSimilarityMeasureValue()
+double reg_ssd::GetSimilarityMeasureValue() // 调用函数 reg_getSSDValue()
 {/*{{{*/
    // Check that all the specified image are of the same datatype
    if(this->warpedFloatingImagePointer->datatype != this->referenceImagePointer->datatype)
@@ -433,7 +441,7 @@ template void reg_getVoxelBasedSSDGradient<double>
 
 /* *************************************************************** */
 /* *************************************************************** */
-void reg_ssd::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
+void reg_ssd::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint) // 调用reg_getVoxelBasedSSDGradient()
 {/*{{{*/
    // Check if the specified time point exists and is active
    reg_measure::GetVoxelBasedSimilarityMeasureGradient(current_timepoint);
