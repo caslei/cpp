@@ -43,6 +43,13 @@ nt:
 dx
 dy
 dz
+nu
+nv
+nw
+
+dim[]
+ndim
+pixdim[]
 
 data: 
 datatype: image datatype 
@@ -51,6 +58,8 @@ scl_inter
 sto_xyz
 qto_ijk
 qto_xyz
+qform_code
+sform_code
 
 
 
