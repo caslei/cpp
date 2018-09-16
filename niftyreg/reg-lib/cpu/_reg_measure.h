@@ -118,12 +118,12 @@ protected:
    int referenceTimePoint;
    /// @brief Measure class constructor
    reg_measure()
-   {
+   {/*{{{*/
       memset(this->timePointWeight,0,255*sizeof(double) );
 #ifndef NDEBUG
       printf("[NiftyReg DEBUG] reg_measure constructor called\n");
 #endif
-   }
+   }/*}}}*/
    /// @brief Measure class desstructor
    virtual ~reg_measure() {}
 };
