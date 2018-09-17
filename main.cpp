@@ -696,7 +696,6 @@ int mytest014()
 		else
 			printf("%d\n", tmp[j]);	
 	}
-	
 	return 0;
 }
 
@@ -725,7 +724,6 @@ int test0014(int argc, char const *argv[])
 	}
 
 	printf("%d\n", n);
-
 	return 0;
 }
 
@@ -748,7 +746,44 @@ int mytest015(int argc, char const *argv[])
 		printf("please input a score again!\n");
 
 	score>90?printf("A\n"):(score>60?printf("B\n"):printf("C\n"));
-
 	return 0;
 }
+
+
+
+
+int mytest016(int argc, char const *argv[])
+{
+	unsigned int a,b;
+	printf("please input two unsigned int numbers!\n");
+	/*
+	scanf("a=%d,b=%d",&a,&b);
+	scanf函数的特性用法，即： 在 " "中不能有除 %x 之外的任何符号
+	*/
+
+	/*查看在两个%之间添加逗号的结果是否相同！！！！！*/
+	scanf("%d,%d",&a,&b);
+	printf("a=%d, b=%d\n", a, b);
+
+	/*maximum GongYue*/
+	unsigned int min=1,max=1;
+	int j=(a*b), i;
+
+	for(i=1;i<j;i++){
+            if((a%i==0)&&(b%i==0)){
+		max=i;
+	    }
+	}
+		
+	for(i=1;i<=j;i++){
+	   if((i%a==0)&&(i%b==0)){
+		min=i;
+		break;
+	   }
+	}	
+		
+	printf("max=%d, min=%d\n", max, min);
+	return 0;
+}
+
 
