@@ -94,7 +94,7 @@ bool reg_isAnImageFileName(char *name)
 /* *************************************************************** */
 template<class DTYPE>
 void reg_intensityRescale_core(nifti_image *image, int timePoint, float newMin, float newMax)
-{
+{/*{{{*/
    DTYPE *imagePtr = static_cast<DTYPE *>(image->data);
    unsigned int voxelNumber = image->nx*image->ny*image->nz;
 
@@ -177,10 +177,11 @@ void reg_intensityRescale_core(nifti_image *image, int timePoint, float newMin, 
    }
    image->scl_slope=1.f;
    image->scl_inter=0.f;
-}
+}/*}}}*/
+
 /* *************************************************************** */
 void reg_intensityRescale(nifti_image *image, int timepoint, float newMin, float newMax)
-{
+{/*{{{*/
    switch(image->datatype)
    {
    case NIFTI_TYPE_UINT8:
@@ -212,12 +213,13 @@ void reg_intensityRescale(nifti_image *image, int timepoint, float newMin, float
       reg_print_msg_error("The image data type is not supported");
       reg_exit();
    }
-}
+}/*}}}*/
+
 /* *************************************************************** */
 /* *************************************************************** */
 template<class DTYPE>
 void reg_tools_removeSCLInfo_core(nifti_image *image)
-{
+{/*{{{*/
    if(image->scl_slope==1.f && image->scl_inter==0.f) return;
    DTYPE *imgPtr = static_cast<DTYPE *>(image->data);
    
@@ -226,13 +228,13 @@ void reg_tools_removeSCLInfo_core(nifti_image *image)
       imgPtr++;
    }
    image->scl_slope=1.f;
-   image->scl_inter=0.f;
+   image->scl_inter=0.f;/*}}}*/
 }
 
 
 /* *************************************************************** */
 void reg_tools_removeSCLInfo(nifti_image *image)
-{
+{/*{{{*/
    switch(image->datatype)
    {
    case NIFTI_TYPE_UINT8:
@@ -265,11 +267,13 @@ void reg_tools_removeSCLInfo(nifti_image *image)
       reg_exit();
    }
    return;
-}
+}/*}}}*/
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 void reg_getRealImageSpacing(nifti_image *image, float *spacingValues)
-{
+{/*{{{*/
    float indexVoxel1[3]= {0,0,0};
    float indexVoxel2[3], realVoxel1[3], realVoxel2[3];
    reg_mat44_mul(&(image->sto_xyz), indexVoxel1, realVoxel1);
@@ -291,7 +295,9 @@ void reg_getRealImageSpacing(nifti_image *image, float *spacingValues)
       reg_mat44_mul(&(image->sto_xyz), indexVoxel2, realVoxel2);
       spacingValues[2]=sqrtf(reg_pow2(realVoxel1[0]-realVoxel2[0])+reg_pow2(realVoxel1[1]-realVoxel2[1])+reg_pow2(realVoxel1[2]-realVoxel2[2]));
    }
-}
+}/*}}}*/
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 //this function will threshold an image to the values provided,
@@ -299,7 +305,7 @@ void reg_getRealImageSpacing(nifti_image *image, float *spacingValues)
 //and sets cal_min and cal_max to have the min/max image data values
 template<class T,class DTYPE>
 void reg_thresholdImage2(nifti_image *image, T lowThr, T upThr)
-{
+{/*{{{*/
    DTYPE *imagePtr = static_cast<DTYPE *>(image->data);
    T currentMin=std::numeric_limits<T>::max();
    T currentMax=-std::numeric_limits<T>::max();
@@ -327,11 +333,13 @@ void reg_thresholdImage2(nifti_image *image, T lowThr, T upThr)
 
    image->cal_min = currentMin;
    image->cal_max = currentMax;
-}
+}/*}}}*/
+
+
 /* *************************************************************** */
 template<class T>
 void reg_thresholdImage(nifti_image *image, T lowThr, T upThr)
-{
+{/*{{{*/
    switch(image->datatype)
    {
    case NIFTI_TYPE_UINT8:
@@ -363,7 +371,7 @@ void reg_thresholdImage(nifti_image *image, T lowThr, T upThr)
       reg_print_msg_error("The image data type is not supported");
       reg_exit();
    }
-}
+}/*}}}*/
 
 
 template void reg_thresholdImage<float>(nifti_image *, float, float);
@@ -374,7 +382,7 @@ template void reg_thresholdImage<double>(nifti_image *, double, double);
 /* *************************************************************** */
 template <class PrecisionTYPE, class DTYPE>
 PrecisionTYPE reg_getMaximalLength2D(nifti_image *image)
-{
+{/*{{{*/
    DTYPE *dataPtrX = static_cast<DTYPE *>(image->data);
    DTYPE *dataPtrY = &dataPtrX[image->nx*image->ny*image->nz];
 
@@ -388,14 +396,14 @@ PrecisionTYPE reg_getMaximalLength2D(nifti_image *image)
       max = (length>max)?length:max;
    }
    return max;
-}
+}/*}}}*/
 
 
 
 /* *************************************************************** */
 template <class PrecisionTYPE, class DTYPE>
 PrecisionTYPE reg_getMaximalLength3D(nifti_image *image)
-{
+{/*{{{*/
    DTYPE *dataPtrX = static_cast<DTYPE *>(image->data);
    DTYPE *dataPtrY = &dataPtrX[image->nx*image->ny*image->nz];
    DTYPE *dataPtrZ = &dataPtrY[image->nx*image->ny*image->nz];
@@ -411,14 +419,14 @@ PrecisionTYPE reg_getMaximalLength3D(nifti_image *image)
       max = (length>max)?length:max;
    }
    return max;
-}
+}/*}}}*/
 
 
 
 /* *************************************************************** */
 template <class PrecisionTYPE>
 PrecisionTYPE reg_getMaximalLength(nifti_image *image)
-{
+{/*{{{*/
    if(image->nz==1)
    {
       switch(image->datatype)
@@ -444,7 +452,7 @@ PrecisionTYPE reg_getMaximalLength(nifti_image *image)
       }
    }
    return EXIT_SUCCESS;
-}
+}/*}}}*/
 
 
 
@@ -458,7 +466,7 @@ template double reg_getMaximalLength<double>(nifti_image *);
 /* *************************************************************** */
 template <class NewTYPE, class DTYPE>
 void reg_tools_changeDatatype1(nifti_image *image,int type)
-{
+{/*{{{*/
    // the initial array is saved and freeed
    DTYPE *initialValue = (DTYPE *)malloc(image->nvox*sizeof(DTYPE));
    memcpy(initialValue, image->data, image->nvox*sizeof(DTYPE));
@@ -502,11 +510,14 @@ void reg_tools_changeDatatype1(nifti_image *image,int type)
 
    free(initialValue);
    return;
-}
+}/*}}}*/
+
+
+
 /* *************************************************************** */
 template <class NewTYPE>
 void reg_tools_changeDatatype(nifti_image *image, int type)
-{
+{/*{{{*/
    switch(image->datatype)
    {
    case NIFTI_TYPE_UINT8:
@@ -538,7 +549,10 @@ void reg_tools_changeDatatype(nifti_image *image, int type)
       reg_print_msg_error("Unsupported datatype");
       reg_exit();
    }
-}
+}/*}}}*/
+
+
+
 /* *************************************************************** */
 template void reg_tools_changeDatatype<unsigned char>(nifti_image *, int);
 template void reg_tools_changeDatatype<unsigned short>(nifti_image *, int);
@@ -549,6 +563,9 @@ template void reg_tools_changeDatatype<int>(nifti_image *, int);
 template void reg_tools_changeDatatype<float>(nifti_image *, int);
 template void reg_tools_changeDatatype<double>(nifti_image *, int);
 /* *************************************************************** */
+
+
+
 /* *************************************************************** */
 template <class TYPE1>
 void reg_tools_operationImageToImage(nifti_image *img1, nifti_image *img2, nifti_image *res, int type)
@@ -567,7 +584,6 @@ void reg_tools_operationImageToImage(nifti_image *img1, nifti_image *img2, nifti
 
    res->scl_slope=img1->scl_slope;
    res->scl_inter=img1->scl_inter;
-
 
 #ifdef _WIN32
    long i;
@@ -627,9 +643,11 @@ void reg_tools_operationImageToImage(nifti_image *img1, nifti_image *img2, nifti
       break;
    }
 }
+
+
 /* *************************************************************** */
 void reg_tools_addImageToImage(nifti_image *img1, nifti_image *img2, nifti_image *res)
-{
+{/*{{{*/
    if(img1->datatype != res->datatype || img2->datatype != res->datatype)
    {
       reg_print_fct_error("reg_tools_addImageToImage");
@@ -673,10 +691,12 @@ void reg_tools_addImageToImage(nifti_image *img1, nifti_image *img2, nifti_image
       reg_print_msg_error("Unsupported datatype");
       reg_exit();
    }
-}
+}/*}}}*/
+
+
 /* *************************************************************** */
 void reg_tools_substractImageToImage(nifti_image *img1, nifti_image *img2, nifti_image *res)
-{
+{/*{{{*/
    if(img1->datatype != res->datatype || img2->datatype != res->datatype)
    {
       reg_print_fct_error("reg_tools_substractImageToImage");
@@ -720,10 +740,12 @@ void reg_tools_substractImageToImage(nifti_image *img1, nifti_image *img2, nifti
       reg_print_msg_error("Unsupported datatype");
       reg_exit();
    }
-}
+}/*}}}*/
+
+
 /* *************************************************************** */
 void reg_tools_multiplyImageToImage(nifti_image *img1, nifti_image *img2, nifti_image *res)
-{
+{/*{{{*/
    if(img1->datatype != res->datatype || img2->datatype != res->datatype)
    {
       reg_print_fct_error("reg_tools_multiplyImageToImage");
@@ -767,10 +789,13 @@ void reg_tools_multiplyImageToImage(nifti_image *img1, nifti_image *img2, nifti_
       reg_print_msg_error("Unsupported datatype");
       reg_exit();
    }
-}
+}/*}}}*/
+
+
+
 /* *************************************************************** */
 void reg_tools_divideImageToImage(nifti_image *img1, nifti_image *img2, nifti_image *res)
-{
+{/*{{{*/
    if(img1->datatype != res->datatype || img2->datatype != res->datatype)
    {
       reg_print_fct_error("reg_tools_divideImageToImage");
@@ -814,7 +839,10 @@ void reg_tools_divideImageToImage(nifti_image *img1, nifti_image *img2, nifti_im
       reg_print_msg_error("Unsupported datatype");
       reg_exit();
    }
-}
+}/*}}}*/
+
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 template <class TYPE1>
@@ -883,9 +911,11 @@ void reg_tools_operationValueToImage(nifti_image *img1, nifti_image *res, float 
       break;
    }
 }
+
+
 /* *************************************************************** */
 void reg_tools_addValueToImage(nifti_image *img1, nifti_image *res, float val)
-{
+{/*{{{*/
    if(img1->datatype != res->datatype)
    {
       reg_print_fct_error("reg_tools_addValueToImage");
@@ -929,10 +959,10 @@ void reg_tools_addValueToImage(nifti_image *img1, nifti_image *res, float val)
       reg_print_msg_error("Image data type is not supported");
       reg_exit();
    }
-}
+}/*}}}*/
 /* *************************************************************** */
 void reg_tools_substractValueToImage(nifti_image *img1, nifti_image *res, float val)
-{
+{/*{{{*/
    if(img1->datatype != res->datatype)
    {
       reg_print_fct_error("reg_tools_substractValueToImage");
@@ -976,10 +1006,10 @@ void reg_tools_substractValueToImage(nifti_image *img1, nifti_image *res, float 
       reg_print_msg_error("Image data type is not supported");
       reg_exit();
    }
-}
+}/*}}}*/
 /* *************************************************************** */
 void reg_tools_multiplyValueToImage(nifti_image *img1, nifti_image *res, float val)
-{
+{/*{{{*/
    if(img1->datatype != res->datatype)
    {
       reg_print_fct_error("reg_tools_multiplyValueToImage");
@@ -1023,10 +1053,10 @@ void reg_tools_multiplyValueToImage(nifti_image *img1, nifti_image *res, float v
       reg_print_msg_error("Image data type is not supported");
       reg_exit();
    }
-}
+}/*}}}*/
 /* *************************************************************** */
 void reg_tools_divideValueToImage(nifti_image *img1, nifti_image *res, float val)
-{
+{/*{{{*/
    if(img1->datatype != res->datatype)
    {
       reg_print_fct_error("reg_tools_divideValueToImage");
@@ -1070,7 +1100,7 @@ void reg_tools_divideValueToImage(nifti_image *img1, nifti_image *res, float val
       reg_print_msg_error("Image data type is not supported");
       reg_exit();
    }
-}
+}/*}}}*/
 /* *************************************************************** */
 /* *************************************************************** */
 template <class DTYPE>
