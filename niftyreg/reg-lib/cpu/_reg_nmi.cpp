@@ -16,8 +16,8 @@
 /* *************************************************************** */
 /* *************************************************************** */
 reg_nmi::reg_nmi() : reg_measure()
-{
-   this->forwardJointHistogramPro=NULL;
+{/*{{{*//*{{{*/
+   this->forwardJointHistogramPro=NULL;/*}}}*/
    this->forwardJointHistogramLog=NULL;
    this->forwardEntropyValues=NULL;
    this->backwardJointHistogramPro=NULL;
@@ -31,22 +31,22 @@ reg_nmi::reg_nmi() : reg_measure()
    }
 #ifndef NDEBUG
    reg_print_msg_debug("reg_nmi constructor called");
-#endif
+#endif/*}}}*/
 }
 
 /* *************************************************************** */
 /* *************************************************************** */
 reg_nmi::~reg_nmi()//析构函数
-{
+{/*{{{*/
    this->ClearHistogram();
 #ifndef NDEBUG
    reg_print_msg_debug("reg_nmi destructor called");
 #endif
-}
+}/*}}}*/
 /* *************************************************************** */
 //clear 2D pointer memory
 void reg_nmi::ClearHistogram()
-{
+{/*{{{*/
    int timepoint=this->referenceTimePoint;
    // Free the joint histograms and the entropy arrays
    if(this->forwardJointHistogramPro!=NULL) {
@@ -105,7 +105,7 @@ void reg_nmi::ClearHistogram()
 #ifndef NDEBUG
    reg_print_msg_debug("reg_nmi::ClearHistogram called");
 #endif
-}
+}/*}}}*/
 /* *************************************************************** */
 /* *************************************************************** */
 void reg_nmi::InitialiseMeasure(nifti_image *refImgPtr,
@@ -119,7 +119,7 @@ void reg_nmi::InitialiseMeasure(nifti_image *refImgPtr,
                                 nifti_image *warRefImgPtr,
                                 nifti_image *warRefGraPtr,
                                 nifti_image *bckVoxBasedGraPtr)
-{
+{/*{{{*/
    // Set the pointers using the parent class function
    reg_measure::InitialiseMeasure(refImgPtr,
                                   floImgPtr,
@@ -200,12 +200,12 @@ void reg_nmi::InitialiseMeasure(nifti_image *refImgPtr,
       reg_print_msg_debug(text);
    }
 #endif
-}
+}/*}}}*/
 /* *************************************************************** */
 /* *************************************************************** */
 template<class PrecisionTYPE>
 PrecisionTYPE GetBasisSplineValue(PrecisionTYPE x)
-{
+{/*{{{*/
    x=fabs(x);
    PrecisionTYPE value=0.0;
    if(x<2.0)
@@ -215,12 +215,12 @@ PrecisionTYPE GetBasisSplineValue(PrecisionTYPE x)
       else
       { x-=2.0f; value = -x*x*x/6.0f; }
    }
-   return value;
+   return value;/*}}}*/
 }
 /* *************************************************************** */
 template<class PrecisionTYPE>
 PrecisionTYPE GetBasisSplineDerivativeValue(PrecisionTYPE ori)
-{
+{/*{{{*/
    PrecisionTYPE x=fabs(ori);
    PrecisionTYPE value=0.0;
    if(x<2.0)
@@ -234,7 +234,7 @@ PrecisionTYPE GetBasisSplineDerivativeValue(PrecisionTYPE ori)
       }
    }
    return value;
-}
+}/*}}}*/
 /* *************************************************************** */
 /* *************************************************************** */
 template <class DTYPE> //求取NMI的值
@@ -717,12 +717,9 @@ void reg_getVoxelBasedNMIGradient3D(nifti_image *referenceImage,
                   }
                }
             }
-         measureGradPtrX[i] += (DTYPE)(timepoint_weight * (refDeriv[0] + warDeriv[0] -
-                  nmi * jointDeriv[0]) / (entropyPtr[2]*entropyPtr[3]));
-         measureGradPtrY[i] += (DTYPE)(timepoint_weight * (refDeriv[1] + warDeriv[1] -
-                  nmi * jointDeriv[1]) / (entropyPtr[2]*entropyPtr[3]));
-         measureGradPtrZ[i] += (DTYPE)(timepoint_weight * (refDeriv[2] + warDeriv[2] -
-                  nmi * jointDeriv[2]) / (entropyPtr[2]*entropyPtr[3]));
+         measureGradPtrX[i] += (DTYPE)(timepoint_weight * (refDeriv[0] + warDeriv[0] - nmi * jointDeriv[0]) / (entropyPtr[2]*entropyPtr[3]));
+         measureGradPtrY[i] += (DTYPE)(timepoint_weight * (refDeriv[1] + warDeriv[1] - nmi * jointDeriv[1]) / (entropyPtr[2]*entropyPtr[3]));
+         measureGradPtrZ[i] += (DTYPE)(timepoint_weight * (refDeriv[2] + warDeriv[2] - nmi * jointDeriv[2]) / (entropyPtr[2]*entropyPtr[3]));
          }// Check that the values are defined
       } // mask
    } // loop over all voxel
@@ -737,15 +734,13 @@ void reg_nmi::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
 {
    // Check if the specified time point exists and is active
    reg_measure::GetVoxelBasedSimilarityMeasureGradient(current_timepoint);
-   if(this->timePointWeight[current_timepoint]==0.0)
-      return;
+   if(this->timePointWeight[current_timepoint]==0.0) return;
 
    // Check if all required input images are of the same data type
    int dtype = this->referenceImagePointer->datatype;
    if(this->warpedFloatingImagePointer->datatype != dtype ||
-         this->warpedFloatingGradientImagePointer->datatype != dtype ||
-         this->forwardVoxelBasedGradientImagePointer->datatype != dtype
-         )
+      this->warpedFloatingGradientImagePointer->datatype != dtype ||
+      this->forwardVoxelBasedGradientImagePointer->datatype != dtype)
    {
       reg_print_fct_error("reg_nmi::GetVoxelBasedSimilarityMeasureGradient()");
       reg_print_msg_error("Input images are exepected to be of the same type");
@@ -771,7 +766,7 @@ void reg_nmi::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
                                                this->forwardVoxelBasedGradientImagePointer,
                                                this->referenceMaskPointer,
                                                current_timepoint,
-                                    this->timePointWeight[current_timepoint]);
+					       this->timePointWeight[current_timepoint]);
          break;
       case NIFTI_TYPE_FLOAT64:
          reg_getVoxelBasedNMIGradient3D<double>(this->referenceImagePointer,
@@ -783,8 +778,8 @@ void reg_nmi::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
                                                 this->warpedFloatingGradientImagePointer,
                                                 this->forwardVoxelBasedGradientImagePointer,
                                                 this->referenceMaskPointer,
-                                    current_timepoint,
-                                    this->timePointWeight[current_timepoint]);
+						    current_timepoint,
+						    this->timePointWeight[current_timepoint]);
          break;
       default:
          reg_print_fct_error("reg_nmi::GetVoxelBasedSimilarityMeasureGradient()");
@@ -806,8 +801,8 @@ void reg_nmi::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
                                                this->warpedFloatingGradientImagePointer,
                                                this->forwardVoxelBasedGradientImagePointer,
                                                this->referenceMaskPointer,
-                                    current_timepoint,
-                                    this->timePointWeight[current_timepoint]);
+					    current_timepoint,
+					    this->timePointWeight[current_timepoint]);
          break;
       case NIFTI_TYPE_FLOAT64:
          reg_getVoxelBasedNMIGradient2D<double>(this->referenceImagePointer,
@@ -819,8 +814,8 @@ void reg_nmi::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
                                                 this->warpedFloatingGradientImagePointer,
                                                 this->forwardVoxelBasedGradientImagePointer,
                                                 this->referenceMaskPointer,
-                                    current_timepoint,
-                                    this->timePointWeight[current_timepoint]);
+					    current_timepoint,
+					    this->timePointWeight[current_timepoint]);
          break;
       default:
          reg_print_fct_error("reg_nmi::GetVoxelBasedSimilarityMeasureGradient()");
@@ -833,9 +828,8 @@ void reg_nmi::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
    {
       dtype = this->floatingImagePointer->datatype;
       if(this->warpedReferenceImagePointer->datatype != dtype ||
-            this->warpedReferenceGradientImagePointer->datatype != dtype ||
-            this->backwardVoxelBasedGradientImagePointer->datatype != dtype
-            )
+         this->warpedReferenceGradientImagePointer->datatype != dtype ||
+         this->backwardVoxelBasedGradientImagePointer->datatype != dtype)
       {
          reg_print_fct_error("reg_nmi::GetVoxelBasedSimilarityMeasureGradient()");
          reg_print_msg_error("Input images are exepected to be of the same type");
@@ -856,8 +850,8 @@ void reg_nmi::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
                                                   this->warpedReferenceGradientImagePointer,
                                                   this->backwardVoxelBasedGradientImagePointer,
                                                   this->floatingMaskPointer,
-                                      current_timepoint,
-                                      this->timePointWeight[current_timepoint]);
+					      current_timepoint,
+					      this->timePointWeight[current_timepoint]);
             break;
          case NIFTI_TYPE_FLOAT64:
             reg_getVoxelBasedNMIGradient3D<double>(this->floatingImagePointer,
@@ -869,8 +863,8 @@ void reg_nmi::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
                                                    this->warpedReferenceGradientImagePointer,
                                                    this->backwardVoxelBasedGradientImagePointer,
                                                    this->floatingMaskPointer,
-                                       current_timepoint,
-                                       this->timePointWeight[current_timepoint]);
+					       current_timepoint,
+					       this->timePointWeight[current_timepoint]);
             break;
          default:
             reg_print_fct_error("reg_nmi::GetVoxelBasedSimilarityMeasureGradient()");
@@ -892,8 +886,8 @@ void reg_nmi::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
                                                   this->warpedReferenceGradientImagePointer,
                                                   this->backwardVoxelBasedGradientImagePointer,
                                                   this->floatingMaskPointer,
-                                      current_timepoint,
-                                      this->timePointWeight[current_timepoint]);
+					      current_timepoint,
+					      this->timePointWeight[current_timepoint]);
             break;
          case NIFTI_TYPE_FLOAT64:
             reg_getVoxelBasedNMIGradient2D<double>(this->floatingImagePointer,
@@ -905,8 +899,8 @@ void reg_nmi::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
                                                    this->warpedReferenceGradientImagePointer,
                                                    this->backwardVoxelBasedGradientImagePointer,
                                                    this->floatingMaskPointer,
-                                       current_timepoint,
-                                       this->timePointWeight[current_timepoint]);
+					       current_timepoint,
+					       this->timePointWeight[current_timepoint]);
             break;
          default:
             reg_print_fct_error("reg_nmi::GetVoxelBasedSimilarityMeasureGradient()");
