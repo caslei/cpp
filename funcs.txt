@@ -30,6 +30,10 @@ std::map<>
 std::copy()
 std::vector<T>
 
+#ifndef NDEBUG
+//some statements
+#endif
+
 
 
 <map>, <vector>, <list>三者间的区别？？？
