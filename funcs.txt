@@ -27,6 +27,8 @@ exp()
 std::string::npos
 std::pair<T>
 std::map<>
+std::copy()
+std::vector<T>
 
 
 
