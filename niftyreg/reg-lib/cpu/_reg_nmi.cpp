@@ -286,7 +286,7 @@ void reg_getNMIValue(nifti_image *referenceImage,
 
          // Convolve the histogram with a cubic B-spline kernel
          double kernel[3];
-         kernel[0]=GetBasisSplineValue(-1.);
+         kernel[0]=GetBasisSplineValue(-1.); //3*3图像块对应的B-spline卷积核
          kernel[1]=GetBasisSplineValue(0.);
 	 kernel[2]=GetBasisSplineValue(-1.);
          // Histogram is first smooth along the reference axis
@@ -306,30 +306,29 @@ void reg_getNMIValue(nifti_image *referenceImage,
                   ++ptrHisto;
                   ++index;
                }
-               jointHistoLogPtr[r+referenceBinNumber[t]*f] = value;
+               jointHistoLogPtr[r+referenceBinNumber[t]*f] = value; //更新r位置上卷积后的histoValue
             }
          }
+         //上面是按行进行卷积，下面是按列进行卷积计算
          // Histogram is then smooth along the warped floating axis
          for(int r=0; r<referenceBinNumber[t]; ++r)
          {
             for(int f=0; f<floatingBinNumber[t]; ++f)
             {
                double value=0.;
-               int index = f-1;
+               int index = f-1; // 为啥要-1？？？
                double *ptrHisto = &jointHistoLogPtr[r+referenceBinNumber[t]*index];
 
-               for(int it=0; it<3; it++)
-               {
-                  if(-1<index && index<floatingBinNumber[t])
-                  {
-                     value += *ptrHisto * kernel[it];
-                  }
-                  ptrHisto+=referenceBinNumber[t];
+               for(int it=0; it<3; it++) {
+                  if(-1<index && index<floatingBinNumber[t]) { value += *ptrHisto * kernel[it]; }
+                  ptrHisto += referenceBinNumber[t];//为啥要 + referenceBinNumber？？？原因为：数据按列取时，每走一个就相当于连续移动了referenceBinNumber个元素
                   ++index;
                }
                jointHistoProPtr[r+referenceBinNumber[t]*f] = value;
             }
          }
+
+
          // Normalise the histogram
          double activeVoxel=0.f;
          for(int i=0; i<totalBinNumber[t]; ++i)
