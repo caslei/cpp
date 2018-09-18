@@ -1,0 +1,56 @@
+// https://www.cnblogs.com/yuanjian313/articles/9546062.html
+
+
+ C/C++中break和continue
+
+        /*
+        break 作用：用于终止当前循环
+        break 如果用于循环是用来终止循环，break只能终止距离它最近的循环
+        break如果用于switch，则是用于终止switch
+        break不能直接用于if中，除非if属于循环的一个句子，但此时它的作用是循环而不是if
+
+        continue  作用：用以跳过本次循环余下的语句，转去判断是否需要执行下次循环
+        只作用于距离它最近的循环：for 、while 、do ...while
+        continue也不能直接用于if中，除非if属于循环的一个句子，同break，此时它的作用是循环而不是if
+
+        以下是伪代码：
+
+         */
+        #include <stdio.h>
+
+        int main (void)
+
+        {
+
+         do {
+           if(t/9) { t--; continue;//执行到continue，会直接跳转到表达式(continue 作用：用以跳过本次循环余下的语句，转去判断是否需要执行下次循环) }
+            K;
+            P;
+           }while（表达式);
+
+
+        while（表达式1） {
+        for (1; 2; 3) {
+	    if（表达式2） {
+		A;
+		B;
+		continue; //执行到continue，转去执行3，因为 continue 不作用 if 只作用的是循环—for
+		C;
+		break; //若执行到break，则终止 for 循环的所有内容，转而执行E
+		}
+
+           D;
+           }
+
+        E;
+        continue; //此处continue执行完，执行表达式1
+        F;
+        break;//若执行到此处的break，则终止 while 循环，转而执行H
+        G;
+        }
+        H;
+        return 0;
+         }
+
+
+
