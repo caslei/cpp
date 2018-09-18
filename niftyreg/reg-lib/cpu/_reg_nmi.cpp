@@ -1,7 +1,6 @@
 /*
  *  _reg_mutualinformation.cpp
  *
- *
  *  Created by Marc Modat on 25/03/2009.
  *  Copyright (c) 2009, University College London. All rights reserved.
  *  Centre for Medical Image Computing (CMIC)
@@ -16,10 +15,9 @@
 
 /* *************************************************************** */
 /* *************************************************************** */
-reg_nmi::reg_nmi()
-   : reg_measure()
-{
-   this->forwardJointHistogramPro=NULL;
+reg_nmi::reg_nmi() : reg_measure()
+{/*{{{*//*{{{*/
+   this->forwardJointHistogramPro=NULL;/*}}}*/
    this->forwardJointHistogramLog=NULL;
    this->forwardEntropyValues=NULL;
    this->backwardJointHistogramPro=NULL;
@@ -33,85 +31,72 @@ reg_nmi::reg_nmi()
    }
 #ifndef NDEBUG
    reg_print_msg_debug("reg_nmi constructor called");
-#endif
+#endif/*}}}*/
 }
+
 /* *************************************************************** */
 /* *************************************************************** */
-reg_nmi::~reg_nmi()
-{
+reg_nmi::~reg_nmi()//析构函数
+{/*{{{*/
    this->ClearHistogram();
 #ifndef NDEBUG
    reg_print_msg_debug("reg_nmi destructor called");
 #endif
-}
+}/*}}}*/
 /* *************************************************************** */
+//clear 2D pointer memory
 void reg_nmi::ClearHistogram()
-{
+{/*{{{*/
    int timepoint=this->referenceTimePoint;
    // Free the joint histograms and the entropy arrays
-   if(this->forwardJointHistogramPro!=NULL)
-   {
-      for(int i=0; i<timepoint; ++i)
-      {
-         if(this->forwardJointHistogramPro[i]!=NULL)
-            free(this->forwardJointHistogramPro[i]);
+   if(this->forwardJointHistogramPro!=NULL) {
+      for(int i=0; i<timepoint; ++i) {
+         if(this->forwardJointHistogramPro[i]!=NULL) free(this->forwardJointHistogramPro[i]);
          this->forwardJointHistogramPro[i]=NULL;
       }
       free(this->forwardJointHistogramPro);
    }
    this->forwardJointHistogramPro=NULL;
-   if(this->backwardJointHistogramPro!=NULL)
-   {
-      for(int i=0; i<timepoint; ++i)
-      {
-         if(this->backwardJointHistogramPro[i]!=NULL)
-            free(this->backwardJointHistogramPro[i]);
+/* *****************************************/
+   if(this->backwardJointHistogramPro!=NULL) {
+      for(int i=0; i<timepoint; ++i) {
+         if(this->backwardJointHistogramPro[i]!=NULL) free(this->backwardJointHistogramPro[i]);
          this->backwardJointHistogramPro[i]=NULL;
       }
       free(this->backwardJointHistogramPro);
    }
    this->backwardJointHistogramPro=NULL;
-
-   if(this->forwardJointHistogramLog!=NULL)
-   {
-      for(int i=0; i<timepoint; ++i)
-      {
-         if(this->forwardJointHistogramLog[i]!=NULL)
-            free(this->forwardJointHistogramLog[i]);
+/* *****************************************/
+   if(this->forwardJointHistogramLog!=NULL) {
+      for(int i=0; i<timepoint; ++i) {
+         if(this->forwardJointHistogramLog[i]!=NULL) free(this->forwardJointHistogramLog[i]);
          this->forwardJointHistogramLog[i]=NULL;
       }
       free(this->forwardJointHistogramLog);
    }
    this->forwardJointHistogramLog=NULL;
-   if(this->backwardJointHistogramLog!=NULL)
-   {
-      for(int i=0; i<timepoint; ++i)
-      {
-         if(this->backwardJointHistogramLog[i]!=NULL)
-            free(this->backwardJointHistogramLog[i]);
+/* *****************************************/
+   if(this->backwardJointHistogramLog!=NULL) {
+      for(int i=0; i<timepoint; ++i) {
+         if(this->backwardJointHistogramLog[i]!=NULL) free(this->backwardJointHistogramLog[i]);
          this->backwardJointHistogramLog[i]=NULL;
       }
       free(this->backwardJointHistogramLog);
    }
    this->backwardJointHistogramLog=NULL;
-
-   if(this->forwardEntropyValues!=NULL)
-   {
-      for(int i=0; i<timepoint; ++i)
-      {
-         if(this->forwardEntropyValues[i]!=NULL)
-            free(this->forwardEntropyValues[i]);
+/* *****************************************/
+   if(this->forwardEntropyValues!=NULL) {
+      for(int i=0; i<timepoint; ++i) {
+         if(this->forwardEntropyValues[i]!=NULL) free(this->forwardEntropyValues[i]);
          this->forwardEntropyValues[i]=NULL;
       }
       free(this->forwardEntropyValues);
    }
    this->forwardEntropyValues=NULL;
-   if(this->backwardEntropyValues!=NULL)
-   {
-      for(int i=0; i<timepoint; ++i)
-      {
-         if(this->backwardEntropyValues[i]!=NULL)
-            free(this->backwardEntropyValues[i]);
+/* *****************************************/
+   if(this->backwardEntropyValues!=NULL) {
+      for(int i=0; i<timepoint; ++i) {
+         if(this->backwardEntropyValues[i]!=NULL) free(this->backwardEntropyValues[i]);
          this->backwardEntropyValues[i]=NULL;
       }
       free(this->backwardEntropyValues);
@@ -120,7 +105,7 @@ void reg_nmi::ClearHistogram()
 #ifndef NDEBUG
    reg_print_msg_debug("reg_nmi::ClearHistogram called");
 #endif
-}
+}/*}}}*/
 /* *************************************************************** */
 /* *************************************************************** */
 void reg_nmi::InitialiseMeasure(nifti_image *refImgPtr,
@@ -134,7 +119,7 @@ void reg_nmi::InitialiseMeasure(nifti_image *refImgPtr,
                                 nifti_image *warRefImgPtr,
                                 nifti_image *warRefGraPtr,
                                 nifti_image *bckVoxBasedGraPtr)
-{
+{/*{{{*/
    // Set the pointers using the parent class function
    reg_measure::InitialiseMeasure(refImgPtr,
                                   floImgPtr,
@@ -152,52 +137,45 @@ void reg_nmi::InitialiseMeasure(nifti_image *refImgPtr,
    this->ClearHistogram();
    // Extract the number of time point
    int timepoint=this->referenceTimePoint;
+
    // Reference and floating are resampled between 2 and bin-3
    for(int i=0; i<timepoint; ++i)
    {
       if(this->timePointWeight[i] > 0.0)
       {
-         reg_intensityRescale(this->referenceImagePointer,
-                              i,
-                              2.f,
-                              this->referenceBinNumber[i]-3);
-         reg_intensityRescale(this->floatingImagePointer,
-                              i,
-                              2.f,
-                              this->floatingBinNumber[i]-3);
+         reg_intensityRescale(this->referenceImagePointer, i, 2.f, this->referenceBinNumber[i]-3);
+         reg_intensityRescale(this->floatingImagePointer, i, 2.f, this->floatingBinNumber[i]-3);
       }
    }
-   // Create the joint histograms
+   // Create the joint histograms //申请计算机内存用于存放联合熵和边缘熵
    this->forwardJointHistogramPro=(double**)malloc(255*sizeof(double *));
    this->forwardJointHistogramLog=(double**)malloc(255*sizeof(double *));
    this->forwardEntropyValues=(double**)malloc(255*sizeof(double *));
+
    if(this->isSymmetric)
    {
       this->backwardJointHistogramPro=(double**)malloc(255*sizeof(double *));
       this->backwardJointHistogramLog=(double**)malloc(255*sizeof(double *));
       this->backwardEntropyValues=(double**)malloc(255*sizeof(double *));
    }
+
    for(int i=0; i<timepoint; ++i)
    {
       if(this->timePointWeight[i] > 0.0)
       {
          // Compute the total number of bin
-         this->totalBinNumber[i]=this->referenceBinNumber[i]*this->floatingBinNumber[i] +
-               this->referenceBinNumber[i] + this->floatingBinNumber[i];
-         this->forwardJointHistogramLog[i]=(double *)
-               calloc(this->totalBinNumber[i],sizeof(double));
-         this->forwardJointHistogramPro[i]=(double *)
-               calloc(this->totalBinNumber[i],sizeof(double));
-         this->forwardEntropyValues[i]=(double *)
-               calloc(4,sizeof(double));
+         this->totalBinNumber[i] =
+	 this->referenceBinNumber[i]*this->floatingBinNumber[i] + this->referenceBinNumber[i] + this->floatingBinNumber[i];
+
+         this->forwardJointHistogramLog[i]=(double *) calloc(this->totalBinNumber[i],sizeof(double));
+         this->forwardJointHistogramPro[i]=(double *) calloc(this->totalBinNumber[i],sizeof(double));
+         this->forwardEntropyValues[i]=(double *) calloc(4,sizeof(double));
+
          if(this->isSymmetric)
          {
-            this->backwardJointHistogramLog[i]=(double *)
-                  calloc(this->totalBinNumber[i],sizeof(double));
-            this->backwardJointHistogramPro[i]=(double *)
-                  calloc(this->totalBinNumber[i],sizeof(double));
-            this->backwardEntropyValues[i]=(double *)
-                  calloc(4,sizeof(double));
+            this->backwardJointHistogramLog[i]=(double *) calloc(this->totalBinNumber[i],sizeof(double));
+            this->backwardJointHistogramPro[i]=(double *) calloc(this->totalBinNumber[i],sizeof(double));
+            this->backwardEntropyValues[i]=(double *) calloc(4,sizeof(double));
          }
       }
       else
@@ -222,30 +200,27 @@ void reg_nmi::InitialiseMeasure(nifti_image *refImgPtr,
       reg_print_msg_debug(text);
    }
 #endif
-}
+}/*}}}*/
 /* *************************************************************** */
 /* *************************************************************** */
 template<class PrecisionTYPE>
 PrecisionTYPE GetBasisSplineValue(PrecisionTYPE x)
-{
+{/*{{{*/
    x=fabs(x);
    PrecisionTYPE value=0.0;
    if(x<2.0)
    {
       if(x<1.0)
-         value = (PrecisionTYPE)(2.0f/3.0f + (0.5f*x-1.0)*x*x);
+         value = (PrecisionTYPE)(2.0f/3.0f + (0.5f*x-1.0)*x*x);// 一阶Bspline函数为：(0.5x-1)x^2+2/3 
       else
-      {
-         x-=2.0f;
-         value = -x*x*x/6.0f;
-      }
+      { x-=2.0f; value = -x*x*x/6.0f; }
    }
-   return value;
+   return value;/*}}}*/
 }
 /* *************************************************************** */
 template<class PrecisionTYPE>
 PrecisionTYPE GetBasisSplineDerivativeValue(PrecisionTYPE ori)
-{
+{/*{{{*/
    PrecisionTYPE x=fabs(ori);
    PrecisionTYPE value=0.0;
    if(x<2.0)
@@ -253,17 +228,16 @@ PrecisionTYPE GetBasisSplineDerivativeValue(PrecisionTYPE ori)
       if(x<1.0)
          value = (PrecisionTYPE)((1.5f*x-2.0)*ori);
       else
-      {
-         x-=2.0f;
-         value = -0.5f * x * x;
-         if(ori<0.0f) value =-value;
+      { x-=2.0f;
+        value = -0.5f * x * x;
+        if(ori<0.0f) value =-value;
       }
    }
    return value;
-}
+}/*}}}*/
 /* *************************************************************** */
 /* *************************************************************** */
-template <class DTYPE>
+template <class DTYPE> //求取NMI的值
 void reg_getNMIValue(nifti_image *referenceImage,
                      nifti_image *warpedImage,
                      double *timePointWeight,
@@ -273,21 +247,17 @@ void reg_getNMIValue(nifti_image *referenceImage,
                      double **jointHistogramLog,
                      double **jointhistogramPro,
                      double **entropyValues,
-                     int *referenceMask
-                     )
+                     int *referenceMask)
 {
    // Create pointers to the image data arrays
    DTYPE *refImagePtr = static_cast<DTYPE *>(referenceImage->data);
    DTYPE *warImagePtr = static_cast<DTYPE *>(warpedImage->data);
    // Useful variable
-   size_t voxelNumber = (size_t)referenceImage->nx *
-         referenceImage->ny *
-         referenceImage->nz;
+   size_t voxelNumber = (size_t)referenceImage->nx*referenceImage->ny*referenceImage->nz;
    // Iterate over all active time points
-   for(int t=0; t<referenceImage->nt; ++t)
-   {
-      if(timePointWeight[t] > 0.0)
-      {
+   for(int t=0; t<referenceImage->nt; ++t) {
+      if(timePointWeight[t] > 0.0) {
+
 #ifndef NDEBUG
          char text[255];
          sprintf(text, "Computing NMI for time point %i",t);
@@ -297,117 +267,110 @@ void reg_getNMIValue(nifti_image *referenceImage,
          double *jointHistoProPtr = jointhistogramPro[t];
          double *jointHistoLogPtr = jointHistogramLog[t];
          // Empty the joint histogram
-         memset(jointHistoProPtr,0,totalBinNumber[t]*sizeof(double));
+         memset(jointHistoProPtr,0,totalBinNumber[t]*sizeof(double));//初始化联合概率分布数组为0
          // Fill the joint histograms using an approximation
          DTYPE *refPtr = &refImagePtr[t*voxelNumber];
          DTYPE *warPtr = &warImagePtr[t*voxelNumber];
+
          for(size_t voxel=0; voxel<voxelNumber; ++voxel)
          {
             if(referenceMask[voxel]>-1)
             {
                DTYPE refValue=refPtr[voxel];
                DTYPE warValue=warPtr[voxel];
-               if(refValue==refValue && warValue==warValue &&
-                     refValue>=0 && warValue>=0 &&
-                     refValue<referenceBinNumber[t] &&
-                     warValue<floatingBinNumber[t])
-               {
-                  ++jointHistoProPtr[static_cast<int>(refValue) +
-                        static_cast<int>(warValue) * referenceBinNumber[t]];
-               }
+	       //以2D数组的方式存放联合概率分布：即 refBinNumber[t]行，floatingBinNumber[t]列
+               if(refValue>=0 && warValue>=0 && refValue<referenceBinNumber[t] && warValue<floatingBinNumber[t])
+               { ++jointHistoProPtr[static_cast<int>(refValue) + static_cast<int>(warValue) * referenceBinNumber[t]]; }
             }
          }
+
          // Convolve the histogram with a cubic B-spline kernel
          double kernel[3];
-         kernel[0]=kernel[2]=GetBasisSplineValue(-1.);
+         kernel[0]=GetBasisSplineValue(-1.); //3*3图像块对应的B-spline卷积核
          kernel[1]=GetBasisSplineValue(0.);
+	 kernel[2]=GetBasisSplineValue(-1.);
          // Histogram is first smooth along the reference axis
-         memset(jointHistoLogPtr,0,totalBinNumber[t]*sizeof(double));
+         memset(jointHistoLogPtr,0,totalBinNumber[t]*sizeof(double));//概率分布对应的log(p)
          for(int f=0; f<floatingBinNumber[t]; ++f)
          {
             for(int r=0; r<referenceBinNumber[t]; ++r)
             {
                double value=0.0;
                int index = r-1;
-               double *ptrHisto = &jointHistoProPtr[index+referenceBinNumber[t]*f];
-
-               for(int it=0; it<3; it++)
-               {
-                  if(-1<index && index<referenceBinNumber[t])
-                  {
-                     value += *ptrHisto * kernel[it];
-                  }
+		//将联合熵数组的第f行第index列的地址存放到ptrHisto中
+               double *ptrHisto = &jointHistoProPtr[index+referenceBinNumber[t]*f];//此处为啥是index而不是r？？？
+               
+	       //对联合熵数组的整个第f行第r列进行卷积操作
+               for(int it=0; it<3; it++) {
+                  if(-1<index && index<referenceBinNumber[t]) { value += *ptrHisto * kernel[it]; }
                   ++ptrHisto;
                   ++index;
                }
-               jointHistoLogPtr[r+referenceBinNumber[t]*f] = value;
+               jointHistoLogPtr[r+referenceBinNumber[t]*f] = value; //更新r位置上卷积后的histoValue
             }
          }
+         //上面是按行进行卷积，下面是按列进行卷积计算
          // Histogram is then smooth along the warped floating axis
          for(int r=0; r<referenceBinNumber[t]; ++r)
          {
             for(int f=0; f<floatingBinNumber[t]; ++f)
             {
                double value=0.;
-               int index = f-1;
+               int index = f-1; // 为啥要-1？？？
                double *ptrHisto = &jointHistoLogPtr[r+referenceBinNumber[t]*index];
 
-               for(int it=0; it<3; it++)
-               {
-                  if(-1<index && index<floatingBinNumber[t])
-                  {
-                     value += *ptrHisto * kernel[it];
-                  }
-                  ptrHisto+=referenceBinNumber[t];
+               for(int it=0; it<3; it++) {
+                  if(-1<index && index<floatingBinNumber[t]) { value += *ptrHisto * kernel[it]; }
+                  ptrHisto += referenceBinNumber[t];//为啥要 + referenceBinNumber？？？原因为：数据按列取时，每走一个就相当于连续移动了referenceBinNumber个元素
                   ++index;
                }
                jointHistoProPtr[r+referenceBinNumber[t]*f] = value;
             }
          }
-         // Normalise the histogram
+
+
+         // Normalise the histogram //将联合直方图归一化，使得sum(histo)=1
          double activeVoxel=0.f;
-         for(int i=0; i<totalBinNumber[t]; ++i)
-            activeVoxel+=jointHistoProPtr[i];
+         for(int i=0; i<totalBinNumber[t]; ++i) activeVoxel+=jointHistoProPtr[i];
+
          entropyValues[t][3]=activeVoxel;
-         for(int i=0; i<totalBinNumber[t]; ++i)
-            jointHistoProPtr[i]/=activeVoxel;
+         for(int i=0; i<totalBinNumber[t]; ++i) jointHistoProPtr[i]/=activeVoxel;
+
          // Marginalise over the reference axis
-         for(int r=0; r<referenceBinNumber[t]; ++r)
+         for(int r=0; r<referenceBinNumber[t]; ++r)//按行遍历
          {
             double sum=0.;
             int index=r;
-            for(int f=0; f<floatingBinNumber[t]; ++f)
-            {
+            for(int f=0; f<floatingBinNumber[t]; ++f) {
                sum+=jointHistoProPtr[index];
-               index+=referenceBinNumber[t];
+               index+=referenceBinNumber[t];//按列遍历
             }
-            jointHistoProPtr[referenceBinNumber[t]*
-                  floatingBinNumber[t]+r]=sum;
+            jointHistoProPtr[referenceBinNumber[t]*floatingBinNumber[t]+r]=sum;//各列的和，边缘直方图
          }
          // Marginalise over the warped floating axis
          for(int f=0; f<floatingBinNumber[t]; ++f)
          {
             double sum=0.;
             int index=referenceBinNumber[t]*f;
-            for(int r=0; r<referenceBinNumber[t]; ++r)
-            {
+            for(int r=0; r<referenceBinNumber[t]; ++r) {
                sum+=jointHistoProPtr[index];
                ++index;
             }
-            jointHistoProPtr[referenceBinNumber[t]*
-                  floatingBinNumber[t]+referenceBinNumber[t]+f]=sum;
+            jointHistoProPtr[referenceBinNumber[t]*floatingBinNumber[t]+referenceBinNumber[t]+f]=sum;//各行的和(除第一行)，边缘直方图
          }
+
+
          // Set the log values to zero
          memset(jointHistoLogPtr,0,totalBinNumber[t]*sizeof(double));
          // Compute the entropy of the reference image
          double referenceEntropy=0.;
          for(int r=0; r<referenceBinNumber[t]; ++r)
          {
-            double valPro=jointHistoProPtr[referenceBinNumber[t]*floatingBinNumber[t]+r];
+            double valPro=jointHistoProPtr[referenceBinNumber[t]*floatingBinNumber[t]+r];//垂直方向的直方图
             if(valPro>0)
             {
                double valLog=log(valPro);
-               referenceEntropy -= valPro * valLog;
+               referenceEntropy -= valPro * valLog; // sigma(xlogx)
                jointHistoLogPtr[referenceBinNumber[t]*floatingBinNumber[t]+r]=valLog;
             }
          }
@@ -416,14 +379,11 @@ void reg_getNMIValue(nifti_image *referenceImage,
          double warpedEntropy=0.;
          for(int f=0; f<floatingBinNumber[t]; ++f)
          {
-            double valPro=jointHistoProPtr[referenceBinNumber[t]*floatingBinNumber[t]+
-                  referenceBinNumber[t]+f];
-            if(valPro>0)
-            {
+            double valPro=jointHistoProPtr[referenceBinNumber[t]*floatingBinNumber[t]+referenceBinNumber[t]+f];
+            if(valPro>0) {
                double valLog=log(valPro);
                warpedEntropy -= valPro * valLog;
-               jointHistoLogPtr[referenceBinNumber[t]*floatingBinNumber[t]+
-                     referenceBinNumber[t]+f]=valLog;
+               jointHistoLogPtr[referenceBinNumber[t]*floatingBinNumber[t]+referenceBinNumber[t]+f]=valLog;
             }
          }
          entropyValues[t][1]=warpedEntropy;
@@ -432,8 +392,7 @@ void reg_getNMIValue(nifti_image *referenceImage,
          for(int i=0; i<referenceBinNumber[t]*floatingBinNumber[t]; ++i)
          {
             double valPro=jointHistoProPtr[i];
-            if(valPro>0)
-            {
+            if(valPro>0) {
                double valLog=log(valPro);
                jointEntropy -= valPro * valLog;
                jointHistoLogPtr[i]=valLog;
@@ -460,8 +419,7 @@ double reg_nmi::GetSimilarityMeasureValue()
    switch(this->referenceImagePointer->datatype)
    {
    case NIFTI_TYPE_FLOAT32:
-      reg_getNMIValue<float>
-            (this->referenceImagePointer,
+      reg_getNMIValue<float>(this->referenceImagePointer,
              this->warpedFloatingImagePointer,
              this->timePointWeight,
              this->referenceBinNumber,
@@ -470,12 +428,10 @@ double reg_nmi::GetSimilarityMeasureValue()
              this->forwardJointHistogramLog,
              this->forwardJointHistogramPro,
              this->forwardEntropyValues,
-             this->referenceMaskPointer
-             );
+             this->referenceMaskPointer);
       break;
    case NIFTI_TYPE_FLOAT64:
-      reg_getNMIValue<double>
-            (this->referenceImagePointer,
+      reg_getNMIValue<double>(this->referenceImagePointer,
              this->warpedFloatingImagePointer,
              this->timePointWeight,
              this->referenceBinNumber,
@@ -484,8 +440,7 @@ double reg_nmi::GetSimilarityMeasureValue()
              this->forwardJointHistogramLog,
              this->forwardJointHistogramPro,
              this->forwardEntropyValues,
-             this->referenceMaskPointer
-             );
+             this->referenceMaskPointer);
       break;
    default:
       reg_print_fct_error("reg_nmi::GetSimilarityMeasureValue()");
@@ -505,8 +460,7 @@ double reg_nmi::GetSimilarityMeasureValue()
       switch(this->floatingImagePointer->datatype)
       {
       case NIFTI_TYPE_FLOAT32:
-         reg_getNMIValue<float>
-               (this->floatingImagePointer,
+         reg_getNMIValue<float>(this->floatingImagePointer,
                 this->warpedReferenceImagePointer,
                 this->timePointWeight,
                 this->floatingBinNumber,
@@ -515,12 +469,10 @@ double reg_nmi::GetSimilarityMeasureValue()
                 this->backwardJointHistogramLog,
                 this->backwardJointHistogramPro,
                 this->backwardEntropyValues,
-                this->floatingMaskPointer
-                );
+                this->floatingMaskPointer);
          break;
       case NIFTI_TYPE_FLOAT64:
-         reg_getNMIValue<double>
-               (this->floatingImagePointer,
+         reg_getNMIValue<double>(this->floatingImagePointer,
                 this->warpedReferenceImagePointer,
                 this->timePointWeight,
                 this->floatingBinNumber,
@@ -529,8 +481,7 @@ double reg_nmi::GetSimilarityMeasureValue()
                 this->backwardJointHistogramLog,
                 this->backwardJointHistogramPro,
                 this->backwardEntropyValues,
-                this->floatingMaskPointer
-                );
+                this->floatingMaskPointer);
          break;
       default:
          reg_print_fct_error("reg_nmi::GetSimilarityMeasureValue()");
@@ -545,15 +496,11 @@ double reg_nmi::GetSimilarityMeasureValue()
    {
       if(this->timePointWeight[t]>0.0)
       {
-        nmi_value_forward += timePointWeight[t] *
-           (this->forwardEntropyValues[t][0] +
-               this->forwardEntropyValues[t][1] ) /
-               this->forwardEntropyValues[t][2];
+        nmi_value_forward += timePointWeight[t] * // NMI=[H(A)+H(B)]/H(A,B)
+           (this->forwardEntropyValues[t][0] + this->forwardEntropyValues[t][1] ) / this->forwardEntropyValues[t][2];
          if(this->isSymmetric)
           nmi_value_backward += timePointWeight[t] *
-             (this->backwardEntropyValues[t][0] +
-                  this->backwardEntropyValues[t][1] ) /
-                  this->backwardEntropyValues[t][2];
+             (this->backwardEntropyValues[t][0] + this->backwardEntropyValues[t][1] ) / this->backwardEntropyValues[t][2];
       }
    }
 #ifndef NDEBUG
@@ -573,8 +520,7 @@ void reg_getVoxelBasedNMIGradient2D(nifti_image *referenceImage,
                                     nifti_image *measureGradientImage,
                                     int *referenceMask,
                                     int current_timepoint,
-                           double timepoint_weight
-                                    )
+				   double timepoint_weight)
 {
    if(current_timepoint<0 || current_timepoint>=referenceImage->nt){
       reg_print_fct_error("reg_getVoxelBasedNMIGradient2D");
@@ -600,7 +546,9 @@ void reg_getVoxelBasedNMIGradient2D(nifti_image *referenceImage,
    // Create pointers to the current joint histogram
    double *logHistoPtr = jointHistogramLog[current_timepoint];
    double *entropyPtr = entropyValues[current_timepoint];
+
    double nmi = (entropyPtr[0]+entropyPtr[1])/entropyPtr[2];
+   
    size_t referenceOffset=referenceBinNumber[current_timepoint]*floatingBinNumber[current_timepoint];
    size_t floatingOffset=referenceOffset+referenceBinNumber[current_timepoint];
    // Iterate over all voxel
@@ -648,10 +596,8 @@ void reg_getVoxelBasedNMIGradient2D(nifti_image *referenceImage,
                   }
                }
             }
-         measureGradPtrX[i] += (DTYPE)(timepoint_weight * (refDeriv[0] + warDeriv[0] -
-                  nmi * jointDeriv[0]) / (entropyPtr[2]*entropyPtr[3]));
-         measureGradPtrY[i] += (DTYPE)(timepoint_weight * (refDeriv[1] + warDeriv[1] -
-                  nmi * jointDeriv[1]) / (entropyPtr[2]*entropyPtr[3]));
+         measureGradPtrX[i] += (DTYPE)(timepoint_weight * (refDeriv[0] + warDeriv[0] - nmi * jointDeriv[0]) / (entropyPtr[2]*entropyPtr[3]));
+         measureGradPtrY[i] += (DTYPE)(timepoint_weight * (refDeriv[1] + warDeriv[1] - nmi * jointDeriv[1]) / (entropyPtr[2]*entropyPtr[3]));
          }// Check that the values are defined
       } // mask
    } // loop over all voxel
@@ -673,8 +619,7 @@ void reg_getVoxelBasedNMIGradient3D(nifti_image *referenceImage,
                                     nifti_image *measureGradientImage,
                                     int *referenceMask,
                                     int current_timepoint,
-                           double timepoint_weight
-                                    )
+				   double timepoint_weight)
 {
    if(current_timepoint<0 || current_timepoint>=referenceImage->nt){
       reg_print_fct_error("reg_getVoxelBasedNMIGradient3D");
@@ -772,12 +717,9 @@ void reg_getVoxelBasedNMIGradient3D(nifti_image *referenceImage,
                   }
                }
             }
-         measureGradPtrX[i] += (DTYPE)(timepoint_weight * (refDeriv[0] + warDeriv[0] -
-                  nmi * jointDeriv[0]) / (entropyPtr[2]*entropyPtr[3]));
-         measureGradPtrY[i] += (DTYPE)(timepoint_weight * (refDeriv[1] + warDeriv[1] -
-                  nmi * jointDeriv[1]) / (entropyPtr[2]*entropyPtr[3]));
-         measureGradPtrZ[i] += (DTYPE)(timepoint_weight * (refDeriv[2] + warDeriv[2] -
-                  nmi * jointDeriv[2]) / (entropyPtr[2]*entropyPtr[3]));
+         measureGradPtrX[i] += (DTYPE)(timepoint_weight * (refDeriv[0] + warDeriv[0] - nmi * jointDeriv[0]) / (entropyPtr[2]*entropyPtr[3]));
+         measureGradPtrY[i] += (DTYPE)(timepoint_weight * (refDeriv[1] + warDeriv[1] - nmi * jointDeriv[1]) / (entropyPtr[2]*entropyPtr[3]));
+         measureGradPtrZ[i] += (DTYPE)(timepoint_weight * (refDeriv[2] + warDeriv[2] - nmi * jointDeriv[2]) / (entropyPtr[2]*entropyPtr[3]));
          }// Check that the values are defined
       } // mask
    } // loop over all voxel
@@ -792,15 +734,13 @@ void reg_nmi::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
 {
    // Check if the specified time point exists and is active
    reg_measure::GetVoxelBasedSimilarityMeasureGradient(current_timepoint);
-   if(this->timePointWeight[current_timepoint]==0.0)
-      return;
+   if(this->timePointWeight[current_timepoint]==0.0) return;
 
    // Check if all required input images are of the same data type
    int dtype = this->referenceImagePointer->datatype;
    if(this->warpedFloatingImagePointer->datatype != dtype ||
-         this->warpedFloatingGradientImagePointer->datatype != dtype ||
-         this->forwardVoxelBasedGradientImagePointer->datatype != dtype
-         )
+      this->warpedFloatingGradientImagePointer->datatype != dtype ||
+      this->forwardVoxelBasedGradientImagePointer->datatype != dtype)
    {
       reg_print_fct_error("reg_nmi::GetVoxelBasedSimilarityMeasureGradient()");
       reg_print_msg_error("Input images are exepected to be of the same type");
@@ -826,7 +766,7 @@ void reg_nmi::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
                                                this->forwardVoxelBasedGradientImagePointer,
                                                this->referenceMaskPointer,
                                                current_timepoint,
-                                    this->timePointWeight[current_timepoint]);
+					       this->timePointWeight[current_timepoint]);
          break;
       case NIFTI_TYPE_FLOAT64:
          reg_getVoxelBasedNMIGradient3D<double>(this->referenceImagePointer,
@@ -838,8 +778,8 @@ void reg_nmi::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
                                                 this->warpedFloatingGradientImagePointer,
                                                 this->forwardVoxelBasedGradientImagePointer,
                                                 this->referenceMaskPointer,
-                                    current_timepoint,
-                                    this->timePointWeight[current_timepoint]);
+						    current_timepoint,
+						    this->timePointWeight[current_timepoint]);
          break;
       default:
          reg_print_fct_error("reg_nmi::GetVoxelBasedSimilarityMeasureGradient()");
@@ -861,8 +801,8 @@ void reg_nmi::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
                                                this->warpedFloatingGradientImagePointer,
                                                this->forwardVoxelBasedGradientImagePointer,
                                                this->referenceMaskPointer,
-                                    current_timepoint,
-                                    this->timePointWeight[current_timepoint]);
+					    current_timepoint,
+					    this->timePointWeight[current_timepoint]);
          break;
       case NIFTI_TYPE_FLOAT64:
          reg_getVoxelBasedNMIGradient2D<double>(this->referenceImagePointer,
@@ -874,8 +814,8 @@ void reg_nmi::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
                                                 this->warpedFloatingGradientImagePointer,
                                                 this->forwardVoxelBasedGradientImagePointer,
                                                 this->referenceMaskPointer,
-                                    current_timepoint,
-                                    this->timePointWeight[current_timepoint]);
+					    current_timepoint,
+					    this->timePointWeight[current_timepoint]);
          break;
       default:
          reg_print_fct_error("reg_nmi::GetVoxelBasedSimilarityMeasureGradient()");
@@ -888,9 +828,8 @@ void reg_nmi::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
    {
       dtype = this->floatingImagePointer->datatype;
       if(this->warpedReferenceImagePointer->datatype != dtype ||
-            this->warpedReferenceGradientImagePointer->datatype != dtype ||
-            this->backwardVoxelBasedGradientImagePointer->datatype != dtype
-            )
+         this->warpedReferenceGradientImagePointer->datatype != dtype ||
+         this->backwardVoxelBasedGradientImagePointer->datatype != dtype)
       {
          reg_print_fct_error("reg_nmi::GetVoxelBasedSimilarityMeasureGradient()");
          reg_print_msg_error("Input images are exepected to be of the same type");
@@ -911,8 +850,8 @@ void reg_nmi::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
                                                   this->warpedReferenceGradientImagePointer,
                                                   this->backwardVoxelBasedGradientImagePointer,
                                                   this->floatingMaskPointer,
-                                      current_timepoint,
-                                      this->timePointWeight[current_timepoint]);
+					      current_timepoint,
+					      this->timePointWeight[current_timepoint]);
             break;
          case NIFTI_TYPE_FLOAT64:
             reg_getVoxelBasedNMIGradient3D<double>(this->floatingImagePointer,
@@ -924,8 +863,8 @@ void reg_nmi::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
                                                    this->warpedReferenceGradientImagePointer,
                                                    this->backwardVoxelBasedGradientImagePointer,
                                                    this->floatingMaskPointer,
-                                       current_timepoint,
-                                       this->timePointWeight[current_timepoint]);
+					       current_timepoint,
+					       this->timePointWeight[current_timepoint]);
             break;
          default:
             reg_print_fct_error("reg_nmi::GetVoxelBasedSimilarityMeasureGradient()");
@@ -947,8 +886,8 @@ void reg_nmi::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
                                                   this->warpedReferenceGradientImagePointer,
                                                   this->backwardVoxelBasedGradientImagePointer,
                                                   this->floatingMaskPointer,
-                                      current_timepoint,
-                                      this->timePointWeight[current_timepoint]);
+					      current_timepoint,
+					      this->timePointWeight[current_timepoint]);
             break;
          case NIFTI_TYPE_FLOAT64:
             reg_getVoxelBasedNMIGradient2D<double>(this->floatingImagePointer,
@@ -960,8 +899,8 @@ void reg_nmi::GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
                                                    this->warpedReferenceGradientImagePointer,
                                                    this->backwardVoxelBasedGradientImagePointer,
                                                    this->floatingMaskPointer,
-                                       current_timepoint,
-                                       this->timePointWeight[current_timepoint]);
+					       current_timepoint,
+					       this->timePointWeight[current_timepoint]);
             break;
          default:
             reg_print_fct_error("reg_nmi::GetVoxelBasedSimilarityMeasureGradient()");

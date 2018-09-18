@@ -1,7 +1,6 @@
 /*
  *  _reg_mutualinformation.h
  *
- *
  *  Created by Marc Modat on 25/03/2009.
  *  Copyright (c) 2009, University College London. All rights reserved.
  *  Centre for Medical Image Computing (CMIC)
@@ -25,7 +24,8 @@ class reg_nmi : public reg_measure
 {
 public:
    /// @brief reg_nmi class constructor
-   reg_nmi();
+   reg_nmi();//构造函数
+
    void InitialiseMeasure(nifti_image *refImgPtr,
                           nifti_image *floImgPtr,
                           int *maskRefPtr,
@@ -37,43 +37,42 @@ public:
                           nifti_image *warRefImgPtr = NULL,
                           nifti_image *warRefGraPtr = NULL,
                           nifti_image *bckVoxBasedGraPtr = NULL);
+
    /// @brief Returns the nmi value
    double GetSimilarityMeasureValue();
+
    /// @brief Compute the voxel based nmi gradient
    void GetVoxelBasedSimilarityMeasureGradient(int current_timepoint);
-   void SetRefAndFloatBinNumbers(unsigned short refBinNumber,
-                                 unsigned short floBinNumber,
-                                 int timepoint)
+
+   void SetRefAndFloatBinNumbers(unsigned short refBinNumber, unsigned short floBinNumber, int timepoint)
    {
       this->referenceBinNumber[timepoint] = refBinNumber;
       this->floatingBinNumber[timepoint] = floBinNumber;
    }
    void SetReferenceBinNumber(int b, int t)
-   {
-      this->referenceBinNumber[t]=b;
-   }
+   { this->referenceBinNumber[t]=b; }
+
    void SetFloatingBinNumber(int b, int t)
-   {
-      this->floatingBinNumber[t]=b;
-   }
+   { this->floatingBinNumber[t]=b; }
+
    unsigned short *GetReferenceBinNumber()
-   {
-      return this->referenceBinNumber;
-   }
+   { return this->referenceBinNumber; }
+
    unsigned short *GetFloatingBinNumber()
-   {
-      return this->floatingBinNumber;
-   }
+   { return this->floatingBinNumber; }
+
    /// @brief reg_nmi class destructor
-   ~reg_nmi();
+   ~reg_nmi();// 析构函数
 
 protected:
    unsigned short referenceBinNumber[255];
    unsigned short floatingBinNumber[255];
    unsigned short totalBinNumber[255];
+
    double **forwardJointHistogramPro;
    double **forwardJointHistogramLog;
    double **forwardEntropyValues;
+
    double **backwardJointHistogramPro;
    double **backwardJointHistogramLog;
    double **backwardEntropyValues;
@@ -82,7 +81,7 @@ protected:
 };
 /* *************************************************************** */
 /* *************************************************************** */
-extern "C++" template <class DTYPE>
+extern "C++" template <class DTYPE> //为啥防止reg_nmi类的外面？？？
 void reg_getNMIValue(nifti_image *referenceImage,
                      nifti_image *warpedImage,
                      double *timePointWeight,
@@ -92,8 +91,9 @@ void reg_getNMIValue(nifti_image *referenceImage,
                      double **jointHistogramLog,
                      double **jointhistogramPro,
                      double **entropyValues,
-                     int *referenceMask
-                    );
+                     int *referenceMask);
+
+
 /* *************************************************************** */
 extern "C++" template <class DTYPE>
 void reg_getVoxelBasedNMIGradient2D(nifti_image *referenceImage,
@@ -106,8 +106,9 @@ void reg_getVoxelBasedNMIGradient2D(nifti_image *referenceImage,
                                     nifti_image *nmiGradientImage,
                                     int *referenceMask,
                                     int current_timepoint,
-                                    double timepoint_weight
-                                   );
+                                    double timepoint_weight);
+
+
 /* *************************************************************** */
 extern "C++" template <class DTYPE>
 void reg_getVoxelBasedNMIGradient3D(nifti_image *referenceImage,
@@ -120,8 +121,10 @@ void reg_getVoxelBasedNMIGradient3D(nifti_image *referenceImage,
                                     nifti_image *nmiGradientImage,
                                     int *referenceMask,
                                     int current_timepoint,
-                                    double timepoint_weight
-                                   );
+                                    double timepoint_weight);
+
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 // Simple class to dynamically manage an array of pointers
@@ -131,22 +134,16 @@ class SafeArray
 {
 public:
    /// Constructor
-   SafeArray(int items)
-   {
-      data = new DataTYPE[items];
-   }
+   SafeArray(int items) //构造函数
+   { data = new DataTYPE[items]; }
 
    /// Destructor
    ~SafeArray()
-   {
-      delete[] data;
-   }
+   { delete[] data; } //析构函数
 
    /// Implicit conversion
    operator DataTYPE *()
-   {
-      return data;
-   }
+   { return data; } //指针取值运算符
 
 private:
    void operator=(const SafeArray &) {};
@@ -181,21 +178,15 @@ public:
 
    /// Gets the index or iterator for the specified loop.
    T Index(int index) const
-   {
-      return (current[index]);
-   }
+   { return (current[index]); }
 
    /// Gets the index or iterator for the specified loop.
    const T &operator [](int index) const
-   {
-      return (current[index]);
-   }
+   { return (current[index]); }
 
    /// Tests to see if the loops continue.
    bool Continue() const
-   {
-      return (current[0] != end[0]);
-   }
+   { return (current[0] != end[0]); }
 
    /// Compute the next set of indexes or iterators in the sequence.
    void Next()
@@ -208,9 +199,7 @@ public:
          ++current[position];
          // Finished incrementing?
          if ((current[position] != end[position]) || (position == 0))
-         {
-            finished = true;
-         }
+         { finished = true; }
          else
          {
             // Reset this index, and move on to the previous one.
@@ -222,9 +211,7 @@ public:
 
    /// Returns the number of 'for' loops added.
    int Count() const
-   {
-      return (static_cast<int>(begin.size()));
-   }
+   { return (static_cast<int>(begin.size())); }
 
 private:
    std::vector<T> begin;   // Start for each loop.
@@ -238,7 +225,6 @@ inline int calculate_product(int dim, int *dimensions)
 {
    int product = 1;
    for(int i = 0; i < dim; ++i) product *= dimensions[i];
-
    return product;
 }
 
@@ -246,14 +232,12 @@ inline int calculate_index(int num_dims, int *dimensions, int *indices)
 {
    int index = 0;
    for(int i = 0; i < num_dims; ++i) index += indices[i] * calculate_product(i, dimensions);
-
    return index;
 }
 
 inline int previous(int current, int num_dims)
 {
    if(current > 0) return current - 1;
-
    return num_dims - 1;
 }
 /* *************************************************************** */
@@ -263,29 +247,32 @@ class reg_multichannel_nmi : public reg_measure
 {
 public:
    /// @brief reg_nmi class constructor
-   reg_multichannel_nmi() {}
+   reg_multichannel_nmi() {} //构造函数
+
    /// @brief Returns the nmi value
    double GetSimilarityMeasureValue()
-   {
-      return 0.;
-   }
+   { return 0.; }
+
    /// @brief Compute the voxel based nmi gradient
    void GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
    {
       // Check if the specified time point exists and is active
       reg_measure::GetVoxelBasedSimilarityMeasureGradient(current_timepoint);
-      if(this->timePointWeight[current_timepoint]==0.0)
-         return;;
+      if(this->timePointWeight[current_timepoint]==0.0) return;;
    }
+
    /// @brief reg_nmi class destructor
-   ~reg_multichannel_nmi() {}
+   ~reg_multichannel_nmi() {} //析构函数
+
 protected:
    unsigned short referenceBinNumber[255];
    unsigned short floatingBinNumber[255];
    unsigned short totalBinNumber[255];
+
    double *forwardJointHistogramProp;
    double *forwardJointHistogramLog;
    double *forwardEntropyValues;
+
    double *backwardJointHistogramProp;
    double *backwardJointHistogramLog;
    double *backwardEntropyValues;

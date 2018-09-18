@@ -6,3 +6,36 @@ fabs()
 malloc()
 calloc()
 free()
+ceil()
+exppression? A:B
+floor()
+error()
+std::runtime_error()
+fprintf(stderr, "File: %s : %i\n", __FILE__, __LINE__);
+printf()
+exit()
+strtod()
+std::numeric_limits<T>::has_infinity
+std::numeric_limits<T>::quiet_NaN()
+std::numeric_limits<T>::max()
+sqrt()
+memcpy()
+srand()
+rand()
+RAND_MAX
+exp()
+std::string::npos
+std::pair<T>
+std::map<>
+std::copy()
+std::vector<T>
+
+#ifndef NDEBUG
+//some statements
+#endif
+
+log()
+
+
+
+<map>, <vector>, <list>三者间的区别？？？

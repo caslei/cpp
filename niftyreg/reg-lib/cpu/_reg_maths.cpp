@@ -11,9 +11,7 @@
 /* *************************************************************** */
 /* *************************************************************** */
 template<class T>
-void reg_LUdecomposition(T *mat,
-                         size_t dim,
-                         size_t *index)
+void reg_LUdecomposition(T *mat, size_t dim, size_t *index)
 {
     T *vv = (T *)malloc(dim * sizeof(T));
     size_t i, j, k, imax = 0;
@@ -25,14 +23,14 @@ void reg_LUdecomposition(T *mat,
         for (j = 0; j < dim; ++j)
             if ((temp = fabs(mat(i, j, dim)))>big)
                 big = temp;
-        if (big == 0.f)
-        {
+        if (big == 0.f) {
             reg_print_fct_error("reg_LUdecomposition");
             reg_print_msg_error("Singular matrix");
             reg_exit();
         }
         vv[i] = 1.0 / big;
     }
+
     for (j = 0; j < dim; ++j)
     {
         for (i = 0; i < j; ++i)
@@ -48,12 +46,12 @@ void reg_LUdecomposition(T *mat,
             T sum = mat(i, j, dim);
             for (k = 0; k < j; ++k) sum -= mat(i, k, dim)*mat(k, j, dim);
             mat(i, j, dim) = sum;
-            if ((dum = vv[i] * fabs(sum)) >= big)
-            {
+            if ((dum = vv[i] * fabs(sum)) >= big) {
                 big = dum;
                 imax = i;
             }
         }
+
         if (j != imax)
         {
             for (k = 0; k < dim; ++k)
@@ -78,14 +76,10 @@ void reg_LUdecomposition(T *mat,
 /* *************************************************************** */
 /* *************************************************************** */
 template<class T>
-void reg_matrixInvertMultiply(T *mat,
-                              size_t dim,
-                              size_t *index,
-                              T *vec)
+void reg_matrixInvertMultiply(T *mat, size_t dim, size_t *index, T *vec)
 {
     // Perform the LU decomposition if necessary
-    if (index == NULL)
-        reg_LUdecomposition(mat, dim, index);
+    if (index == NULL) reg_LUdecomposition(mat, dim, index);
 
     int ii = 0;
     for (size_t i = 0; i < dim; ++i)
@@ -95,45 +89,46 @@ void reg_matrixInvertMultiply(T *mat,
         vec[ip] = vec[i];
         if (ii != 0)
         {
-            for (int j = ii - 1; j < (int)i; ++j)
-                sum -= mat(i, j, dim)*vec[j];
+            for (int j = ii - 1; j < (int)i; ++j) sum -= mat(i, j, dim)*vec[j];
         }
         else if (sum != 0)
             ii = i + 1;
         vec[i] = sum;
     }
+
+
     for (int i = (int)dim - 1; i > -1; --i)
     {
         T sum = vec[i];
-        for (int j = i + 1; j < (int)dim; ++j)
-            sum -= mat(i, j, dim)*vec[j];
+        for (int j = i + 1; j < (int)dim; ++j) sum -= mat(i, j, dim)*vec[j];
         vec[i] = sum / mat(i, i, dim);
     }
 }
+
+
 template void reg_matrixInvertMultiply<float>(float *, size_t, size_t *, float *);
 template void reg_matrixInvertMultiply<double>(double *, size_t, size_t *, double *);
+
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 template<class T>
-void reg_matrixMultiply(T *mat1,
-                        T *mat2,
-                        size_t *dim1,
-                        size_t *dim2,
-                        T * &res)
+void reg_matrixMultiply(T *mat1, T *mat2, size_t *dim1, size_t *dim2, T * &res)
 {
     // First check that the dimension are appropriate
     if (dim1[1] != dim2[0])
     {
-        char text[255]; sprintf(text, "Matrices can not be multiplied due to their size: [%zu %zu] [%zu %zu]",
-            dim1[0], dim1[1], dim2[0], dim2[1]);
+        char text[255]; 
+	iprintf(text, "Matrices can not be multiplied due to their size: [%zu %zu] [%zu %zu]", dim1[0], dim1[1], dim2[0], dim2[1]);
         reg_print_fct_error("reg_matrixMultiply");
         reg_print_msg_error(text);
         reg_exit();
     }
     size_t resDim[2] = {dim1[0], dim2[1]};
     // Allocate the result matrix
-    if (res != NULL)
-        free(res);
+    if (res != NULL) free(res);
+
     res = (T *)calloc(resDim[0] * resDim[1], sizeof(T));
     // Multiply both matrices
     for (size_t j = 0; j < resDim[1]; ++j)
@@ -149,49 +144,75 @@ void reg_matrixMultiply(T *mat1,
         } // i
     } // j
 }
+
+
 template void reg_matrixMultiply<float>(float *, float *, size_t *, size_t *, float * &);
 template void reg_matrixMultiply<double>(double *, double *, size_t *, size_t *, double * &);
-/* *************************************************************** */
-/* *************************************************************** */
-/* *************************************************************** */
+
+
+
 /* *************************************************************** */
 template<class T>
-T* reg_matrix1DAllocate(size_t arraySize) {
+T* reg_matrix1DAllocate(size_t arraySize) 
+{
     T* res = (T*)malloc(arraySize*sizeof(T));
     return res;
 }
+
+
 template bool* reg_matrix1DAllocate<bool>(size_t arraySize);
 template float* reg_matrix1DAllocate<float>(size_t arraySize);
 template double* reg_matrix1DAllocate<double>(size_t arraySize);
+
+
+
 /* *************************************************************** */
 template<class T>
-T* reg_matrix1DAllocateAndInitToZero(size_t arraySize) {
+T* reg_matrix1DAllocateAndInitToZero(size_t arraySize) 
+{
     T* res = (T*)calloc(arraySize, sizeof(T));
     return res;
 }
+
+
 template bool* reg_matrix1DAllocateAndInitToZero<bool>(size_t arraySize);
 template float* reg_matrix1DAllocateAndInitToZero<float>(size_t arraySize);
 template double* reg_matrix1DAllocateAndInitToZero<double>(size_t arraySize);
+
+
+
 /* *************************************************************** */
 template<class T>
-void reg_matrix1DDeallocate(T* mat) {
+void reg_matrix1DDeallocate(T* mat) 
+{
     free(mat);
 }
+
 template void reg_matrix1DDeallocate<bool>(bool* mat);
 template void reg_matrix1DDeallocate<float>(float* mat);
 template void reg_matrix1DDeallocate<double>(double* mat);
+
+
+
 /* *************************************************************** */
 template<class T>
-T** reg_matrix2DAllocate(size_t arraySizeX, size_t arraySizeY) {
+T** reg_matrix2DAllocate(size_t arraySizeX, size_t arraySizeY) 
+{
     T** res;
     res = (T**)malloc(arraySizeX*sizeof(T*));
-    for (size_t i = 0; i < arraySizeX; i++) {
+    for (size_t i = 0; i < arraySizeX; i++) 
+    {
         res[i] = (T*)malloc(arraySizeY*sizeof(T));
     }
     return res;
 }
+
+
 template float** reg_matrix2DAllocate<float>(size_t arraySizeX, size_t arraySizeY);
 template double** reg_matrix2DAllocate<double>(size_t arraySizeX, size_t arraySizeY);
+
+
+
 /* *************************************************************** */
 template<class T>
 T** reg_matrix2DAllocateAndInitToZero(size_t arraySizeX, size_t arraySizeY) {
@@ -204,6 +225,9 @@ T** reg_matrix2DAllocateAndInitToZero(size_t arraySizeX, size_t arraySizeY) {
 }
 template float** reg_matrix2DAllocateAndInitToZero<float>(size_t arraySizeX, size_t arraySizeY);
 template double** reg_matrix2DAllocateAndInitToZero<double>(size_t arraySizeX, size_t arraySizeY);
+
+
+
 /* *************************************************************** */
 template<class T>
 void reg_matrix2DDeallocate(size_t arraySizeX, T** mat) {
@@ -214,6 +238,9 @@ void reg_matrix2DDeallocate(size_t arraySizeX, T** mat) {
 }
 template void reg_matrix2DDeallocate<float>(size_t arraySizeX, float** mat);
 template void reg_matrix2DDeallocate<double>(size_t arraySizeX, double** mat);
+
+
+
 /* *************************************************************** */
 template<class T>
 T** reg_matrix2DTranspose(T** mat, size_t arraySizeX, size_t arraySizeY) {
@@ -229,16 +256,22 @@ T** reg_matrix2DTranspose(T** mat, size_t arraySizeX, size_t arraySizeY) {
     }
     return res;
 }
+
+
+
 template float** reg_matrix2DTranspose<float>(float** mat, size_t arraySizeX, size_t arraySizeY);
 template double** reg_matrix2DTranspose<double>(double** mat, size_t arraySizeX, size_t arraySizeY);
+
+
+
 /* *************************************************************** */
 template<class T>
 T** reg_matrix2DMultiply(T** mat1, size_t mat1X, size_t mat1Y, T** mat2, size_t mat2X, size_t mat2Y, bool transposeMat2) {
     if (transposeMat2 == false) {
         // First check that the dimension are appropriate
         if (mat1Y != mat2X) {
-            char text[255]; sprintf(text, "Matrices can not be multiplied due to their size: [%zu %zu] [%zu %zu]",
-                mat1X, mat1Y, mat2X, mat2Y);
+            char text[255]; 
+	    sprintf(text, "Matrices can not be multiplied due to their size: [%zu %zu] [%zu %zu]", mat1X, mat1Y, mat2X, mat2Y);
             reg_print_fct_error("reg_matrix2DMultiply");
             reg_print_msg_error(text);
             reg_exit();
@@ -263,8 +296,8 @@ T** reg_matrix2DMultiply(T** mat1, size_t mat1X, size_t mat1Y, T** mat2, size_t 
     else {
         // First check that the dimension are appropriate
         if (mat1Y != mat2Y) {
-            char text[255]; sprintf(text, "Matrices can not be multiplied due to their size: [%zu %zu] [%zu %zu]",
-                mat1X, mat1Y, mat2Y, mat2X);
+            char text[255]; 
+	    sprintf(text, "Matrices can not be multiplied due to their size: [%zu %zu] [%zu %zu]", mat1X, mat1Y, mat2Y, mat2X);
             reg_print_fct_error("reg_matrix2DMultiply");
             reg_print_msg_error(text);
             reg_exit();
@@ -286,16 +319,21 @@ T** reg_matrix2DMultiply(T** mat1, size_t mat1X, size_t mat1Y, T** mat2, size_t 
         return res;
     }
 }
+
+
 template float** reg_matrix2DMultiply<float>(float** mat1, size_t mat1X, size_t mat1Y, float** mat2, size_t mat2X, size_t mat2Y, bool transposeMat2);
 template double** reg_matrix2DMultiply<double>(double** mat1, size_t mat1X, size_t mat1Y, double** mat2, size_t mat2X, size_t mat2Y, bool transposeMat2);
+
+
+
 /* *************************************************************** */
 template<class T>
 void reg_matrix2DMultiply(T** mat1, size_t mat1X, size_t mat1Y, T** mat2, size_t mat2X, size_t mat2Y, T** resT, bool transposeMat2) {
     if (transposeMat2 == false) {
         // First check that the dimension are appropriate
         if (mat1Y != mat2X) {
-            char text[255]; sprintf(text, "Matrices can not be multiplied due to their size: [%zu %zu] [%zu %zu]",
-                mat1X, mat1Y, mat2X, mat2Y);
+            char text[255]; 
+	    sprintf(text, "Matrices can not be multiplied due to their size: [%zu %zu] [%zu %zu]", mat1X, mat1Y, mat2X, mat2Y);
             reg_print_fct_error("reg_matrix2DMultiply");
             reg_print_msg_error(text);
             reg_exit();
@@ -316,8 +354,8 @@ void reg_matrix2DMultiply(T** mat1, size_t mat1X, size_t mat1Y, T** mat2, size_t
     else {
         // First check that the dimension are appropriate
         if (mat1Y != mat2Y) {
-            char text[255]; sprintf(text, "Matrices can not be multiplied due to their size: [%zu %zu] [%zu %zu]",
-                mat1X, mat1Y, mat2Y, mat2X);
+            char text[255]; 
+	    sprintf(text, "Matrices can not be multiplied due to their size: [%zu %zu] [%zu %zu]", mat1X, mat1Y, mat2Y, mat2X);
             reg_print_fct_error("reg_matrix2DMultiply");
             reg_print_msg_error(text);
             reg_exit();
@@ -336,8 +374,13 @@ void reg_matrix2DMultiply(T** mat1, size_t mat1X, size_t mat1Y, T** mat2, size_t
         }
     }
 }
+
+
 template void reg_matrix2DMultiply<float>(float** mat1, size_t mat1X, size_t mat1Y, float** mat2, size_t mat2X, size_t mat2Y, float** resT, bool transposeMat2);
 template void reg_matrix2DMultiply<double>(double** mat1, size_t mat1X, size_t mat1Y, double** mat2, size_t mat2X, size_t mat2Y, double** resT, bool transposeMat2);
+
+
+
 /* *************************************************************** */
 // Multiply a matrix with a vector - we assume correct dimension
 template<class T>
@@ -355,8 +398,14 @@ T* reg_matrix2DVectorMultiply(T** mat, size_t m, size_t n, T* vect) {
     }
     return res;
 }
+
+
+
 template float* reg_matrix2DVectorMultiply<float>(float** mat, size_t m, size_t n, float* vect);
 template double* reg_matrix2DVectorMultiply<double>(double** mat, size_t m, size_t n, double* vect);
+
+
+
 /* *************************************************************** */
 template<class T>
 void reg_matrix2DVectorMultiply(T** mat, size_t m, size_t n, T* vect, T* res) {
@@ -371,11 +420,14 @@ void reg_matrix2DVectorMultiply(T** mat, size_t m, size_t n, T* vect, T* res) {
         res[i] = static_cast<T>(resTemp);
     }
 }
+
+
+
 template void reg_matrix2DVectorMultiply<float>(float** mat, size_t m, size_t n, float* vect, float* res);
 template void reg_matrix2DVectorMultiply<double>(double** mat, size_t m, size_t n, double* vect, double* res);
-/* *************************************************************** */
-/* *************************************************************** */
-/* *************************************************************** */
+
+
+
 /* *************************************************************** */
 // Heap sort
 void reg_heapSort(float *array_tmp, int *index_tmp, int blockNum)
@@ -410,8 +462,8 @@ void reg_heapSort(float *array_tmp, int *index_tmp, int blockNum)
         int j = l + l;
         while (j <= ir)
         {
-            if (j < ir && array[j] < array[j + 1])
-                j++;
+            if (j < ir && array[j] < array[j + 1]) j++;
+
             if (val < array[j])
             {
                 array[i] = array[j];
@@ -426,6 +478,9 @@ void reg_heapSort(float *array_tmp, int *index_tmp, int blockNum)
         index[i] = iVal;
     }
 }
+
+
+
 /* *************************************************************** */
 // Heap sort
 template<class DTYPE>
@@ -469,9 +524,14 @@ void reg_heapSort(DTYPE *array_tmp, int blockNum)
         array[i] = val;
     }
 }
+
+
+
 template void reg_heapSort<float>(float *array_tmp, int blockNum);
 template void reg_heapSort<double>(double *array_tmp, int blockNum);
-/* *************************************************************** */
+
+
+
 /* *************************************************************** */
 bool operator==(mat44 A, mat44 B)
 {
@@ -498,13 +558,15 @@ bool operator!=(mat44 A, mat44 B)
     }
     return false;
 }
-/* *************************************************************** */
+
+
+
 /* *************************************************************** */
 template<class T>
 T reg_mat44_det(mat44 const* A)
 {
     double D =
-        static_cast<double>(A->m[0][0]) * static_cast<double>(A->m[1][1]) * static_cast<double>(A->m[2][2]) * static_cast<double>(A->m[3][3])
+          static_cast<double>(A->m[0][0]) * static_cast<double>(A->m[1][1]) * static_cast<double>(A->m[2][2]) * static_cast<double>(A->m[3][3])
         - static_cast<double>(A->m[0][0]) * static_cast<double>(A->m[1][1]) * static_cast<double>(A->m[3][2]) * static_cast<double>(A->m[2][3])
         - static_cast<double>(A->m[0][0]) * static_cast<double>(A->m[2][1]) * static_cast<double>(A->m[1][2]) * static_cast<double>(A->m[3][3])
         + static_cast<double>(A->m[0][0]) * static_cast<double>(A->m[2][1]) * static_cast<double>(A->m[3][2]) * static_cast<double>(A->m[1][3])
@@ -530,9 +592,13 @@ T reg_mat44_det(mat44 const* A)
         + static_cast<double>(A->m[3][0]) * static_cast<double>(A->m[2][1]) * static_cast<double>(A->m[1][2]) * static_cast<double>(A->m[0][3]);
     return static_cast<T>(D);
 }
+
+
 template float reg_mat44_det<float>(mat44 const* A);
 template double reg_mat44_det<double>(mat44 const* A);
-/* *************************************************************** */
+
+
+
 /* *************************************************************** */
 template<class T>
 T reg_mat33_det(mat33 const* A)
@@ -542,9 +608,14 @@ T reg_mat33_det(mat33 const* A)
         (static_cast<double>(A->m[0][2]) * (static_cast<double>(A->m[1][0]) * static_cast<double>(A->m[2][1]) - static_cast<double>(A->m[1][1]) * static_cast<double>(A->m[2][0]))));
     return static_cast<T>(D);
 }
+
+
+
 template float reg_mat33_det<float>(mat33 const* A);
 template double reg_mat33_det<double>(mat33 const* A);
-/* *************************************************************** */
+
+
+
 /* *************************************************************** */
 void reg_mat33_to_nan(mat33 *A)
 {
@@ -552,7 +623,9 @@ void reg_mat33_to_nan(mat33 *A)
       for(int j=0;j<3;++j)
          A->m[i][j] = std::numeric_limits<float>::quiet_NaN();
 }
-/* *************************************************************** */
+
+
+
 /* *************************************************************** */
 mat33 reg_mat44_to_mat33(mat44 const* A)
 {
@@ -585,15 +658,15 @@ mat44 reg_mat44_mul(mat44 const* A, mat44 const* B)
     }
     return R;
 }
+
+
 /* *************************************************************** */
 mat44 operator*(mat44 A, mat44 B)
 {
     return reg_mat44_mul(&A, &B);
 }
 /* *************************************************************** */
-void reg_mat33_mul(mat44 const* mat,
-    float const* in,
-    float *out)
+void reg_mat33_mul(mat44 const* mat, float const* in, float *out)
 {
     out[0] = static_cast<float>(
         static_cast<double>(in[0])*static_cast<double>(mat->m[0][0]) +
@@ -605,10 +678,10 @@ void reg_mat33_mul(mat44 const* mat,
         static_cast<double>(mat->m[1][3]));
     return;
 }
+
+
 /* *************************************************************** */
-void reg_mat33_mul(mat33 const* mat,
-    float const* in,
-    float *out)
+void reg_mat33_mul(mat33 const* mat, float const* in, float *out)
 {
     out[0] = static_cast<float>(
         static_cast<double>(in[0])*static_cast<double>(mat->m[0][0]) +
@@ -713,8 +786,7 @@ mat33 reg_mat33_minus(mat33 const* A, mat33 const* B)
 void reg_mat33_diagonalize(mat33 const* A, mat33 * Q, mat33 * D)
 {
     // A must be a symmetric matrix.
-    // returns Q and D such that
-    // Diagonal matrix D = QT * A * Q;  and  A = Q*D*QT
+    // returns Q and D such that Diagonal matrix D = QT * A * Q;  and  A = Q*D*QT
     const int maxsteps = 24;  // certainly wont need that many.
     int k0, k1, k2;
     float o[3], m[3];
@@ -880,9 +952,7 @@ float reg_mat44_norm_inf(mat44 const* mat)
 }
 /* *************************************************************** */
 /* *************************************************************** */
-void reg_mat44_mul(mat44 const* mat,
-    float const* in,
-    float *out)
+void reg_mat44_mul(mat44 const* mat, float const* in, float *out)
 {
     out[0] = static_cast<float>(static_cast<double>(mat->m[0][0]) * static_cast<double>(in[0]) +
         static_cast<double>(mat->m[0][1]) * static_cast<double>(in[1]) +
@@ -899,9 +969,7 @@ void reg_mat44_mul(mat44 const* mat,
 }
 /* *************************************************************** */
 /* *************************************************************** */
-void reg_mat44_mul(mat44 const* mat,
-    double const* in,
-    double *out)
+void reg_mat44_mul(mat44 const* mat, double const* in, double *out)
 {
     double matD[4][4];
     for (int i = 0; i < 4; ++i)
@@ -946,7 +1014,8 @@ mat44 reg_mat44_mul(mat44 const* A, double scalar)
     return out;
 }
 /* *************************************************************** */
-void reg_mat44_disp(mat44 *mat, char * title){
+void reg_mat44_disp(mat44 *mat, char * title)
+{
     printf("%s:\n%.7g\t%.7g\t%.7g\t%.7g\n%.7g\t%.7g\t%.7g\t%.7g\n%.7g\t%.7g\t%.7g\t%.7g\n%.7g\t%.7g\t%.7g\t%.7g\n", title,
         mat->m[0][0], mat->m[0][1], mat->m[0][2], mat->m[0][3],
         mat->m[1][0], mat->m[1][1], mat->m[1][2], mat->m[1][3],
@@ -956,7 +1025,8 @@ void reg_mat44_disp(mat44 *mat, char * title){
 
 /* *************************************************************** */
 /* *************************************************************** */
-void reg_mat33_disp(mat33 *mat, char * title){
+void reg_mat33_disp(mat33 *mat, char * title)
+{
     printf("%s:\n%g\t%g\t%g\n%g\t%g\t%g\n%g\t%g\t%g\n", title,
         mat->m[0][0], mat->m[0][1], mat->m[0][2],
         mat->m[1][0], mat->m[1][1], mat->m[1][2],
