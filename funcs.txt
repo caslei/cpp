@@ -34,6 +34,8 @@ std::vector<T>
 //some statements
 #endif
 
+log()
+
 
 
 <map>, <vector>, <list>三者间的区别？？？
