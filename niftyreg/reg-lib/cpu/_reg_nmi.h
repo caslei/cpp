@@ -225,7 +225,6 @@ inline int calculate_product(int dim, int *dimensions)
 {
    int product = 1;
    for(int i = 0; i < dim; ++i) product *= dimensions[i];
-
    return product;
 }
 
@@ -233,14 +232,12 @@ inline int calculate_index(int num_dims, int *dimensions, int *indices)
 {
    int index = 0;
    for(int i = 0; i < num_dims; ++i) index += indices[i] * calculate_product(i, dimensions);
-
    return index;
 }
 
 inline int previous(int current, int num_dims)
 {
    if(current > 0) return current - 1;
-
    return num_dims - 1;
 }
 /* *************************************************************** */
@@ -250,29 +247,32 @@ class reg_multichannel_nmi : public reg_measure
 {
 public:
    /// @brief reg_nmi class constructor
-   reg_multichannel_nmi() {}
+   reg_multichannel_nmi() {} //构造函数
+
    /// @brief Returns the nmi value
    double GetSimilarityMeasureValue()
-   {
-      return 0.;
-   }
+   { return 0.; }
+
    /// @brief Compute the voxel based nmi gradient
    void GetVoxelBasedSimilarityMeasureGradient(int current_timepoint)
    {
       // Check if the specified time point exists and is active
       reg_measure::GetVoxelBasedSimilarityMeasureGradient(current_timepoint);
-      if(this->timePointWeight[current_timepoint]==0.0)
-         return;;
+      if(this->timePointWeight[current_timepoint]==0.0) return;;
    }
+
    /// @brief reg_nmi class destructor
-   ~reg_multichannel_nmi() {}
+   ~reg_multichannel_nmi() {} //析构函数
+
 protected:
    unsigned short referenceBinNumber[255];
    unsigned short floatingBinNumber[255];
    unsigned short totalBinNumber[255];
+
    double *forwardJointHistogramProp;
    double *forwardJointHistogramLog;
    double *forwardEntropyValues;
+
    double *backwardJointHistogramProp;
    double *backwardJointHistogramLog;
    double *backwardEntropyValues;

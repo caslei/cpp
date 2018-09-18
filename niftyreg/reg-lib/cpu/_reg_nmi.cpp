@@ -1,7 +1,6 @@
 /*
  *  _reg_mutualinformation.cpp
  *
- *
  *  Created by Marc Modat on 25/03/2009.
  *  Copyright (c) 2009, University College London. All rights reserved.
  *  Centre for Medical Image Computing (CMIC)
@@ -16,8 +15,7 @@
 
 /* *************************************************************** */
 /* *************************************************************** */
-reg_nmi::reg_nmi()
-   : reg_measure()
+reg_nmi::reg_nmi() : reg_measure()
 {
    this->forwardJointHistogramPro=NULL;
    this->forwardJointHistogramLog=NULL;
@@ -35,9 +33,10 @@ reg_nmi::reg_nmi()
    reg_print_msg_debug("reg_nmi constructor called");
 #endif
 }
+
 /* *************************************************************** */
 /* *************************************************************** */
-reg_nmi::~reg_nmi()
+reg_nmi::~reg_nmi()//析构函数
 {
    this->ClearHistogram();
 #ifndef NDEBUG
@@ -45,73 +44,59 @@ reg_nmi::~reg_nmi()
 #endif
 }
 /* *************************************************************** */
+//clear 2D pointer memory
 void reg_nmi::ClearHistogram()
 {
    int timepoint=this->referenceTimePoint;
    // Free the joint histograms and the entropy arrays
-   if(this->forwardJointHistogramPro!=NULL)
-   {
-      for(int i=0; i<timepoint; ++i)
-      {
-         if(this->forwardJointHistogramPro[i]!=NULL)
-            free(this->forwardJointHistogramPro[i]);
+   if(this->forwardJointHistogramPro!=NULL) {
+      for(int i=0; i<timepoint; ++i) {
+         if(this->forwardJointHistogramPro[i]!=NULL) free(this->forwardJointHistogramPro[i]);
          this->forwardJointHistogramPro[i]=NULL;
       }
       free(this->forwardJointHistogramPro);
    }
    this->forwardJointHistogramPro=NULL;
-   if(this->backwardJointHistogramPro!=NULL)
-   {
-      for(int i=0; i<timepoint; ++i)
-      {
-         if(this->backwardJointHistogramPro[i]!=NULL)
-            free(this->backwardJointHistogramPro[i]);
+/* *****************************************/
+   if(this->backwardJointHistogramPro!=NULL) {
+      for(int i=0; i<timepoint; ++i) {
+         if(this->backwardJointHistogramPro[i]!=NULL) free(this->backwardJointHistogramPro[i]);
          this->backwardJointHistogramPro[i]=NULL;
       }
       free(this->backwardJointHistogramPro);
    }
    this->backwardJointHistogramPro=NULL;
-
-   if(this->forwardJointHistogramLog!=NULL)
-   {
-      for(int i=0; i<timepoint; ++i)
-      {
-         if(this->forwardJointHistogramLog[i]!=NULL)
-            free(this->forwardJointHistogramLog[i]);
+/* *****************************************/
+   if(this->forwardJointHistogramLog!=NULL) {
+      for(int i=0; i<timepoint; ++i) {
+         if(this->forwardJointHistogramLog[i]!=NULL) free(this->forwardJointHistogramLog[i]);
          this->forwardJointHistogramLog[i]=NULL;
       }
       free(this->forwardJointHistogramLog);
    }
    this->forwardJointHistogramLog=NULL;
-   if(this->backwardJointHistogramLog!=NULL)
-   {
-      for(int i=0; i<timepoint; ++i)
-      {
-         if(this->backwardJointHistogramLog[i]!=NULL)
-            free(this->backwardJointHistogramLog[i]);
+/* *****************************************/
+   if(this->backwardJointHistogramLog!=NULL) {
+      for(int i=0; i<timepoint; ++i) {
+         if(this->backwardJointHistogramLog[i]!=NULL) free(this->backwardJointHistogramLog[i]);
          this->backwardJointHistogramLog[i]=NULL;
       }
       free(this->backwardJointHistogramLog);
    }
    this->backwardJointHistogramLog=NULL;
-
-   if(this->forwardEntropyValues!=NULL)
-   {
-      for(int i=0; i<timepoint; ++i)
-      {
-         if(this->forwardEntropyValues[i]!=NULL)
-            free(this->forwardEntropyValues[i]);
+/* *****************************************/
+   if(this->forwardEntropyValues!=NULL) {
+      for(int i=0; i<timepoint; ++i) {
+         if(this->forwardEntropyValues[i]!=NULL) free(this->forwardEntropyValues[i]);
          this->forwardEntropyValues[i]=NULL;
       }
       free(this->forwardEntropyValues);
    }
    this->forwardEntropyValues=NULL;
-   if(this->backwardEntropyValues!=NULL)
-   {
-      for(int i=0; i<timepoint; ++i)
-      {
-         if(this->backwardEntropyValues[i]!=NULL)
-            free(this->backwardEntropyValues[i]);
+/* *****************************************/
+   if(this->backwardEntropyValues!=NULL) {
+      for(int i=0; i<timepoint; ++i) {
+         if(this->backwardEntropyValues[i]!=NULL) free(this->backwardEntropyValues[i]);
          this->backwardEntropyValues[i]=NULL;
       }
       free(this->backwardEntropyValues);
@@ -152,52 +137,45 @@ void reg_nmi::InitialiseMeasure(nifti_image *refImgPtr,
    this->ClearHistogram();
    // Extract the number of time point
    int timepoint=this->referenceTimePoint;
+
    // Reference and floating are resampled between 2 and bin-3
    for(int i=0; i<timepoint; ++i)
    {
       if(this->timePointWeight[i] > 0.0)
       {
-         reg_intensityRescale(this->referenceImagePointer,
-                              i,
-                              2.f,
-                              this->referenceBinNumber[i]-3);
-         reg_intensityRescale(this->floatingImagePointer,
-                              i,
-                              2.f,
-                              this->floatingBinNumber[i]-3);
+         reg_intensityRescale(this->referenceImagePointer, i, 2.f, this->referenceBinNumber[i]-3);
+         reg_intensityRescale(this->floatingImagePointer, i, 2.f, this->floatingBinNumber[i]-3);
       }
    }
-   // Create the joint histograms
+   // Create the joint histograms //申请计算机内存用于存放联合熵和边缘熵
    this->forwardJointHistogramPro=(double**)malloc(255*sizeof(double *));
    this->forwardJointHistogramLog=(double**)malloc(255*sizeof(double *));
    this->forwardEntropyValues=(double**)malloc(255*sizeof(double *));
+
    if(this->isSymmetric)
    {
       this->backwardJointHistogramPro=(double**)malloc(255*sizeof(double *));
       this->backwardJointHistogramLog=(double**)malloc(255*sizeof(double *));
       this->backwardEntropyValues=(double**)malloc(255*sizeof(double *));
    }
+
    for(int i=0; i<timepoint; ++i)
    {
       if(this->timePointWeight[i] > 0.0)
       {
          // Compute the total number of bin
-         this->totalBinNumber[i]=this->referenceBinNumber[i]*this->floatingBinNumber[i] +
-               this->referenceBinNumber[i] + this->floatingBinNumber[i];
-         this->forwardJointHistogramLog[i]=(double *)
-               calloc(this->totalBinNumber[i],sizeof(double));
-         this->forwardJointHistogramPro[i]=(double *)
-               calloc(this->totalBinNumber[i],sizeof(double));
-         this->forwardEntropyValues[i]=(double *)
-               calloc(4,sizeof(double));
+         this->totalBinNumber[i] =
+	 this->referenceBinNumber[i]*this->floatingBinNumber[i] + this->referenceBinNumber[i] + this->floatingBinNumber[i];
+
+         this->forwardJointHistogramLog[i]=(double *) calloc(this->totalBinNumber[i],sizeof(double));
+         this->forwardJointHistogramPro[i]=(double *) calloc(this->totalBinNumber[i],sizeof(double));
+         this->forwardEntropyValues[i]=(double *) calloc(4,sizeof(double));
+
          if(this->isSymmetric)
          {
-            this->backwardJointHistogramLog[i]=(double *)
-                  calloc(this->totalBinNumber[i],sizeof(double));
-            this->backwardJointHistogramPro[i]=(double *)
-                  calloc(this->totalBinNumber[i],sizeof(double));
-            this->backwardEntropyValues[i]=(double *)
-                  calloc(4,sizeof(double));
+            this->backwardJointHistogramLog[i]=(double *) calloc(this->totalBinNumber[i],sizeof(double));
+            this->backwardJointHistogramPro[i]=(double *) calloc(this->totalBinNumber[i],sizeof(double));
+            this->backwardEntropyValues[i]=(double *) calloc(4,sizeof(double));
          }
       }
       else
@@ -233,12 +211,9 @@ PrecisionTYPE GetBasisSplineValue(PrecisionTYPE x)
    if(x<2.0)
    {
       if(x<1.0)
-         value = (PrecisionTYPE)(2.0f/3.0f + (0.5f*x-1.0)*x*x);
+         value = (PrecisionTYPE)(2.0f/3.0f + (0.5f*x-1.0)*x*x);// 一阶Bspline函数为：(0.5x-1)x^2+2/3 
       else
-      {
-         x-=2.0f;
-         value = -x*x*x/6.0f;
-      }
+      { x-=2.0f; value = -x*x*x/6.0f; }
    }
    return value;
 }
@@ -253,17 +228,16 @@ PrecisionTYPE GetBasisSplineDerivativeValue(PrecisionTYPE ori)
       if(x<1.0)
          value = (PrecisionTYPE)((1.5f*x-2.0)*ori);
       else
-      {
-         x-=2.0f;
-         value = -0.5f * x * x;
-         if(ori<0.0f) value =-value;
+      { x-=2.0f;
+        value = -0.5f * x * x;
+        if(ori<0.0f) value =-value;
       }
    }
    return value;
 }
 /* *************************************************************** */
 /* *************************************************************** */
-template <class DTYPE>
+template <class DTYPE> //求取NMI的值
 void reg_getNMIValue(nifti_image *referenceImage,
                      nifti_image *warpedImage,
                      double *timePointWeight,
@@ -273,21 +247,17 @@ void reg_getNMIValue(nifti_image *referenceImage,
                      double **jointHistogramLog,
                      double **jointhistogramPro,
                      double **entropyValues,
-                     int *referenceMask
-                     )
+                     int *referenceMask)
 {
    // Create pointers to the image data arrays
    DTYPE *refImagePtr = static_cast<DTYPE *>(referenceImage->data);
    DTYPE *warImagePtr = static_cast<DTYPE *>(warpedImage->data);
    // Useful variable
-   size_t voxelNumber = (size_t)referenceImage->nx *
-         referenceImage->ny *
-         referenceImage->nz;
+   size_t voxelNumber = (size_t)referenceImage->nx*referenceImage->ny*referenceImage->nz;
    // Iterate over all active time points
-   for(int t=0; t<referenceImage->nt; ++t)
-   {
-      if(timePointWeight[t] > 0.0)
-      {
+   for(int t=0; t<referenceImage->nt; ++t) {
+      if(timePointWeight[t] > 0.0) {
+
 #ifndef NDEBUG
          char text[255];
          sprintf(text, "Computing NMI for time point %i",t);
@@ -297,30 +267,28 @@ void reg_getNMIValue(nifti_image *referenceImage,
          double *jointHistoProPtr = jointhistogramPro[t];
          double *jointHistoLogPtr = jointHistogramLog[t];
          // Empty the joint histogram
-         memset(jointHistoProPtr,0,totalBinNumber[t]*sizeof(double));
+         memset(jointHistoProPtr,0,totalBinNumber[t]*sizeof(double));//初始化联合熵数组为0
          // Fill the joint histograms using an approximation
          DTYPE *refPtr = &refImagePtr[t*voxelNumber];
          DTYPE *warPtr = &warImagePtr[t*voxelNumber];
+
          for(size_t voxel=0; voxel<voxelNumber; ++voxel)
          {
             if(referenceMask[voxel]>-1)
             {
                DTYPE refValue=refPtr[voxel];
                DTYPE warValue=warPtr[voxel];
-               if(refValue==refValue && warValue==warValue &&
-                     refValue>=0 && warValue>=0 &&
-                     refValue<referenceBinNumber[t] &&
-                     warValue<floatingBinNumber[t])
-               {
-                  ++jointHistoProPtr[static_cast<int>(refValue) +
-                        static_cast<int>(warValue) * referenceBinNumber[t]];
-               }
+	       //以2D数组的方式存放联合熵：即 refBinNumber[t]行，floatingBinNumber[t]列
+               if(refValue>=0 && warValue>=0 && refValue<referenceBinNumber[t] && warValue<floatingBinNumber[t])
+               { ++jointHistoProPtr[static_cast<int>(refValue) + static_cast<int>(warValue) * referenceBinNumber[t]]; }
             }
          }
+
          // Convolve the histogram with a cubic B-spline kernel
          double kernel[3];
-         kernel[0]=kernel[2]=GetBasisSplineValue(-1.);
+         kernel[0]=GetBasisSplineValue(-1.);
          kernel[1]=GetBasisSplineValue(0.);
+	 kernel[2]=GetBasisSplineValue(-1.);
          // Histogram is first smooth along the reference axis
          memset(jointHistoLogPtr,0,totalBinNumber[t]*sizeof(double));
          for(int f=0; f<floatingBinNumber[t]; ++f)
@@ -329,14 +297,12 @@ void reg_getNMIValue(nifti_image *referenceImage,
             {
                double value=0.0;
                int index = r-1;
-               double *ptrHisto = &jointHistoProPtr[index+referenceBinNumber[t]*f];
-
-               for(int it=0; it<3; it++)
-               {
-                  if(-1<index && index<referenceBinNumber[t])
-                  {
-                     value += *ptrHisto * kernel[it];
-                  }
+		//将联合熵数组的第f行第index列的地址存放到ptrHisto中
+               double *ptrHisto = &jointHistoProPtr[index+referenceBinNumber[t]*f];//此处为啥是index而不是r？？？
+               
+	       //对联合熵数组的整个第f行第r列进行卷积操作
+               for(int it=0; it<3; it++) {
+                  if(-1<index && index<referenceBinNumber[t]) { value += *ptrHisto * kernel[it]; }
                   ++ptrHisto;
                   ++index;
                }
