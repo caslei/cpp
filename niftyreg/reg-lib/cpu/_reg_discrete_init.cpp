@@ -364,16 +364,13 @@ void reg_discrete_init::Run()
    sprintf(text, "Discretised label number = %i", this->label_nD_num);
    reg_print_info("reg_discrete_init", text);
    // Store the intial transformation parametrisation
-   memcpy(this->input_transformation->data, this->controlPointImage->data,
-          this->node_number*this->image_dim*sizeof(float));
+   memcpy(this->input_transformation->data, this->controlPointImage->data, this->node_number*this->image_dim*sizeof(float));
    // Compute the discretised data term values
    this->GetDiscretisedMeasure();
    // Add the l2 regularisation
    //this->AddL2Penalisation(1.e-10f);
    // Initialise the regularise with the measure only
-   memcpy(this->regularised_measures,
-          this->discretised_measures,
-          this->label_nD_num*this->node_number*sizeof(float));
+   memcpy(this->regularised_measures, this->discretised_measures, this->label_nD_num*this->node_number*sizeof(float));
    // Extract the best label
    this->getOptimalLabel();
    // Update the control point positions
@@ -383,8 +380,7 @@ void reg_discrete_init::Run()
       this->GetRegularisedMeasure();
       this->getOptimalLabel();
       this->UpdateTransformation();
-      sprintf(text, "Regularisation %i/%i - BE=%.2f - [%2.2f%%]",
-             i+1, this->reg_max_it,
+      sprintf(text, "Regularisation %i/%i - BE=%.2f - [%2.2f%%]", i+1, this->reg_max_it,
              reg_spline_approxBendingEnergy(this->controlPointImage),
              100.f*(float)this->regularisation_convergence/this->node_number);
       reg_print_info("reg_discrete_init", text);
