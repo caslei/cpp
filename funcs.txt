@@ -36,6 +36,11 @@ std::copy()
 std::vector<T>
 std::pow()
 std::sqrt()
+std::max_element()
+
+
+
+
 
 #ifndef NDEBUG
 //some statements
