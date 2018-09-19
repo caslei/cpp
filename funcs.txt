@@ -7,7 +7,12 @@ malloc()
 calloc()
 free()
 ceil()
+
+
+// 符号表达式非常常用
 exppression? A:B
+
+
 floor()
 error()
 std::runtime_error()
