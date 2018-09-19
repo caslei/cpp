@@ -39,3 +39,14 @@ log()
 
 
 <map>, <vector>, <list>三者间的区别？？？
+
+//======================================
+#define SetMacro(name,type) \
+virtual void Set##name (type _arg) \
+  { \
+  if (this->name != _arg) \
+    { \
+    this->name = _arg; \
+    } \
+  }
+//======================================
