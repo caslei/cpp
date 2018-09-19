@@ -17,6 +17,7 @@ reg_discrete_init::reg_discrete_init(reg_measure *_measure,
    this->regularisation_weight = _reg_weight;
    this->reg_max_it = _reg_max_it;
 
+   // 判断是否能够整除的方式
    if(this->discrete_radius/this->discrete_increment != (float)this->discrete_radius/(float)this->discrete_increment){
       reg_print_fct_error("reg_discrete_init:reg_discrete_init()");
       reg_print_msg_error("The discrete_radius is expected to be a multiple of discretise_increment");//倍数关系
@@ -32,6 +33,7 @@ reg_discrete_init::reg_discrete_init(reg_measure *_measure,
 
    // Allocate the discretised values in voxel
    int *discrete_values_vox = (int *)malloc(this->label_1D_num*sizeof(int));
+
    int currentValue = -this->discrete_radius;
    for(int i = 0;i<this->label_1D_num;i++) {
       discrete_values_vox[i]=currentValue;
@@ -55,18 +57,10 @@ reg_discrete_init::reg_discrete_init(reg_measure *_measure,
          for(int x=0; x<this->label_1D_num; ++x){
             disp_vox[0]=discrete_values_vox[x];
 
-            this->discrete_values_mm[0][i] =
-                  disp_vox[0] * vox2mm.m[0][0] +
-                  disp_vox[1] * vox2mm.m[0][1] +
-                  disp_vox[2] * vox2mm.m[0][2];
-            this->discrete_values_mm[1][i] =
-                  disp_vox[0] * vox2mm.m[1][0] +
-                  disp_vox[1] * vox2mm.m[1][1] +
-                  disp_vox[2] * vox2mm.m[1][2];
-            this->discrete_values_mm[2][i] =
-                  disp_vox[0] * vox2mm.m[2][0] +
-                  disp_vox[1] * vox2mm.m[2][1] +
-                  disp_vox[2] * vox2mm.m[2][2];
+            this->discrete_values_mm[0][i] = disp_vox[0] * vox2mm.m[0][0] + disp_vox[1] * vox2mm.m[0][1] + disp_vox[2] * vox2mm.m[0][2];
+            this->discrete_values_mm[1][i] = disp_vox[0] * vox2mm.m[1][0] + disp_vox[1] * vox2mm.m[1][1] + disp_vox[2] * vox2mm.m[1][2];
+            this->discrete_values_mm[2][i] = disp_vox[0] * vox2mm.m[2][0] + disp_vox[1] * vox2mm.m[2][1] + disp_vox[2] * vox2mm.m[2][2];
+
             ++i;
          }
       }
@@ -98,33 +92,27 @@ reg_discrete_init::reg_discrete_init(reg_measure *_measure,
 /*****************************************************/
 reg_discrete_init::~reg_discrete_init()
 {
-   if(this->discretised_measures!=NULL)
-      free(this->discretised_measures);
+   if(this->discretised_measures!=NULL) free(this->discretised_measures);
    this->discretised_measures=NULL;
 
-   if(this->regularised_measures!=NULL)
-      free(this->regularised_measures);
+   if(this->regularised_measures!=NULL) free(this->regularised_measures);
    this->regularised_measures=NULL;
 
-   if(this->l2_penalisation!=NULL)
-      free(this->l2_penalisation);
+   if(this->l2_penalisation!=NULL) free(this->l2_penalisation);
    this->l2_penalisation=NULL;
 
-   if(this->optimal_label_index!=NULL)
-      free(this->optimal_label_index);
+   if(this->optimal_label_index!=NULL) free(this->optimal_label_index);
    this->optimal_label_index=NULL;
 
    for(int i=0; i<this->image_dim; ++i){
-      if(this->discrete_values_mm[i]!=NULL)
-         free(this->discrete_values_mm[i]);
+      if(this->discrete_values_mm[i]!=NULL) free(this->discrete_values_mm[i]);
       this->discrete_values_mm[i]=NULL;
    }
-   if(this->discrete_values_mm!=NULL)
-      free(this->discrete_values_mm);
+
+   if(this->discrete_values_mm!=NULL) free(this->discrete_values_mm);
    this->discrete_values_mm=NULL;
 
-   if(this->input_transformation!=NULL)
-      nifti_image_free(this->input_transformation);
+   if(this->input_transformation!=NULL) nifti_image_free(this->input_transformation);
    this->input_transformation=NULL;
 }
 /*****************************************************/
