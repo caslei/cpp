@@ -22,11 +22,10 @@ reg_discrete_init::reg_discrete_init(reg_measure *_measure,
       reg_print_msg_error("The discrete_radius is expected to be a multiple of discretise_increment");//倍数关系
    }
 
-   this->image_dim = this->referenceImage->nz > 1 ? 3 :2;
+   this->image_dim = this->referenceImage->nz > 1 ? 3 :2;//2D or 3D image
    this->label_1D_num = (this->discrete_radius / this->discrete_increment ) * 2 + 1;
    this->label_nD_num = static_cast<int>(std::pow((double) this->label_1D_num,this->image_dim));
-   this->node_number = (size_t)this->controlPointImage->nx *
-         this->controlPointImage->ny * this->controlPointImage->nz;
+   this->node_number = (size_t)this->controlPointImage->nx * this->controlPointImage->ny * this->controlPointImage->nz;
 
    this->input_transformation=nifti_copy_nim_info(this->controlPointImage);
    this->input_transformation->data=(float *)malloc(this->node_number*this->image_dim*sizeof(float));
@@ -46,8 +45,8 @@ reg_discrete_init::reg_discrete_init(reg_measure *_measure,
    }
    float disp_vox[3];
    mat44 vox2mm = this->referenceImage->qto_xyz;
-   if(this->referenceImage->sform_code>0)
-      vox2mm = this->referenceImage->sto_xyz;
+   if(this->referenceImage->sform_code>0) vox2mm = this->referenceImage->sto_xyz;
+
    int i=0;
    for(int z=0; z<this->label_1D_num; ++z){
       disp_vox[2]=discrete_values_vox[z];
@@ -55,6 +54,7 @@ reg_discrete_init::reg_discrete_init(reg_measure *_measure,
          disp_vox[1]=discrete_values_vox[y];
          for(int x=0; x<this->label_1D_num; ++x){
             disp_vox[0]=discrete_values_vox[x];
+
             this->discrete_values_mm[0][i] =
                   disp_vox[0] * vox2mm.m[0][0] +
                   disp_vox[1] * vox2mm.m[0][1] +
@@ -77,8 +77,7 @@ reg_discrete_init::reg_discrete_init(reg_measure *_measure,
    this->optimal_label_index=(int *)malloc(this->node_number*sizeof(int));
    currentValue= (this->label_1D_num-1)/2;
    currentValue = (currentValue*this->label_1D_num+currentValue)*this->label_1D_num+currentValue;
-   for(size_t n=0; n<this->node_number; ++n)
-      this->optimal_label_index[n]=currentValue;
+   for(size_t n=0; n<this->node_number; ++n) this->optimal_label_index[n]=currentValue;
 
    //To store the cost data term
    this->discretised_measures = (float *)calloc(this->node_number*this->label_nD_num, sizeof(float));
@@ -93,7 +92,7 @@ reg_discrete_init::reg_discrete_init(reg_measure *_measure,
    for(float z=-this->discrete_radius; z<=this->discrete_radius; z+=this->discrete_increment)
       for(float y=-this->discrete_radius; y<=this->discrete_radius; y+=this->discrete_increment)
          for(float x=-this->discrete_radius; x<=this->discrete_radius; x+=this->discrete_increment)
-            this->l2_penalisation[label_index++] = std::sqrt(x*x+y*y+z*z);
+            this->l2_penalisation[label_index++] = std::sqrt(x*x+y*y+z*z); //bending energy的计算方式
 }
 /*****************************************************/
 /*****************************************************/
