@@ -17,10 +17,9 @@ reg_discrete_init::reg_discrete_init(reg_measure *_measure,
    this->regularisation_weight = _reg_weight;
    this->reg_max_it = _reg_max_it;
 
-   if(this->discrete_radius/this->discrete_increment !=
-      (float)this->discrete_radius/(float)this->discrete_increment){
+   if(this->discrete_radius/this->discrete_increment != (float)this->discrete_radius/(float)this->discrete_increment){
       reg_print_fct_error("reg_discrete_init:reg_discrete_init()");
-      reg_print_msg_error("The discrete_radius is expected to be a multiple of discretise_increment");
+      reg_print_msg_error("The discrete_radius is expected to be a multiple of discretise_increment");//倍数关系
    }
 
    this->image_dim = this->referenceImage->nz > 1 ? 3 :2;
