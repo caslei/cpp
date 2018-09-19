@@ -140,8 +140,8 @@ void reg_discrete_init::getOptimalLabel()
                              this->regularised_measures+(node+1)*this->label_nD_num) -
                             (this->regularised_measures+node*this->label_nD_num);
       this->optimal_label_index[node] = opt_label;
-      if(current_optimal != opt_label)
-         ++this->regularisation_convergence;
+
+      if(current_optimal != opt_label) ++this->regularisation_convergence;
    }
 #ifndef NDEBUG
    reg_print_msg_debug("reg_discrete_init::getOptimalLabel done");
@@ -169,6 +169,7 @@ void reg_discrete_init::UpdateTransformation()
          size_t node = (z*this->controlPointImage->ny+y)*this->controlPointImage->nx+1;
          for(int x=1; x<this->controlPointImage->nx-1; x++){
             int optimal_id = this->optimal_label_index[node];
+
             cpPtrX[node] = inputCpPtrX[node] + scaleFactor*this->discrete_values_mm[0][optimal_id];
             cpPtrY[node] = inputCpPtrY[node] + scaleFactor*this->discrete_values_mm[1][optimal_id];
             cpPtrZ[node] = inputCpPtrZ[node] + scaleFactor*this->discrete_values_mm[2][optimal_id];
@@ -191,23 +192,25 @@ void reg_discrete_init::AddL2Penalisation(float weight)
    for(float z=-this->discrete_radius; z<=this->discrete_radius; z+=this->discrete_increment)
       for(float y=-this->discrete_radius; y<=this->discrete_radius; y+=this->discrete_increment)
          for(float x=-this->discrete_radius; x<=this->discrete_radius; x+=this->discrete_increment)
-            l2_penalisation[label_index++] = weight * sqrt(x*x+y*y+z*z);
+            l2_penalisation[label_index++] = weight * sqrt(x*x+y*y+z*z); //弯曲能量
 
    // Loop over all control points
    int measure_index, n;
    int _node_number = static_cast<int>(this->node_number);
    int _label_nD_num = this->label_nD_num;
    float *_discretised_measures = &this->discretised_measures[0];
+
 #if defined (_OPENMP)
    #pragma omp parallel for default(none) \
    shared(_node_number, _label_nD_num, _discretised_measures, l2_penalisation) \
    private(measure_index, n, label_index)
 #endif
+
    for(n=0; n<_node_number; ++n){
       measure_index = n * _label_nD_num;
       // Loop over all label
       for(label_index=0; label_index<_label_nD_num; ++label_index){
-         _discretised_measures[measure_index] -= l2_penalisation[label_index];
+         _discretised_measures[measure_index] -= l2_penalisation[label_index];//弯曲能量越小越好
          ++measure_index;
       }
    }
@@ -233,6 +236,7 @@ void reg_discrete_init::GetRegularisedMeasure()
    float _basisXX, _basisYY, _basisZZ, _basisXY, _basisYZ, _basisXZ;
    float basis[4], first[4], second[4];
    get_BSplineBasisValues<float>(0.f, basis, first, second);
+
    int i=0;
    for(int c=0; c<3; ++c){
       for(int b=0; b<3; ++b){
@@ -314,8 +318,8 @@ void reg_discrete_init::GetRegularisedMeasure()
             float *_discrete_values_mm_x = this->discrete_values_mm[0];
             float *_discrete_values_mm_y = this->discrete_values_mm[1];
             float *_discrete_values_mm_z = this->discrete_values_mm[2];
-            for(int label=0; label<this->label_nD_num; ++label){
 
+            for(int label=0; label<this->label_nD_num; ++label){ 
                float valX = inputCpPtrX[node] + *_discrete_values_mm_x++;
                float valY = inputCpPtrY[node] + *_discrete_values_mm_y++;
                float valZ = inputCpPtrZ[node] + *_discrete_values_mm_z++;
@@ -324,25 +328,17 @@ void reg_discrete_init::GetRegularisedMeasure()
                this->regularised_measures[measure_index] =
                      (1.f-this->regularisation_weight-this->l2_weight) * this->discretised_measures[measure_index] -
                      this->regularisation_weight * (
-                     reg_pow2(XX_x + valX * _basisXX) +
-                     reg_pow2(XX_y + valY * _basisXX) +
-                     reg_pow2(XX_z + valZ * _basisXX) +
-                     reg_pow2(YY_x + valX * _basisYY) +
-                     reg_pow2(YY_y + valY * _basisYY) +
-                     reg_pow2(YY_z + valZ * _basisYY) +
-                     reg_pow2(ZZ_x + valX * _basisZZ) +
-                     reg_pow2(ZZ_y + valY * _basisZZ) +
-                     reg_pow2(ZZ_z + valZ * _basisZZ) + 2.0 * (
-                     reg_pow2(XY_x + valX * _basisXY) +
-                     reg_pow2(XY_y + valY * _basisXY) +
-                     reg_pow2(XY_z + valZ * _basisXY) +
-                     reg_pow2(XZ_x + valX * _basisXZ) +
-                     reg_pow2(XZ_y + valY * _basisXZ) +
-                     reg_pow2(XZ_z + valZ * _basisXZ) +
-                     reg_pow2(YZ_x + valX * _basisYZ) +
-                     reg_pow2(YZ_y + valY * _basisYZ) +
-                     reg_pow2(YZ_z + valZ * _basisYZ)
-                     ) ) - this->l2_weight * this->l2_penalisation[label];
+                     reg_pow2(XX_x + valX * _basisXX) + reg_pow2(XX_y + valY * _basisXX) +
+                     reg_pow2(XX_z + valZ * _basisXX) + reg_pow2(YY_x + valX * _basisYY) +
+                     reg_pow2(YY_y + valY * _basisYY) + reg_pow2(YY_z + valZ * _basisYY) +
+                     reg_pow2(ZZ_x + valX * _basisZZ) + reg_pow2(ZZ_y + valY * _basisZZ) +
+                     reg_pow2(ZZ_z + valZ * _basisZZ) + 
+		     2.0 * ( reg_pow2(XY_x + valX * _basisXY) + reg_pow2(XY_y + valY * _basisXY) +
+                     reg_pow2(XY_z + valZ * _basisXY) + reg_pow2(XZ_x + valX * _basisXZ) +
+                     reg_pow2(XZ_y + valY * _basisXZ) + reg_pow2(XZ_z + valZ * _basisXZ) +
+                     reg_pow2(YZ_x + valX * _basisYZ) + reg_pow2(YZ_y + valY * _basisYZ) +
+                     reg_pow2(YZ_z + valZ * _basisYZ)) ) - this->l2_weight * this->l2_penalisation[label];
+
             } // label
             ++node;
          } // x
