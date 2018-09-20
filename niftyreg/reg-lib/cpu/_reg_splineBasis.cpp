@@ -18,42 +18,59 @@
 template<class DTYPE>
 void get_BSplineBasisValues(DTYPE basis, DTYPE *values)
 {
-   DTYPE FF= basis*basis;
-   DTYPE FFF= FF*basis;
+   DTYPE FF= basis*basis;// x^2
+   DTYPE FFF= FF*basis;  // x^3
    DTYPE MF=static_cast<DTYPE>(1.0-basis);
    values[0] = static_cast<DTYPE>((MF)*(MF)*(MF)/(6.0));
    values[1] = static_cast<DTYPE>((3.0*FFF - 6.0*FF + 4.0)/6.0);
    values[2] = static_cast<DTYPE>((-3.0*FFF + 3.0*FF + 3.0*basis + 1.0)/6.0);
    values[3] = static_cast<DTYPE>(FFF/6.0);
+
+   //为啥没有返回值？？？
 }
+
 template void get_BSplineBasisValues<float>(float, float *);
 template void get_BSplineBasisValues<double>(double, double *);
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 template<class DTYPE>
 void get_BSplineBasisValues(DTYPE basis, DTYPE *values, DTYPE *first)
 {
+   //调用前面已定义的小模块，代码的重复可用性，每个函数只实现一个最基本的功能，
    get_BSplineBasisValues<DTYPE>(basis, values);
    first[3]= static_cast<DTYPE>(basis * basis / 2.0);
    first[0]= static_cast<DTYPE>(basis - 1.0/2.0 - first[3]);
    first[2]= static_cast<DTYPE>(1.0 + first[0] - 2.0*first[3]);
    first[1]= - first[0] - first[2] - first[3];
+
+   //为啥没有返回值？？？
 }
+
 template void get_BSplineBasisValues<float>(float, float *, float *);
 template void get_BSplineBasisValues<double>(double, double *, double *);
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 template<class DTYPE>
 void get_BSplineBasisValues(DTYPE basis, DTYPE *values, DTYPE *first, DTYPE *second)
 {
+   // 调用由子模块堆积起来功能相对复杂的函数，实现更高水平的功能
    get_BSplineBasisValues<DTYPE>(basis, values, first);
    second[3]= basis;
    second[0]= static_cast<DTYPE>(1.0 - second[3]);
    second[2]= static_cast<DTYPE>(second[0] - 2.0*second[3]);
    second[1]= - second[0] - second[2] - second[3];
+
+   //为啥没有返回值？？？
 }
+
 template void get_BSplineBasisValues<float>(float, float *, float *, float *);
 template void get_BSplineBasisValues<double>(double, double *, double *, double *);
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 template<class DTYPE>
