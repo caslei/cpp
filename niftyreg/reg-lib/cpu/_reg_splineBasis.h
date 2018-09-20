@@ -14,7 +14,7 @@
 
 #include "_reg_tools.h"
 
-
+//函数重载
 extern "C++" template<class DTYPE>
 void get_BSplineBasisValues(DTYPE basis, DTYPE *values);
 
@@ -23,7 +23,8 @@ void get_BSplineBasisValues(DTYPE basis, DTYPE *values, DTYPE *first);
 
 extern "C++" template<class DTYPE>
 void get_BSplineBasisValues(DTYPE basis, DTYPE *values, DTYPE *first, DTYPE *second);
-
+ 
+//================================================================
 
 extern "C++" template<class DTYPE>
 void get_BSplineBasisValue(DTYPE basis, int index, DTYPE &value);
@@ -34,11 +35,15 @@ void get_BSplineBasisValue(DTYPE basis, int index, DTYPE &value, DTYPE &first);
 extern "C++" template<class DTYPE>
 void get_BSplineBasisValue(DTYPE basis, int index, DTYPE &value, DTYPE &first, DTYPE &second);
 
+//================================================================
+
 extern "C++" template <class DTYPE>
 void set_first_order_basis_values(DTYPE *basisX, DTYPE *basisY);
 
 extern "C++" template <class DTYPE>
 void set_first_order_basis_values(DTYPE *basisX, DTYPE *basisY, DTYPE *basisZ);
+
+//================================================================
 
 extern "C++" template <class DTYPE>
 void set_second_order_bspline_basis_values(DTYPE *basisXX, DTYPE *basisYY, DTYPE *basisXY);
@@ -60,6 +65,8 @@ void get_SplineBasisValues(DTYPE basis, DTYPE *values, DTYPE *first);
 
 extern "C++" template<class DTYPE>
 void get_SplineBasisValues(DTYPE basis, DTYPE *values, DTYPE *first, DTYPE *second);
+
+//================================================================
 
 extern "C++" template <class DTYPE>
 void get_SlidedValues(DTYPE &defX,
