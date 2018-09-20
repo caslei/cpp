@@ -16,48 +16,33 @@
 
 
 extern "C++" template<class DTYPE>
-void get_BSplineBasisValues(DTYPE basis,
-                            DTYPE *values);
+void get_BSplineBasisValues(DTYPE basis, DTYPE *values);
+
 extern "C++" template<class DTYPE>
-void get_BSplineBasisValues(DTYPE basis,
-                            DTYPE *values,
-                            DTYPE *first);
+void get_BSplineBasisValues(DTYPE basis, DTYPE *values, DTYPE *first);
+
 extern "C++" template<class DTYPE>
-void get_BSplineBasisValues(DTYPE basis,
-                            DTYPE *values,
-                            DTYPE *first,
-                            DTYPE *second);
+void get_BSplineBasisValues(DTYPE basis, DTYPE *values, DTYPE *first, DTYPE *second);
 
 
 extern "C++" template<class DTYPE>
-void get_BSplineBasisValue(DTYPE basis,
-                           int index,
-                           DTYPE &value);
+void get_BSplineBasisValue(DTYPE basis, int index, DTYPE &value);
+
 extern "C++" template<class DTYPE>
-void get_BSplineBasisValue(DTYPE basis,
-                           int index,
-                           DTYPE &value,
-                           DTYPE &first);
+void get_BSplineBasisValue(DTYPE basis, int index, DTYPE &value, DTYPE &first);
+
 extern "C++" template<class DTYPE>
-void get_BSplineBasisValue(DTYPE basis,
-                           int index,
-                           DTYPE &value,
-                           DTYPE &first,
-                           DTYPE &second);
+void get_BSplineBasisValue(DTYPE basis, int index, DTYPE &value, DTYPE &first, DTYPE &second);
 
 extern "C++" template <class DTYPE>
-void set_first_order_basis_values(DTYPE *basisX,
-                                  DTYPE *basisY);
+void set_first_order_basis_values(DTYPE *basisX, DTYPE *basisY);
 
 extern "C++" template <class DTYPE>
-void set_first_order_basis_values(DTYPE *basisX,
-                                  DTYPE *basisY,
-                                  DTYPE *basisZ);
+void set_first_order_basis_values(DTYPE *basisX, DTYPE *basisY, DTYPE *basisZ);
 
 extern "C++" template <class DTYPE>
-void set_second_order_bspline_basis_values(DTYPE *basisXX,
-                                           DTYPE *basisYY,
-                                           DTYPE *basisXY);
+void set_second_order_bspline_basis_values(DTYPE *basisXX, DTYPE *basisYY, DTYPE *basisXY);
+
 extern "C++" template <class DTYPE>
 void set_second_order_bspline_basis_values(DTYPE *basisXX,
                                            DTYPE *basisYY,
@@ -68,17 +53,13 @@ void set_second_order_bspline_basis_values(DTYPE *basisXX,
 
 
 extern "C++" template<class DTYPE>
-void get_SplineBasisValues(DTYPE basis,
-                           DTYPE *values);
+void get_SplineBasisValues(DTYPE basis, DTYPE *values);
+
 extern "C++" template<class DTYPE>
-void get_SplineBasisValues(DTYPE basis,
-                           DTYPE *values,
-                           DTYPE *first);
+void get_SplineBasisValues(DTYPE basis, DTYPE *values, DTYPE *first);
+
 extern "C++" template<class DTYPE>
-void get_SplineBasisValues(DTYPE basis,
-                           DTYPE *values,
-                           DTYPE *first,
-                           DTYPE *second);
+void get_SplineBasisValues(DTYPE basis, DTYPE *values, DTYPE *first, DTYPE *second);
 
 extern "C++" template <class DTYPE>
 void get_SlidedValues(DTYPE &defX,
@@ -90,6 +71,7 @@ void get_SlidedValues(DTYPE &defX,
                       mat44 *df_voxel2Real,
                       int *dim,
                       bool displacement);
+
 extern "C++" template <class DTYPE>
 void get_SlidedValues(DTYPE &defX,
                       DTYPE &defY,
@@ -115,6 +97,7 @@ void get_GridValues(int startX,
                     DTYPE *dispY,
                     bool approx,
                     bool displacement);
+
 extern "C++" template <class DTYPE>
 void get_GridValues(int startX,
                     int startY,
