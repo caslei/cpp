@@ -94,9 +94,14 @@ void get_BSplineBasisValue(DTYPE basis, int index, DTYPE &value)
       value = (DTYPE)0;
       break;
    }
+
+   //为啥没有返回值？？？
 }
+
 template void get_BSplineBasisValue<float>(float, int, float &);
 template void get_BSplineBasisValue<double>(double, int, double &);
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 template<class DTYPE>
@@ -121,9 +126,14 @@ void get_BSplineBasisValue(DTYPE basis, int index, DTYPE &value, DTYPE &first)
       first = (DTYPE)0;
       break;
    }
+
+   //为啥没有返回值？？？
 }
+
 template void get_BSplineBasisValue<float>(float, int, float &, float &);
 template void get_BSplineBasisValue<double>(double, int, double &, double &);
+
+
 /* *************************************************************** */
 /* *************************************************************** */
 template<class DTYPE>
@@ -196,7 +206,8 @@ template void get_SplineBasisValues<double>(double, double *, double *, double *
 template <class DTYPE>
 void set_first_order_basis_values(DTYPE *basisX, DTYPE *basisY)
 {
-   double BASIS[4], FIRST[4];get_BSplineBasisValues<double>(0, BASIS, FIRST);
+   double BASIS[4], FIRST[4];
+   get_BSplineBasisValues<double>(0, BASIS, FIRST);//输入输出同时作为函数的参数，很有意思！！！
    int index=0;
    for(int y=0;y<3;++y){
       for(int x=0;x<3;++x){
@@ -502,53 +513,36 @@ template void set_second_order_bspline_basis_values<double>(double *, double *, 
 /* *************************************************************** */
 /* *************************************************************** */
 template <class DTYPE>
-void get_SlidedValues(DTYPE &defX,
-                      DTYPE &defY,
-                      int X,
-                      int Y,
-                      DTYPE *defPtrX,
-                      DTYPE *defPtrY,
-                      mat44 *df_voxel2Real,
-                      int *dim,
-                      bool displacement)
+void get_SlidedValues(DTYPE &defX, DTYPE &defY, int X, int Y, DTYPE *defPtrX, DTYPE *defPtrY,
+                      mat44 *df_voxel2Real, int *dim, bool displacement)
 {
    int newX=X;
    int newY=Y;
    if(X<0)
-   {
-      newX=0;
-   }
+   { newX=0; }
    else if(X>=dim[1])
-   {
-      newX=dim[1]-1;
-   }
+   { newX=dim[1]-1; }
+
    if(Y<0)
-   {
-      newY=0;
-   }
+   { newY=0; }
    else if(Y>=dim[2])
-   {
-      newY=dim[2]-1;
-   }
+   { newY=dim[2]-1; }
+
    DTYPE shiftValueX = 0;
    DTYPE shiftValueY = 0;
    if(!displacement)
    {
       int shiftIndexX=X-newX;
       int shiftIndexY=Y-newY;
-      shiftValueX = shiftIndexX * df_voxel2Real->m[0][0] +
-            shiftIndexY * df_voxel2Real->m[0][1];
-      shiftValueY = shiftIndexX * df_voxel2Real->m[1][0] +
-            shiftIndexY * df_voxel2Real->m[1][1];
+      shiftValueX = shiftIndexX * df_voxel2Real->m[0][0] + shiftIndexY * df_voxel2Real->m[0][1];
+      shiftValueY = shiftIndexX * df_voxel2Real->m[1][0] + shiftIndexY * df_voxel2Real->m[1][1];
    }
    size_t index=newY*dim[1]+newX;
    defX = defPtrX[index] + shiftValueX;
    defY = defPtrY[index] + shiftValueY;
 }
-template void get_SlidedValues<float>(float &, float &, int, int,
-float *, float *, mat44 *, int *, bool);
-template void get_SlidedValues<double>(double &, double &, int, int,
-double *, double *, mat44 *, int *, bool);
+template void get_SlidedValues<float>(float &, float &, int, int, float *, float *, mat44 *, int *, bool);
+template void get_SlidedValues<double>(double &, double &, int, int, double *, double *, mat44 *, int *, bool);
 /* *************************************************************** */
 template <class DTYPE>
 void get_SlidedValues(DTYPE &defX,
@@ -568,29 +562,20 @@ void get_SlidedValues(DTYPE &defX,
    int newY=Y;
    int newZ=Z;
    if(X<0)
-   {
-      newX=0;
-   }
+   { newX=0; }
    else if(X>=dim[1])
-   {
-      newX=dim[1]-1;
-   }
+   { newX=dim[1]-1; }
+
    if(Y<0)
-   {
-      newY=0;
-   }
+   { newY=0; }
    else if(Y>=dim[2])
-   {
-      newY=dim[2]-1;
-   }
+   { newY=dim[2]-1; }
+
    if(Z<0)
-   {
-      newZ=0;
-   }
+   { newZ=0; }
    else if(Z>=dim[3])
-   {
-      newZ=dim[3]-1;
-   }
+   { newZ=dim[3]-1; }
+
    DTYPE shiftValueX=0;
    DTYPE shiftValueY=0;
    DTYPE shiftValueZ=0;
@@ -617,10 +602,8 @@ void get_SlidedValues(DTYPE &defX,
    defY = defPtrY[index] + shiftValueY;
    defZ = defPtrZ[index] + shiftValueZ;
 }
-template void get_SlidedValues<float>(float &, float &, float &, int, int, int,
-float *, float *, float *, mat44 *, int *, bool);
-template void get_SlidedValues<double>(double &, double &, double &, int, int, int,
-double *, double *, double *, mat44 *, int *, bool);
+template void get_SlidedValues<float>(float &, float &, float &, int, int, int, float *, float *, float *, mat44 *, int *, bool);
+template void get_SlidedValues<double>(double &, double &, double &, int, int, int, double *, double *, double *, mat44 *, int *, bool);
 /* *************************************************************** */
 /* *************************************************************** */
 template <class DTYPE>
@@ -645,7 +628,8 @@ void get_GridValues(int startX,
    mat44 *voxel2realMatrix=NULL;
    if(splineControlPoint->sform_code>0)
       voxel2realMatrix=&(splineControlPoint->sto_xyz);
-   else voxel2realMatrix=&(splineControlPoint->qto_xyz);
+   else 
+      voxel2realMatrix=&(splineControlPoint->qto_xyz);
 
    for(int Y=startY; Y<startY+range; Y++)
    {
@@ -657,6 +641,7 @@ void get_GridValues(int startX,
          yyPtr = &splineY[index];
       }
       else out=true;
+
       for(int X=startX; X<startX+range; X++)
       {
          if(X>-1 && X<splineControlPoint->nx && out==false)
@@ -680,10 +665,8 @@ void get_GridValues(int startX,
       }
    }
 }
-template void get_GridValues<float>(int, int, nifti_image *,
-float *, float *, float *, float *, bool, bool);
-template void get_GridValues<double>(int, int, nifti_image *,
-double *, double *, double *, double *, bool, bool);
+template void get_GridValues<float>(int, int, nifti_image *, float *, float *, float *, float *, bool, bool);
+template void get_GridValues<double>(int, int, nifti_image *, double *, double *, double *, double *, bool, bool);
 /* *************************************************************** */
 template <class DTYPE>
 void get_GridValues(int startX,
@@ -700,8 +683,7 @@ void get_GridValues(int startX,
                     bool displacement)
 {
    int range=4;
-   if(approx==true)
-      range=3;
+   if(approx==true) range=3;
 
    size_t index;
    size_t coord=0;
