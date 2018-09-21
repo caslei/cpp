@@ -24,9 +24,8 @@ struct _reg_sorted_point3D
     float warped[3];
 
     double distance;
-
-    _reg_sorted_point3D(float * t, float * r, double d)
-        :distance(d)
+    //struct中定义成员函数，并且可以用冒号(:)初始化成员数据？？？？？
+    _reg_sorted_point3D(float * t, float * r, double d) :distance(d)
     {
         reference[0] = t[0];
         reference[1] = t[1];
