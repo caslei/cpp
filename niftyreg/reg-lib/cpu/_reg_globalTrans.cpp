@@ -19,10 +19,7 @@
 /* *************************************************************** */
 /* *************************************************************** */
 template <class FieldTYPE>
-void reg_affine_deformationField2D(mat44 *affineTransformation,
-                                   nifti_image *deformationFieldImage,
-                                   bool composition,
-                                   int *mask)
+void reg_affine_deformationField2D(mat44 *affineTransformation, nifti_image *deformationFieldImage, bool composition, int *mask)
 {
    size_t voxelNumber=deformationFieldImage->nx*deformationFieldImage->ny;
    FieldTYPE *deformationFieldPtrX = static_cast<FieldTYPE *>(deformationFieldImage->data);
@@ -30,9 +27,7 @@ void reg_affine_deformationField2D(mat44 *affineTransformation,
 
    mat44 *referenceMatrix;
    if(deformationFieldImage->sform_code>0)
-   {
-      referenceMatrix=&(deformationFieldImage->sto_xyz);
-   }
+   { referenceMatrix=&(deformationFieldImage->sto_xyz); }
    else referenceMatrix=&(deformationFieldImage->qto_xyz);
 
    mat44 transformationMatrix;
@@ -47,12 +42,14 @@ void reg_affine_deformationField2D(mat44 *affineTransformation,
    double voxel[3]={0,0,0}, position[3]={0,0,0};
    int x=0, y=0;
    size_t index=0;
+
 #if defined (_OPENMP)
 #pragma omp parallel for default(none) \
    shared(deformationFieldImage, transformationMatrix, affineTransformation, \
    deformationFieldPtrX, deformationFieldPtrY, mask, composition) \
    private(voxel, position, x, y, index)
 #endif
+
    for(y=0; y<deformationFieldImage->ny; y++)
    {
       index=y*deformationFieldImage->nx;
@@ -81,10 +78,7 @@ void reg_affine_deformationField2D(mat44 *affineTransformation,
 }
 /* *************************************************************** */
 template <class FieldTYPE>
-void reg_affine_deformationField3D(mat44 *affineTransformation,
-                                   nifti_image *deformationFieldImage,
-                                   bool composition,
-                                   int *mask)
+void reg_affine_deformationField3D(mat44 *affineTransformation, nifti_image *deformationFieldImage, bool composition, int *mask)
 {
    size_t voxelNumber=deformationFieldImage->nx*deformationFieldImage->ny*deformationFieldImage->nz;
    FieldTYPE *deformationFieldPtrX = static_cast<FieldTYPE *>(deformationFieldImage->data);
@@ -101,7 +95,7 @@ void reg_affine_deformationField3D(mat44 *affineTransformation,
    mat44 transformationMatrix;
    if(composition==true)
       transformationMatrix = *affineTransformation;
-   else transformationMatrix = reg_mat44_mul(affineTransformation, referenceMatrix);
+   else transformationMatrix = reg_mat44_mul(affineTransformation, referenceMatrix); // reg_mat44_mul() 来自 _reg_maths_eigen.h
 
 #ifndef NDEBUG
    reg_mat44_disp(&transformationMatrix, (char *)"[NiftyReg DEBUG] Global affine transformation");
@@ -110,12 +104,14 @@ void reg_affine_deformationField3D(mat44 *affineTransformation,
    double voxel[3]={0,0,0}, position[3]={0,0,0};
    int x=0, y=0, z=0;
    size_t index=0;
+
 #if defined (_OPENMP)
 #pragma omp parallel for default(none) \
    shared(deformationFieldImage, transformationMatrix, affineTransformation, \
    deformationFieldPtrX, deformationFieldPtrY, deformationFieldPtrZ, mask, composition) \
    private(voxel, position, x, y, z, index)
 #endif
+
    for(z=0; z<deformationFieldImage->nz; z++)
    {
       index=z*deformationFieldImage->nx*deformationFieldImage->ny;
@@ -147,18 +143,12 @@ void reg_affine_deformationField3D(mat44 *affineTransformation,
    }
 }
 /* *************************************************************** */
-void reg_affine_getDeformationField(mat44 *affineTransformation,
-                                    nifti_image *deformationField,
-                                    bool compose,
-                                    int *mask)
+void reg_affine_getDeformationField(mat44 *affineTransformation, nifti_image *deformationField, bool compose, int *mask)
 {
    int *tempMask=mask;
    if(mask==NULL)
    {
-      tempMask=(int *)calloc(deformationField->nx*
-                             deformationField->ny*
-                             deformationField->nz,
-                             sizeof(int));
+      tempMask=(int *)calloc(deformationField->nx* deformationField->ny* deformationField->nz, sizeof(int));
    }
    if(deformationField->nz==1)
    {
@@ -195,10 +185,11 @@ void reg_affine_getDeformationField(mat44 *affineTransformation,
    if(mask==NULL)
       free(tempMask);
 }
+
+
 /* *************************************************************** */
 void estimate_rigid_transformation2D(float** points1, float** points2, int num_points, mat44 * transformation)
 {
-
    double centroid_reference[2] = { 0.0 };
    double centroid_warped[2] = { 0.0 };
 
@@ -240,7 +231,7 @@ void estimate_rigid_transformation2D(float** points1, float** points2, int num_p
    float **p1t = reg_matrix2DTranspose<float>(points1, num_points, 2);
    float **u = reg_matrix2DMultiply<float>(p1t,2, num_points, points2, num_points, 2, false);
 
-   svd(u, 2, 2, w, v);
+   svd(u, 2, 2, w, v); //来自于 _reg_math_eigen.h
 
    // Calculate transpose
    float **ut = reg_matrix2DTranspose<float>(u, 2, 2);
@@ -303,6 +294,7 @@ void estimate_rigid_transformation2D(std::vector<_reg_sorted_point2D> &points, m
    unsigned int num_points = points.size();
    float** points1 = reg_matrix2DAllocate<float>(num_points, 2);
    float** points2 = reg_matrix2DAllocate<float>(num_points, 2);
+
    for (unsigned int i = 0; i < num_points; i++) {
       points1[i][0] = points[i].reference[0];
       points1[i][1] = points[i].reference[1];
@@ -324,9 +316,7 @@ void estimate_rigid_transformation3D(float** points1, float** points2, int num_p
    float centroid_referenceFloat[3] = { 0.0 };
    float centroid_warpedFloat[3] = { 0.0 };
 
-
-   for (int j = 0; j < num_points; ++j)
-   {
+   for (int j = 0; j < num_points; ++j) {
       centroid_reference[0] += (double) points1[j][0];
       centroid_reference[1] += (double) points1[j][1];
       centroid_reference[2] += (double) points1[j][2];
@@ -431,12 +421,14 @@ void estimate_rigid_transformation3D(float** points1, float** points2, int num_p
    reg_matrix2DDeallocate(3, r);
    reg_matrix2DDeallocate(3, p1t);
 }
+
 /* *************************************************************** */
 void estimate_rigid_transformation3D(std::vector<_reg_sorted_point3D> &points, mat44 * transformation)
 {
    unsigned int num_points = points.size();
    float** points1 = reg_matrix2DAllocate<float>(num_points, 3);
    float** points2 = reg_matrix2DAllocate<float>(num_points, 3);
+
    for (unsigned int i = 0; i < num_points; i++) {
       points1[i][0] = points[i].reference[0];
       points1[i][1] = points[i].reference[1];
@@ -544,6 +536,7 @@ void estimate_affine_transformation2D(std::vector<_reg_sorted_point2D> &points, 
    unsigned int num_points = points.size();
    float** points1 = reg_matrix2DAllocate<float>(num_points, 2);
    float** points2 = reg_matrix2DAllocate<float>(num_points, 2);
+
    for (unsigned int i = 0; i < num_points; i++) {
       points1[i][0] = points[i].reference[0];
       points1[i][1] = points[i].reference[1];
@@ -668,6 +661,7 @@ void estimate_affine_transformation3D(std::vector<_reg_sorted_point3D> &points, 
    unsigned int num_points = points.size();
    float** points1 = reg_matrix2DAllocate<float>(num_points, 3);
    float** points2 = reg_matrix2DAllocate<float>(num_points, 3);
+
    for (unsigned int i = 0; i < num_points; i++) {
       points1[i][0] = points[i].reference[0];
       points1[i][1] = points[i].reference[1];
@@ -683,10 +677,9 @@ void estimate_affine_transformation3D(std::vector<_reg_sorted_point3D> &points, 
 }
 /* *************************************************************** */
 ///LTS 2D
-void optimize_2D(float* referencePosition, float* warpedPosition,
-                 unsigned int activeBlockNumber, int percent_to_keep, int max_iter, double tol,
-                 mat44 * final, bool affine) {
-
+void optimize_2D(float* referencePosition, float* warpedPosition, unsigned int activeBlockNumber, int percent_to_keep, int max_iter, double tol,
+                 mat44 * final, bool affine) 
+{
    // Set the current transformation to identity
    reg_mat44_eye(final);
 
@@ -718,27 +711,21 @@ void optimize_2D(float* referencePosition, float* warpedPosition,
    mat44 lastTransformation;
    memset(&lastTransformation, 0, sizeof(mat44));
 
-   for (int count = 0; count < max_iter; ++count)
-   {
+   for (int count = 0; count < max_iter; ++count) {
       // Transform the points in the reference
-      for (unsigned j = 0; j < num_points * 2; j += 2)
-      {
-         reg_mat33_mul(final, &referencePosition[j], &newWarpedPosition[j]);
-      }
+      for (unsigned j = 0; j < num_points * 2; j += 2) { reg_mat33_mul(final, &referencePosition[j], &newWarpedPosition[j]); }
+
       queue = std::multimap<double, _reg_sorted_point2D>();
-      for (unsigned j = 0; j < num_points * 2; j += 2)
-      {
+      for (unsigned j = 0; j < num_points * 2; j += 2) {
          distance = get_square_distance2D(&newWarpedPosition[j], &warpedPosition[j]);
-         queue.insert(std::pair<double, _reg_sorted_point2D>(distance,
-                                                             _reg_sorted_point2D(&referencePosition[j], &warpedPosition[j], distance)));
+         queue.insert(std::pair<double, _reg_sorted_point2D>(distance, _reg_sorted_point2D(&referencePosition[j], &warpedPosition[j], distance)));
       }
 
       distance = 0.0;
       i = 0;
       top_points.clear();
 
-      for (std::multimap<double, _reg_sorted_point2D>::iterator it = queue.begin();
-           it != queue.end(); ++it, ++i)
+      for (std::multimap<double, _reg_sorted_point2D>::iterator it = queue.begin(); it != queue.end(); ++it, ++i)
       {
          if (i >= num_to_keep) break;
          top_points.push_back((*it).second);
@@ -752,8 +739,10 @@ void optimize_2D(float* referencePosition, float* warpedPosition,
          memcpy(final, &lastTransformation, sizeof(mat44));
          break;
       }
+
       lastDistance = distance;
       memcpy(&lastTransformation, final, sizeof(mat44));
+      
       if (affine) {
          estimate_affine_transformation2D(top_points, final);
       }
@@ -761,15 +750,14 @@ void optimize_2D(float* referencePosition, float* warpedPosition,
          estimate_rigid_transformation2D(top_points, final);
       }
    }
-   delete[] newWarpedPosition;
 
+   delete[] newWarpedPosition;
 }
 /* *************************************************************** */
 ///LTS 3D
-void optimize_3D(float *referencePosition, float *warpedPosition,
-                 unsigned int activeBlockNumber, int percent_to_keep, int max_iter, double tol,
-                 mat44 *final, bool affine) {
-
+void optimize_3D(float *referencePosition, float *warpedPosition, unsigned int activeBlockNumber, int percent_to_keep, int max_iter, double tol,
+                 mat44 *final, bool affine) 
+{
    // Set the current transformation to identity
    reg_mat44_eye(final);
 
@@ -784,9 +772,7 @@ void optimize_3D(float *referencePosition, float *warpedPosition,
 
    // The initial vector with all the input points
    for (unsigned j = 0; j < num_equations; j+=3) {
-      top_points.push_back(_reg_sorted_point3D(&referencePosition[j],
-                                               &warpedPosition[j],
-                                               0.0));
+      top_points.push_back(_reg_sorted_point3D(&referencePosition[j], &warpedPosition[j], 0.0));
    }
    if (affine) {
       estimate_affine_transformation3D(top_points, final);
@@ -799,21 +785,14 @@ void optimize_3D(float *referencePosition, float *warpedPosition,
    mat44 lastTransformation;
    memset(&lastTransformation,0,sizeof(mat44));
 
-   for (int count = 0; count < max_iter; ++count)
-   {
+   for (int count = 0; count < max_iter; ++count) {
       // Transform the points in the reference
-      for (unsigned j = 0; j < num_points * 3; j+=3) {
-         reg_mat44_mul(final, &referencePosition[j], &newWarpedPosition[j]);
-      }
+      for (unsigned j = 0; j < num_points * 3; j+=3) { reg_mat44_mul(final, &referencePosition[j], &newWarpedPosition[j]); }
+
       queue = std::multimap<double, _reg_sorted_point3D>();
-      for (unsigned j = 0; j < num_points * 3; j+= 3)
-      {
+      for (unsigned j = 0; j < num_points * 3; j+= 3) {
          distance = get_square_distance3D(&newWarpedPosition[j], &warpedPosition[j]);
-         queue.insert(std::pair<double,
-                      _reg_sorted_point3D>(distance,
-                                           _reg_sorted_point3D(&referencePosition[j],
-                                                               &warpedPosition[j],
-                                                               distance)));
+         queue.insert(std::pair<double, _reg_sorted_point3D>(distance, _reg_sorted_point3D(&referencePosition[j], &warpedPosition[j], distance)));
       }
 
       distance = 0.0;
@@ -834,6 +813,7 @@ void optimize_3D(float *referencePosition, float *warpedPosition,
       }
       lastDistance = distance;
       memcpy(&lastTransformation, final, sizeof(mat44));
+
       if(affine) {
          estimate_affine_transformation3D(top_points, final);
       } else {
