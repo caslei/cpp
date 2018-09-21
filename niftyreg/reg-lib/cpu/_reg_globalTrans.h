@@ -25,6 +25,7 @@ struct _reg_sorted_point3D
 
     double distance;
     //struct中定义成员函数，并且可以用冒号(:)初始化成员数据？？？？？
+    // 递归定义，在一个语句块中使用自身
     _reg_sorted_point3D(float * t, float * r, double d) :distance(d)
     {
         reference[0] = t[0];
@@ -38,9 +39,12 @@ struct _reg_sorted_point3D
 
     bool operator <(const _reg_sorted_point3D &sp) const
     { return (sp.distance < distance); }
-
 };
+
 typedef struct _reg_sorted_point3D _reg_sorted_point3D;
+
+
+
 /* *************************************************************** */
 /// @brief Structure that is used to store the distance between two corresponding pixel
 struct _reg_sorted_point2D
