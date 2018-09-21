@@ -37,9 +37,8 @@ struct _reg_sorted_point3D
     }
 
     bool operator <(const _reg_sorted_point3D &sp) const
-    {
-        return (sp.distance < distance);
-    }
+    { return (sp.distance < distance); }
+
 };
 typedef struct _reg_sorted_point3D _reg_sorted_point3D;
 /* *************************************************************** */
