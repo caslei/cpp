@@ -41,7 +41,7 @@ struct _reg_sorted_point3D
     { return (sp.distance < distance); }
 };
 
-typedef struct _reg_sorted_point3D _reg_sorted_point3D;
+typedef struct _reg_sorted_point3D      _reg_sorted_point3D;
 
 
 
@@ -54,8 +54,7 @@ struct _reg_sorted_point2D
 
     double distance;
 
-    _reg_sorted_point2D(float * t, float * r, double d)
-        :distance(d)
+    _reg_sorted_point2D(float * t, float * r, double d) :distance(d)
     {
         reference[0] = t[0];
         reference[1] = t[1];
@@ -68,7 +67,11 @@ struct _reg_sorted_point2D
         return (sp.distance < distance);
     }
 };
-typedef struct _reg_sorted_point2D _reg_sorted_point2D;
+
+
+typedef struct _reg_sorted_point2D      _reg_sorted_point2D;
+
+
 /* *************************************************************** */
 /** @brief This Function compute a deformation field based
  * on affine transformation matrix
