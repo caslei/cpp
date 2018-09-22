@@ -1,12 +1,10 @@
-%% work notes for c language, 2018/09/22
-\documentclass{../style/ucbthesis} % 'ucbthesis.cls' class file
+%% thesis.tex 2014/04/11
+\documentclass{ucbthesis}
 \usepackage[backend=bibtex,citestyle=authoryear-icomp,bibstyle=authoryear,maxbibnames=9]{biblatex}
 \setlength{\bibitemsep}{.4\baselineskip}
-
-\addbibresource{../style/mendeley_bibtex.bib}
+\addbibresource{../mendeley_bibtex.bib}
 \addbibresource{../style/mendeley_bibtex_edited.bib}
-\addbibresource{../style/manual_additions.bib}
-
+\addbibresource{../manual_additions.bib}
 \usepackage{indentfirst}
 \usepackage[usenames,dvipsnames]{xcolor}
 \usepackage[pdftex]{graphicx}
@@ -22,7 +20,7 @@
 \usepackage{subcaption}
 \usepackage{enumitem}
 \usepackage{multirow}
-\usepackage{../style/paragraph-marginals} % 'paragraph-marginals.sty' style file
+\usepackage{paragraph-marginals}
 \usepackage{tabularx}
 \usepackage{array}
 \usepackage{rotating}
@@ -69,37 +67,3 @@ Dr Mario Fritz
 \field{Computer Science}
 
 \input{../contents}
-
-%!TEX root=paper/paper.tex
-%================================
-\maketitle
-% Comment out for final.
-% \approvalpage
-\copyrightpage
-\input{../abstract}
-\begin{frontmatter}
-    \input{../dedication}
-    \newpage
-    \tableofcontents
-    \newpage
-    \listoffigures % maybe cancel
-    \newpage
-    \listoftables  % maybe cancel
-    \newpage
-    \input{../acknowledgements}
-\end{frontmatter}
-\pagestyle{headings}
-
-\input{../introduction}
-\input{../related_work}
-\input{../det_chapter}
-\input{../clf_chapter}
-\input{../ccnn_chapter}
-\input{../style/paper_expanded_final}
-\input{../conclusion}
-\appendix
-\input{../imputation_evaluation}
-\input{../style/appendix}
-
-\printbibliography
-\end{document}
