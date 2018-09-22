@@ -31,6 +31,7 @@ srand()
 rand()
 RAND_MAX
 exp()
+pow()
 std::string::npos
 std::pair<T>
 std::map<>
