@@ -38,8 +38,7 @@ double reg_spline_approxBendingEnergy(nifti_image *controlPointGridImage);
 extern "C++"
 void reg_spline_approxBendingEnergyGradient(nifti_image *controlPointGridImage,
                                             nifti_image *gradientImage,
-                                            float weight
-                                            );
+                                            float weight);
 /* *************************************************************** */
 /** @brief Compute and return the linear elastic energy terms.
  * @param controlPointGridImage Image that contains the transformation
@@ -47,8 +46,7 @@ void reg_spline_approxBendingEnergyGradient(nifti_image *controlPointGridImage,
  * @return The normalised linear energy. Normalised by the number of voxel
  */
 extern "C++"
-double reg_spline_linearEnergy(nifti_image *referenceImage,
-                               nifti_image *controlPointGridImage);
+double reg_spline_linearEnergy(nifti_image *referenceImage, nifti_image *controlPointGridImage);
 /* *************************************************************** */
 /** @brief Compute and return the linear elastic energy terms approximated
  * at the control point positions only.
@@ -74,8 +72,7 @@ extern "C++"
 void reg_spline_linearEnergyGradient(nifti_image *referenceImage,
                                      nifti_image *controlPointGridImage,
                                      nifti_image *gradientImage,
-                                     float weight
-                                     );
+                                     float weight);
 /* *************************************************************** */
 /** @brief Compute the gradient of the linear elastic energy terms
  * approximated at the control point positions only.
@@ -90,8 +87,7 @@ void reg_spline_linearEnergyGradient(nifti_image *referenceImage,
 extern "C++"
 void reg_spline_approxLinearEnergyGradient(nifti_image *controlPointGridImage,
                                            nifti_image *gradientImage,
-                                           float weight
-                                           );
+                                           float weight);
 /* *************************************************************** */
 /** @brief Compute and return the linear elastic energy terms.
  * @param deformationField Image that contains the transformation.
@@ -150,8 +146,7 @@ void reg_spline_getLandmarkDistanceGradient(nifti_image *controlPointImage,
 extern "C++"
 void reg_spline_approxLinearPairwiseGradient(nifti_image *controlPointGridImage,
                                              nifti_image *gradientImage,
-                                             float weight
-                                             );
+                                             float weight);
 /* *************************************************************** */
 extern "C++"
 double reg_spline_approxLinearPairwise(nifti_image *controlPointGridImage);
