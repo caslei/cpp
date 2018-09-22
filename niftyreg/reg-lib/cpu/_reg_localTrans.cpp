@@ -147,31 +147,32 @@ void reg_createSymmetricControlPointGrids(nifti_image **forwardGridImage,
                                           float *spacing)
 {
    // Delete the grid if they are already initialised
-   if(*forwardGridImage!=NULL)
-      nifti_image_free(*forwardGridImage);
+   if(*forwardGridImage!=NULL) nifti_image_free(*forwardGridImage);
    *forwardGridImage=NULL;
-   if(*backwardGridImage!=NULL)
-      nifti_image_free(*backwardGridImage);
+
+   if(*backwardGridImage!=NULL) nifti_image_free(*backwardGridImage);
    *backwardGridImage=NULL;
+
    // We specified a space which is in-between both input images
    // // Get the reference image space
    mat44 referenceImageSpace = referenceImage->qto_xyz;
-   if(referenceImage->sform_code>0)
-      referenceImageSpace = referenceImage->sto_xyz;
+   if(referenceImage->sform_code>0) referenceImageSpace = referenceImage->sto_xyz;
+
 #ifndef NDEBUG
    reg_mat44_disp(&referenceImageSpace,(char *)"[NiftyReg DEBUG] Input reference image orientation");
 #endif
+
    // // Get the floating image space
    mat44 floatingImageSpace = floatingImage->qto_xyz;
-   if(floatingImage->sform_code>0)
-      floatingImageSpace = floatingImage->sto_xyz;
+   if(floatingImage->sform_code>0) floatingImageSpace = floatingImage->sto_xyz;
+
 #ifndef NDEBUG
    reg_mat44_disp(&floatingImageSpace,(char *)"[NiftyReg DEBUG] Input floating image orientation");
 #endif
+
    // Check if an affine transformation is specified
    mat44 halfForwardAffine, halfBackwardAffine;
-   if(forwardAffineTrans!=NULL)
-   {
+   if(forwardAffineTrans!=NULL) {
       // Compute half of the affine transformation - ref to flo
       halfForwardAffine = reg_mat44_logm(forwardAffineTrans);
       halfForwardAffine = reg_mat44_mul(&halfForwardAffine,.5f);
@@ -184,8 +185,7 @@ void reg_createSymmetricControlPointGrids(nifti_image **forwardGridImage,
       halfBackwardAffine = reg_mat44_expm(&halfBackwardAffine);
       reg_print_msg_warn("Note that the symmetry of the registration is affected by the input affine transformation");
    }
-   else
-   {
+   else {
       reg_mat44_eye(&halfForwardAffine);
       reg_mat44_eye(&halfBackwardAffine);
    }
@@ -196,10 +196,8 @@ void reg_createSymmetricControlPointGrids(nifti_image **forwardGridImage,
 
    // Define the largest field of view in the mid space
    float minPosition[3]={0,0,0}, maxPosition[3]={0,0,0};
-   if(referenceImage->nz>1)  // 3D
-   {
-      float referenceImageCorners[8][3]=
-      {
+   if(referenceImage->nz>1) { // 3D
+      float referenceImageCorners[8][3]= {
          {0,0,0},
          {float(referenceImage->nx),0,0},
          {0,float(referenceImage->ny),0},
@@ -209,8 +207,8 @@ void reg_createSymmetricControlPointGrids(nifti_image **forwardGridImage,
          {0,float(referenceImage->ny),float(referenceImage->nz)},
          {float(referenceImage->nx),float(referenceImage->ny),float(referenceImage->nz)}
       };
-      float floatingImageCorners[8][3]=
-      {
+      
+      float floatingImageCorners[8][3]= { // 多维数组的初始化
          {0,0,0},
          {float(floatingImage->nx),0,0},
          {0,float(floatingImage->ny),0},
@@ -220,27 +218,28 @@ void reg_createSymmetricControlPointGrids(nifti_image **forwardGridImage,
          {0,float(floatingImage->ny),float(floatingImage->nz)},
          {float(floatingImage->nx),float(floatingImage->ny),float(floatingImage->nz)}
       };
+
       float out[3];
-      for(int c=0; c<8; ++c)
-      {
+      for(int c=0; c<8; ++c) {
          reg_mat44_mul(&referenceImageSpace,referenceImageCorners[c],out);
          referenceImageCorners[c][0]=out[0];
          referenceImageCorners[c][1]=out[1];
          referenceImageCorners[c][2]=out[2];
+
          reg_mat44_mul(&floatingImageSpace,floatingImageCorners[c],out);
          floatingImageCorners[c][0]=out[0];
          floatingImageCorners[c][1]=out[1];
          floatingImageCorners[c][2]=out[2];
-
       }
+
       minPosition[0]=referenceImageCorners[0][0]<floatingImageCorners[0][0]?referenceImageCorners[0][0]:floatingImageCorners[0][0];
       minPosition[1]=referenceImageCorners[0][1]<floatingImageCorners[0][1]?referenceImageCorners[0][1]:floatingImageCorners[0][1];
       minPosition[2]=referenceImageCorners[0][2]<floatingImageCorners[0][2]?referenceImageCorners[0][2]:floatingImageCorners[0][2];
       maxPosition[0]=referenceImageCorners[0][0]>floatingImageCorners[0][0]?referenceImageCorners[0][0]:floatingImageCorners[0][0];
       maxPosition[1]=referenceImageCorners[0][1]>floatingImageCorners[0][1]?referenceImageCorners[0][1]:floatingImageCorners[0][1];
       maxPosition[2]=referenceImageCorners[0][2]>floatingImageCorners[0][2]?referenceImageCorners[0][2]:floatingImageCorners[0][2];
-      for(int c=1; c<8; ++c)
-      {
+
+      for(int c=1; c<8; ++c) {
          minPosition[0]=minPosition[0]<referenceImageCorners[c][0]?minPosition[0]:referenceImageCorners[c][0];
          minPosition[0]=minPosition[0]<floatingImageCorners[c][0]?minPosition[0]:floatingImageCorners[c][0];
          minPosition[1]=minPosition[1]<referenceImageCorners[c][1]?minPosition[1]:referenceImageCorners[c][1];
@@ -255,25 +254,23 @@ void reg_createSymmetricControlPointGrids(nifti_image **forwardGridImage,
          maxPosition[2]=maxPosition[2]>floatingImageCorners[c][2]?maxPosition[2]:floatingImageCorners[c][2];
       }
    }
-   else  // 2D
-   {
-      float referenceImageCorners[4][2]=
-      {
+   else { // 2D
+      float referenceImageCorners[4][2]= {
          {0,0},
          {float(referenceImage->nx),0},
          {0,float(referenceImage->ny)},
          {float(referenceImage->nx),float(referenceImage->ny)}
       };
-      float floatingImageCorners[4][2]=
-      {
+
+      float floatingImageCorners[4][2]= {
          {0,0},
          {float(floatingImage->nx),0},
          {0,float(floatingImage->ny)},
          {float(floatingImage->nx),float(floatingImage->ny)}
       };
+
       float out[2];
-      for(int c=0; c<4; ++c)
-      {
+      for(int c=0; c<4; ++c) {
          out[0]= referenceImageCorners[c][0] * referenceImageSpace.m[0][0]
                +referenceImageCorners[c][1] * referenceImageSpace.m[0][1]
                + referenceImageSpace.m[0][3];
@@ -290,14 +287,14 @@ void reg_createSymmetricControlPointGrids(nifti_image **forwardGridImage,
                + floatingImageSpace.m[1][3];
          floatingImageCorners[c][0]=out[0];
          floatingImageCorners[c][1]=out[1];
-
       }
+
       minPosition[0]=referenceImageCorners[0][0]<floatingImageCorners[0][0]?referenceImageCorners[0][0]:floatingImageCorners[0][0];
       minPosition[1]=referenceImageCorners[0][1]<floatingImageCorners[0][1]?referenceImageCorners[0][1]:floatingImageCorners[0][1];
       maxPosition[0]=referenceImageCorners[0][0]>floatingImageCorners[0][0]?referenceImageCorners[0][0]:floatingImageCorners[0][0];
       maxPosition[1]=referenceImageCorners[0][1]>floatingImageCorners[0][1]?referenceImageCorners[0][1]:floatingImageCorners[0][1];
-      for(int c=1; c<4; ++c)
-      {
+
+      for(int c=1; c<4; ++c) {
          minPosition[0]=minPosition[0]<referenceImageCorners[c][0]?minPosition[0]:referenceImageCorners[c][0];
          minPosition[0]=minPosition[0]<floatingImageCorners[c][0]?minPosition[0]:floatingImageCorners[c][0];
          minPosition[1]=minPosition[1]<referenceImageCorners[c][1]?minPosition[1]:referenceImageCorners[c][1];
@@ -317,25 +314,25 @@ void reg_createSymmetricControlPointGrids(nifti_image **forwardGridImage,
                       1,
                       referenceImage->nz>1?3:2,
                       1,
-                      1
-                     };
+                      1 };
 
    // Create the control point grid image
-   if(sizeof(DTYPE)==sizeof(float))
-   {
+   if(sizeof(DTYPE)==sizeof(float)) {
       (*forwardGridImage)=nifti_make_new_nim(dim, NIFTI_TYPE_FLOAT32,true);
       (*backwardGridImage)=nifti_make_new_nim(dim, NIFTI_TYPE_FLOAT32,true);
    }
-   else
-   {
+   else {
       (*forwardGridImage)=nifti_make_new_nim(dim, NIFTI_TYPE_FLOAT64,true);
       (*backwardGridImage)=nifti_make_new_nim(dim, NIFTI_TYPE_FLOAT64,true);
    }
+
    // Set the control point grid spacing
    (*forwardGridImage)->pixdim[1]=(*forwardGridImage)->dx=(*backwardGridImage)->pixdim[1]=(*backwardGridImage)->dx=spacing[0];
    (*forwardGridImage)->pixdim[2]=(*forwardGridImage)->dy=(*backwardGridImage)->pixdim[2]=(*backwardGridImage)->dy=spacing[1];
+
    if(referenceImage->nz>1)
       (*forwardGridImage)->pixdim[3]=(*forwardGridImage)->dz=(*backwardGridImage)->pixdim[3]=(*backwardGridImage)->dz=spacing[2];
+
    // Set the control point grid image orientation
    (*forwardGridImage)->qform_code=(*backwardGridImage)->qform_code=0;
    (*forwardGridImage)->sform_code=(*backwardGridImage)->sform_code=1;
@@ -343,19 +340,18 @@ void reg_createSymmetricControlPointGrids(nifti_image **forwardGridImage,
    reg_mat44_eye(&(*backwardGridImage)->sto_xyz);
    reg_mat44_eye(&(*forwardGridImage)->sto_ijk);
    reg_mat44_eye(&(*backwardGridImage)->sto_ijk);
-   for(unsigned int i=0; i<3; ++i)
-   {
-      if(referenceImage->nz>1 || i<2)
-      {
+
+   for(unsigned int i=0; i<3; ++i) {
+      if(referenceImage->nz>1 || i<2) {
          (*forwardGridImage)->sto_xyz.m[i][i]=(*backwardGridImage)->sto_xyz.m[i][i]=spacing[i];
          (*forwardGridImage)->sto_xyz.m[i][3]=(*backwardGridImage)->sto_xyz.m[i][3]=minPosition[i]-spacing[i];
       }
-      else
-      {
+      else {
          (*forwardGridImage)->sto_xyz.m[i][i]=(*backwardGridImage)->sto_xyz.m[i][i]=1.f;
          (*forwardGridImage)->sto_xyz.m[i][3]=(*backwardGridImage)->sto_xyz.m[i][3]=0.f;
       }
    }
+
    (*forwardGridImage)->sto_ijk=(*backwardGridImage)->sto_ijk=nifti_mat44_inverse((*forwardGridImage)->sto_xyz);
    // Set the intent type
    (*forwardGridImage)->intent_code=(*backwardGridImage)->intent_code=NIFTI_INTENT_VECTOR;
@@ -367,14 +363,12 @@ void reg_createSymmetricControlPointGrids(nifti_image **forwardGridImage,
    // Set the affine matrices
    mat44 identity;
    reg_mat44_eye(&identity);
-   if((*forwardGridImage)->ext_list!=NULL)
-      free((*forwardGridImage)->ext_list);
-   if((*backwardGridImage)->ext_list!=NULL)
-      free((*backwardGridImage)->ext_list);
+   if((*forwardGridImage)->ext_list!=NULL) free((*forwardGridImage)->ext_list);
+   if((*backwardGridImage)->ext_list!=NULL) free((*backwardGridImage)->ext_list);
    (*forwardGridImage)->num_ext=0;
    (*backwardGridImage)->num_ext=0;
-   if(identity!=halfForwardAffine && identity!=halfBackwardAffine)
-   {
+
+   if(identity!=halfForwardAffine && identity!=halfBackwardAffine) {
       // Create extensions to store the affine parametrisations for the forward transformation
       (*forwardGridImage)->num_ext=2;
       (*forwardGridImage)->ext_list=(nifti1_extension *)malloc(2*sizeof(nifti1_extension));
@@ -386,9 +380,11 @@ void reg_createSymmetricControlPointGrids(nifti_image **forwardGridImage,
       (*forwardGridImage)->ext_list[1].edata=(char *)calloc((*forwardGridImage)->ext_list[1].esize-8,sizeof(float));
       memcpy((*forwardGridImage)->ext_list[0].edata, &halfForwardAffine, sizeof(mat44));
       memcpy((*forwardGridImage)->ext_list[1].edata, &halfForwardAffine, sizeof(mat44));
+
 #ifndef NDEBUG
       reg_mat44_disp(&halfForwardAffine,(char *)"[NiftyReg DEBUG] Forward transformation half-affine");
 #endif
+
       // Create extensions to store the affine parametrisations for the backward transformation
       (*backwardGridImage)->num_ext=2;
       (*backwardGridImage)->ext_list=(nifti1_extension *)malloc(2*sizeof(nifti1_extension));
@@ -400,10 +396,12 @@ void reg_createSymmetricControlPointGrids(nifti_image **forwardGridImage,
       (*backwardGridImage)->ext_list[1].edata=(char *)calloc((*backwardGridImage)->ext_list[1].esize-8,sizeof(float));
       memcpy((*backwardGridImage)->ext_list[0].edata, &halfBackwardAffine, sizeof(mat44));
       memcpy((*backwardGridImage)->ext_list[1].edata, &halfBackwardAffine, sizeof(mat44));
+
 #ifndef NDEBUG
       reg_mat44_disp(&halfBackwardAffine,(char *)"[NiftyReg DEBUG] Backward transformation half-affine");
 #endif
    }
+
    // Initialise the grid with identity transformations
    reg_tools_multiplyValueToImage(*forwardGridImage,*forwardGridImage,0.f);
    reg_tools_multiplyValueToImage(*backwardGridImage,*backwardGridImage,0.f);
@@ -411,19 +409,18 @@ void reg_createSymmetricControlPointGrids(nifti_image **forwardGridImage,
    reg_getDeformationFromDisplacement(*forwardGridImage);
    reg_getDeformationFromDisplacement(*backwardGridImage);
 }
+
+
 /* *************************************************************** */
-template void reg_createSymmetricControlPointGrids<float>
-(nifti_image **,nifti_image **,nifti_image *,nifti_image *,mat44 *,float *);
-template void reg_createSymmetricControlPointGrids<double>
-(nifti_image **,nifti_image **,nifti_image *,nifti_image *,mat44 *,float *);
+template void reg_createSymmetricControlPointGrids<float> (nifti_image **,nifti_image **,nifti_image *,nifti_image *,mat44 *,float *);
+template void reg_createSymmetricControlPointGrids<double> (nifti_image **,nifti_image **,nifti_image *,nifti_image *,mat44 *,float *);
 /* *************************************************************** */
 /* *************************************************************** */
 template<class DTYPE>
 void reg_linear_spline_getDeformationField3D(nifti_image *splineControlPoint,
                                              nifti_image *deformationField,
                                              int *mask,
-                                             bool composition
-                                             )
+                                             bool composition)
 {
    int coord;
 
@@ -438,8 +435,7 @@ void reg_linear_spline_getDeformationField3D(nifti_image *splineControlPoint,
    int x, y, z, a, b, c, xPre, yPre, zPre, index;
    DTYPE xBasis[2], yBasis[2], zBasis[2], real[3];
 
-   if(composition)  // Composition of deformation fields
-   {
+   if(composition) { // Composition of deformation fields
       // read the ijk sform or qform, as appropriate
       mat44 referenceMatrix_real_to_voxel;
       if(splineControlPoint->sform_code>0)
@@ -447,16 +443,11 @@ void reg_linear_spline_getDeformationField3D(nifti_image *splineControlPoint,
       else referenceMatrix_real_to_voxel=(splineControlPoint->qto_ijk);
 
       DTYPE voxel[3];
-
-      for(z=0; z<deformationField->nz; z++)
-      {
+      for(z=0; z<deformationField->nz; z++) {
          index=z*deformationField->nx*deformationField->ny;
-         for(y=0; y<deformationField->ny; y++)
-         {
-            for(x=0; x<deformationField->nx; x++)
-            {
-               if(mask[index]>-1)
-               {
+         for(y=0; y<deformationField->ny; y++) {
+            for(x=0; x<deformationField->nx; x++) {
+               if(mask[index]>-1) {
                   // The previous position at the current pixel position is read
                   real[0] = fieldPtrX[index];
                   real[1] = fieldPtrY[index];
@@ -518,21 +509,21 @@ void reg_linear_spline_getDeformationField3D(nifti_image *splineControlPoint,
          }
       }
    }//Composition of deformation
-   else  // !composition
-   {
+   else { // !composition
       DTYPE gridVoxelSpacing[3];
       gridVoxelSpacing[0] = splineControlPoint->dx / deformationField->dx;
       gridVoxelSpacing[1] = splineControlPoint->dy / deformationField->dy;
       gridVoxelSpacing[2] = splineControlPoint->dz / deformationField->dz;
       DTYPE tempValue;
+
 #if defined (_OPENMP)
 #pragma omp parallel for default(none) \
    private(x, y, z, a, b, c, xPre, yPre, zPre, xBasis, yBasis, zBasis, real, index, coord, tempValue) \
    shared(deformationField, gridVoxelSpacing, mask, fieldPtrX, fieldPtrY, fieldPtrZ, \
    controlPointPtrX, controlPointPtrY, controlPointPtrZ, splineControlPoint)
 #endif // _OPENMP
-      for(z=0; z<deformationField->nz; z++)
-      {
+
+      for(z=0; z<deformationField->nz; z++) {
          index=z*deformationField->nx*deformationField->ny;
 
          zPre=static_cast<int>(static_cast<DTYPE>(z)/gridVoxelSpacing[2]);
@@ -541,23 +532,19 @@ void reg_linear_spline_getDeformationField3D(nifti_image *splineControlPoint,
          zBasis[0]=1.-zBasis[1];
          zPre++;
 
-         for(y=0; y<deformationField->ny; y++)
-         {
-
+         for(y=0; y<deformationField->ny; y++) {
             yPre=static_cast<int>(static_cast<DTYPE>(y)/gridVoxelSpacing[1]);
             yBasis[1]=static_cast<DTYPE>(y)/gridVoxelSpacing[1]-static_cast<DTYPE>(yPre);
             if(yBasis[1]<0.0) yBasis[1]=0.0; //rounding error
             yBasis[0]=1.-yBasis[1];
             yPre++;
 
-            for(x=0; x<deformationField->nx; x++)
-            {
+            for(x=0; x<deformationField->nx; x++) {
                real[0]=0.0;
                real[1]=0.0;
                real[2]=0.0;
 
-               if(mask[index]>-1)
-               {
+               if(mask[index]>-1) {
                   xPre=static_cast<int>(static_cast<DTYPE>(x)/gridVoxelSpacing[0]);
                   xBasis[1]=static_cast<DTYPE>(x)/gridVoxelSpacing[0]-static_cast<DTYPE>(xPre);
                   if(xBasis[1]<0.0) xBasis[1]=0.0; //rounding error
@@ -589,6 +576,7 @@ void reg_linear_spline_getDeformationField3D(nifti_image *splineControlPoint,
 
    return;
 }
+
 /* *************************************************************** */
 /* *************************************************************** */
 template<class DTYPE>
