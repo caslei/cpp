@@ -40,27 +40,26 @@ void reg_createControlPointGrid(nifti_image **controlPointGridImage,
    // Fill the header information
    (*controlPointGridImage)->cal_min=0;
    (*controlPointGridImage)->cal_max=0;
+
    (*controlPointGridImage)->pixdim[0]=1.0f;
    (*controlPointGridImage)->pixdim[1]=(*controlPointGridImage)->dx=spacingMillimeter[0];
    (*controlPointGridImage)->pixdim[2]=(*controlPointGridImage)->dy=spacingMillimeter[1];
-   if(referenceImage->nz==1)
-   {
-      (*controlPointGridImage)->pixdim[3]=(*controlPointGridImage)->dz=1.0f;
-   }
+
+   if(referenceImage->nz==1) { 
+      (*controlPointGridImage)->pixdim[3]=(*controlPointGridImage)->dz=1.0f; }
    else (*controlPointGridImage)->pixdim[3]=(*controlPointGridImage)->dz=spacingMillimeter[2];
+
    (*controlPointGridImage)->pixdim[4]=(*controlPointGridImage)->dt=1.0f;
    (*controlPointGridImage)->pixdim[5]=(*controlPointGridImage)->du=1.0f;
    (*controlPointGridImage)->pixdim[6]=(*controlPointGridImage)->dv=1.0f;
    (*controlPointGridImage)->pixdim[7]=(*controlPointGridImage)->dw=1.0f;
 
    // Reproduce the orientation of the reference image and add a one voxel shift
-   if(referenceImage->qform_code+referenceImage->sform_code>0)
-   {
+   if(referenceImage->qform_code+referenceImage->sform_code>0) {
       (*controlPointGridImage)->qform_code=referenceImage->qform_code;
       (*controlPointGridImage)->sform_code=referenceImage->sform_code;
    }
-   else
-   {
+   else {
       (*controlPointGridImage)->qform_code=1;
       (*controlPointGridImage)->sform_code=0;
    }
@@ -99,8 +98,7 @@ void reg_createControlPointGrid(nifti_image **controlPointGridImage,
    (*controlPointGridImage)->qto_ijk = nifti_mat44_inverse((*controlPointGridImage)->qto_xyz);
 
    // Update the sform if required
-   if((*controlPointGridImage)->sform_code>0)
-   {
+   if((*controlPointGridImage)->sform_code>0) {
       float scalingRatio[3];
       scalingRatio[0]= (*controlPointGridImage)->dx / referenceImage->dx;
       scalingRatio[1]= (*controlPointGridImage)->dy / referenceImage->dy;
@@ -135,7 +133,8 @@ void reg_createControlPointGrid(nifti_image **controlPointGridImage,
    memset((*controlPointGridImage)->intent_name, 0, 16);
    strcpy((*controlPointGridImage)->intent_name,"NREG_TRANS");
    (*controlPointGridImage)->intent_p1=CUB_SPLINE_GRID;
-}
+} // function ending
+
 template void reg_createControlPointGrid<float>(nifti_image **, nifti_image *, float *);
 template void reg_createControlPointGrid<double>(nifti_image **, nifti_image *, float *);
 /* *************************************************************** */
