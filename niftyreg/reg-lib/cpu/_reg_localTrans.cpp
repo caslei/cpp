@@ -3729,8 +3729,7 @@ void reg_defField_getDeformationFieldFromFlowField(nifti_image *flowFieldImage,
          maxLength=0.28;
 	 // 0.3535533 = sqrt(0.5^2/2)
       else maxLength=0.35;
-      while(true)
-      {
+      while(true) {
          if( (extrema/pow(2.0f,squaringNumber)) >= maxLength)
             squaringNumber++;
          else break;
@@ -3738,8 +3737,7 @@ void reg_defField_getDeformationFieldFromFlowField(nifti_image *flowFieldImage,
       // The minimal number of step is set to 6 by default
       squaringNumber=squaringNumber<6?6:squaringNumber;
       // Set the number of squaring step in the flow field
-      if(fabs(flowFieldImage->intent_p2)!=squaringNumber)
-      {
+      if(fabs(flowFieldImage->intent_p2)!=squaringNumber) {
          char text[255];
          sprintf(text, "Changing from %i to %i squaring step (equivalent to scaling down by %i)",
                 static_cast<int>(reg_round(fabs(flowFieldImage->intent_p2))),
@@ -3758,14 +3756,10 @@ void reg_defField_getDeformationFieldFromFlowField(nifti_image *flowFieldImage,
    float scalingValue = pow(2.0f,std::abs((float)squaringNumber));
    if(flowFieldImage->intent_p2<0)
       // backward deformation field is scaled down
-      reg_tools_divideValueToImage(flowFieldImage,
-                                   flowFieldImage,
-                                   -scalingValue); // (/-scalingValue)
+      reg_tools_divideValueToImage(flowFieldImage, flowFieldImage, -scalingValue); // (/-scalingValue)
    else
       // forward deformation field is scaled down
-      reg_tools_divideValueToImage(flowFieldImage,
-                                   flowFieldImage,
-                                   scalingValue); // (/scalingValue)
+      reg_tools_divideValueToImage(flowFieldImage, flowFieldImage, scalingValue); // (/scalingValue)
 
    // Conversion from displacement to deformation
    reg_getDeformationFromDisplacement(flowFieldImage);
@@ -3775,12 +3769,9 @@ void reg_defField_getDeformationFieldFromFlowField(nifti_image *flowFieldImage,
           deformationFieldImage->nvox*deformationFieldImage->nbyper);
 
    // The deformation field is squared
-   for(unsigned short i=0; i<squaringNumber; ++i)
-   {
+   for(unsigned short i=0; i<squaringNumber; ++i) {
       // The deformation field is applied to itself
-      reg_defField_compose(deformationFieldImage,
-                           flowFieldImage,
-                           NULL);
+      reg_defField_compose(deformationFieldImage, flowFieldImage, NULL);
       // The computed scaled deformation field is copied over
       memcpy(deformationFieldImage->data, flowFieldImage->data,
              deformationFieldImage->nvox*deformationFieldImage->nbyper);
@@ -3791,8 +3782,7 @@ void reg_defField_getDeformationFieldFromFlowField(nifti_image *flowFieldImage,
 #endif
    }
    // The affine conponent of the transformation is restored
-   if(affineOnly!=NULL)
-   {
+   if(affineOnly!=NULL) {
       reg_getDisplacementFromDeformation(deformationFieldImage);
       reg_tools_addImageToImage(deformationFieldImage,affineOnly,deformationFieldImage);
       nifti_image_free(affineOnly);
@@ -3801,11 +3791,9 @@ void reg_defField_getDeformationFieldFromFlowField(nifti_image *flowFieldImage,
    deformationFieldImage->intent_p1=DEF_FIELD;
    deformationFieldImage->intent_p2=0;
    // If required an affine component is composed
-   if(flowFieldImage->num_ext>1)
-   {
+   if(flowFieldImage->num_ext>1) {
       reg_affine_getDeformationField(reinterpret_cast<mat44 *>(flowFieldImage->ext_list[1].edata),
-            deformationFieldImage,
-            true);
+            deformationFieldImage, true);
    }
 }
 /* *************************************************************** */
@@ -3817,8 +3805,7 @@ void reg_spline_getDefFieldFromVelocityGrid(nifti_image *velocityFieldGrid,
    nifti_free_extensions(deformationFieldImage);
 
    // Check if the velocity field is actually a velocity field
-   if(velocityFieldGrid->intent_p1 == CUB_SPLINE_GRID)
-   {
+   if(velocityFieldGrid->intent_p1 == CUB_SPLINE_GRID) {
       // Use the spline approximation to generate the deformation field
       reg_spline_getDeformationField(velocityFieldGrid,
                                      deformationFieldImage,
@@ -3827,8 +3814,7 @@ void reg_spline_getDefFieldFromVelocityGrid(nifti_image *velocityFieldGrid,
                                      true // bspline
                                      );
    }
-   else if(velocityFieldGrid->intent_p1 == SPLINE_VEL_GRID)
-   {
+   else if(velocityFieldGrid->intent_p1 == SPLINE_VEL_GRID) {
       // Create an image to store the flow field
       nifti_image *flowField = nifti_copy_nim_info(deformationFieldImage);
       flowField->data = (void *)calloc(flowField->nvox,flowField->nbyper);
@@ -3837,23 +3823,18 @@ void reg_spline_getDefFieldFromVelocityGrid(nifti_image *velocityFieldGrid,
       strcpy(flowField->intent_name,"NREG_TRANS");
       flowField->intent_p1=DEF_VEL_FIELD;
       flowField->intent_p2=velocityFieldGrid->intent_p2;
-      if(velocityFieldGrid->num_ext>0)
-         nifti_copy_extensions(flowField, velocityFieldGrid);
+      if(velocityFieldGrid->num_ext>0) nifti_copy_extensions(flowField, velocityFieldGrid);
 
       // Generate the velocity field
-      reg_spline_getFlowFieldFromVelocityGrid(velocityFieldGrid,
-                                              flowField);
+      reg_spline_getFlowFieldFromVelocityGrid(velocityFieldGrid, flowField);
       // Exponentiate the flow field
-      reg_defField_getDeformationFieldFromFlowField(flowField,
-                                                    deformationFieldImage,
-                                                    updateStepNumber);
+      reg_defField_getDeformationFieldFromFlowField(flowField, deformationFieldImage, updateStepNumber);
       // Update the number of step required. No action otherwise
       velocityFieldGrid->intent_p2=flowField->intent_p2;
       // Clear the allocated flow field
       nifti_image_free(flowField);
    }
-   else
-   {
+   else {
       reg_print_fct_error("reg_spline_getDeformationFieldFromVelocityGrid");
       reg_print_msg_error("The provided input image is not a spline parametrised transformation");
       reg_exit();
@@ -3862,12 +3843,10 @@ void reg_spline_getDefFieldFromVelocityGrid(nifti_image *velocityFieldGrid,
 }
 /* *************************************************************** */
 /* *************************************************************** */
-void reg_spline_getIntermediateDefFieldFromVelGrid(nifti_image *velocityFieldGrid,
-                                                   nifti_image **deformationFieldImage)
+void reg_spline_getIntermediateDefFieldFromVelGrid(nifti_image *velocityFieldGrid, nifti_image **deformationFieldImage)
 {
    // Check if the velocity field is actually a velocity field
-   if(velocityFieldGrid->intent_p1 == SPLINE_VEL_GRID)
-   {
+   if(velocityFieldGrid->intent_p1 == SPLINE_VEL_GRID) {
       // Create an image to store the flow field
       nifti_image *flowFieldImage = nifti_copy_nim_info(deformationFieldImage[0]);
       flowFieldImage->data = (void *)calloc(flowFieldImage->nvox,flowFieldImage->nbyper);
@@ -3876,24 +3855,19 @@ void reg_spline_getIntermediateDefFieldFromVelGrid(nifti_image *velocityFieldGri
       strcpy(flowFieldImage->intent_name,"NREG_TRANS");
       flowFieldImage->intent_p1=DEF_VEL_FIELD;
       flowFieldImage->intent_p2=velocityFieldGrid->intent_p2;
-      if(velocityFieldGrid->num_ext>0 && flowFieldImage->ext_list==NULL)
-         nifti_copy_extensions(flowFieldImage, velocityFieldGrid);
+      if(velocityFieldGrid->num_ext>0 && flowFieldImage->ext_list==NULL) nifti_copy_extensions(flowFieldImage, velocityFieldGrid);
 
       // Generate the velocity field
-      reg_spline_getFlowFieldFromVelocityGrid(velocityFieldGrid,
-                                              flowFieldImage);
+      reg_spline_getFlowFieldFromVelocityGrid(velocityFieldGrid, flowFieldImage);
       // Remove the affine component from the flow field
       nifti_image *affineOnly=NULL;
-      if(flowFieldImage->num_ext>0)
-      {
-         if(flowFieldImage->ext_list[0].edata!=NULL)
-         {
+      if(flowFieldImage->num_ext>0) {
+         if(flowFieldImage->ext_list[0].edata!=NULL) {
             // Create a field that contains the affine component only
             affineOnly = nifti_copy_nim_info(deformationFieldImage[0]);
             affineOnly->data = (void *)calloc(affineOnly->nvox,affineOnly->nbyper);
             reg_affine_getDeformationField(reinterpret_cast<mat44 *>(flowFieldImage->ext_list[0].edata),
-                  affineOnly,
-                  false);
+                  affineOnly, false);
             reg_tools_substractImageToImage(flowFieldImage,affineOnly,flowFieldImage);
          }
       }
@@ -3906,14 +3880,10 @@ void reg_spline_getIntermediateDefFieldFromVelGrid(nifti_image *velocityFieldGri
       float scalingValue = pow(2.0f,std::abs((float)squaringNumber));
       if(velocityFieldGrid->intent_p2<0)
          // backward deformation field is scaled down
-         reg_tools_divideValueToImage(flowFieldImage,
-                                      deformationFieldImage[0],
-                                      -scalingValue); // (/-scalingValue)
+         reg_tools_divideValueToImage(flowFieldImage, deformationFieldImage[0], -scalingValue); // (/-scalingValue)
       else
          // forward deformation field is scaled down
-         reg_tools_divideValueToImage(flowFieldImage,
-                                      deformationFieldImage[0],
-                                      scalingValue); // (/scalingValue)
+         reg_tools_divideValueToImage(flowFieldImage, deformationFieldImage[0], scalingValue); // (/scalingValue)
 
       // Clear the allocated flow field
       nifti_image_free(flowFieldImage);
@@ -3923,8 +3893,7 @@ void reg_spline_getIntermediateDefFieldFromVelGrid(nifti_image *velocityFieldGri
       reg_getDeformationFromDisplacement(deformationFieldImage[0]);
 
       // The deformation field is squared
-      for(unsigned short i=0; i<squaringNumber; ++i)
-      {
+      for(unsigned short i=0; i<squaringNumber; ++i) {
          // The computed scaled deformation field is copied over
          memcpy(deformationFieldImage[i+1]->data, deformationFieldImage[i]->data,
                deformationFieldImage[i]->nvox*deformationFieldImage[i]->nbyper);
@@ -3939,8 +3908,7 @@ void reg_spline_getIntermediateDefFieldFromVelGrid(nifti_image *velocityFieldGri
    #endif
       }
       // The affine conponent of the transformation is restored
-      if(affineOnly!=NULL)
-      {
+      if(affineOnly!=NULL) {
          for(unsigned short i=0; i<=squaringNumber; ++i){
             reg_getDisplacementFromDeformation(deformationFieldImage[i]);
             reg_tools_addImageToImage(deformationFieldImage[i],affineOnly,deformationFieldImage[i]);
@@ -3951,8 +3919,7 @@ void reg_spline_getIntermediateDefFieldFromVelGrid(nifti_image *velocityFieldGri
          affineOnly=NULL;
       }
       // If required an affine component is composed
-      if(velocityFieldGrid->num_ext>1)
-      {
+      if(velocityFieldGrid->num_ext>1) {
          for(unsigned short i=0; i<=squaringNumber; ++i){
             reg_affine_getDeformationField(reinterpret_cast<mat44 *>(velocityFieldGrid->ext_list[1].edata),
                   deformationFieldImage[i],
@@ -3960,8 +3927,7 @@ void reg_spline_getIntermediateDefFieldFromVelGrid(nifti_image *velocityFieldGri
          }
       }
    }
-   else
-   {
+   else {
       reg_print_fct_error("reg_spline_getIntermediateDefFieldFromVelGrid");
       reg_print_msg_error("The provided input image is not a spline parametrised transformation");
       reg_exit();
@@ -3971,11 +3937,7 @@ void reg_spline_getIntermediateDefFieldFromVelGrid(nifti_image *velocityFieldGri
 /* *************************************************************** */
 /* *************************************************************** */
 template <class DTYPE>
-void compute_lie_bracket(nifti_image *img1,
-                         nifti_image *img2,
-                         nifti_image *res,
-                         bool use_jac
-                         )
+void compute_lie_bracket(nifti_image *img1, nifti_image *img2, nifti_image *res, bool use_jac)
 {
    reg_print_msg_error("The compute_lie_bracket function needs updating");
    reg_exit();
@@ -3985,8 +3947,7 @@ void compute_lie_bracket(nifti_image *img1,
    size_t voxNumber=(size_t)img1->nx*img1->ny*img1->nz;
  #endif
    // Lie bracket using Jacobian for testing
-   if(use_jac)
-   {
+   if(use_jac) {
       mat33 *jacImg1=(mat33 *)malloc(voxNumber*sizeof(mat33));
       mat33 *jacImg2=(mat33 *)malloc(voxNumber*sizeof(mat33));
 
@@ -4005,14 +3966,12 @@ void compute_lie_bracket(nifti_image *img1,
       DTYPE *img1DispPtrY=&img1DispPtrX[voxNumber];
       DTYPE *img2DispPtrX=static_cast<DTYPE *>(img2->data);
       DTYPE *img2DispPtrY=&img1DispPtrX[voxNumber];
-      if(img1->nz>1)
-      {
+      if(img1->nz>1) {
          DTYPE *resPtrZ=&resPtrY[voxNumber];
          DTYPE *img1DispPtrZ=&img1DispPtrY[voxNumber];
          DTYPE *img2DispPtrZ=&img1DispPtrY[voxNumber];
 
-         for(size_t i=0; i<voxNumber; ++i)
-         {
+         for(size_t i=0; i<voxNumber; ++i) {
             resPtrX[i]=
                   (jacImg2[i].m[0][0]*img1DispPtrX[i] +
                   jacImg2[i].m[0][1]*img1DispPtrY[i] +
@@ -4039,10 +3998,8 @@ void compute_lie_bracket(nifti_image *img1,
                   jacImg1[i].m[2][2]*img2DispPtrZ[i] );
          }
       }
-      else
-      {
-         for(size_t i=0; i<voxNumber; ++i)
-         {
+      else {
+         for(size_t i=0; i<voxNumber; ++i) {
             resPtrX[i]=
                   (jacImg2[i].m[0][0]*img1DispPtrX[i] +
                   jacImg2[i].m[0][1]*img1DispPtrY[i] )
@@ -4152,11 +4109,9 @@ void compute_BCH_update1(nifti_image *img1, // current field
    shared(voxelNumber,img1Ptr,img2Ptr, res) \
    private(i)
  #endif
-   for(i=0; i<voxelNumber; ++i)
-      res[i] = img1Ptr[i] + img2Ptr[i];
+   for(i=0; i<voxelNumber; ++i) res[i] = img1Ptr[i] + img2Ptr[i];
 
-   if(type>0)
-   {
+   if(type>0) {
       // Convert the deformation field into a displacement field
       reg_getDisplacementFromDeformation(img1);
 
@@ -4170,11 +4125,9 @@ void compute_BCH_update1(nifti_image *img1, // current field
    shared(voxelNumber, res, lie_bracket_img2_img1Ptr) \
    private(i)
  #endif
-      for(i=0; i<voxelNumber; ++i)
-         res[i] += 0.5 * lie_bracket_img2_img1Ptr[i];
+      for(i=0; i<voxelNumber; ++i) res[i] += 0.5 * lie_bracket_img2_img1Ptr[i];
 
-      if(type>1)
-      {
+      if(type>1) {
          // r <- 2 + 1 + 0.5[2,1] + [2,[2,1]]/12
          nifti_image *lie_bracket_img2_lie1=nifti_copy_nim_info(lie_bracket_img2_img1);
          lie_bracket_img2_lie1->data=(void *)malloc(lie_bracket_img2_lie1->nvox*lie_bracket_img2_lie1->nbyper);
@@ -4185,11 +4138,9 @@ void compute_BCH_update1(nifti_image *img1, // current field
    shared(voxelNumber, res, lie_bracket_img2_lie1Ptr) \
    private(i)
  #endif
-         for(i=0; i<voxelNumber; ++i)
-            res[i] += lie_bracket_img2_lie1Ptr[i]/12.0;
+         for(i=0; i<voxelNumber; ++i) res[i] += lie_bracket_img2_lie1Ptr[i]/12.0;
 
-         if(type>2)
-         {
+         if(type>2) {
             // r <- 2 + 1 + 0.5[2,1] + [2,[2,1]]/12 - [1,[2,1]]/12
             nifti_image *lie_bracket_img1_lie1=nifti_copy_nim_info(lie_bracket_img2_img1);
             lie_bracket_img1_lie1->data=(void *)malloc(lie_bracket_img1_lie1->nvox*lie_bracket_img1_lie1->nbyper);
@@ -4200,12 +4151,10 @@ void compute_BCH_update1(nifti_image *img1, // current field
    shared(voxelNumber, res, lie_bracket_img1_lie1Ptr) \
    private(i)
  #endif
-            for(i=0; i<voxelNumber; ++i)
-               res[i] -= lie_bracket_img1_lie1Ptr[i]/12.0;
+            for(i=0; i<voxelNumber; ++i) res[i] -= lie_bracket_img1_lie1Ptr[i]/12.0;
             nifti_image_free(lie_bracket_img1_lie1);
 
-            if(type>3)
-            {
+            if(type>3) {
                // r <- 2 + 1 + 0.5[2,1] + [2,[2,1]]/12 - [1,[2,1]]/12 - [1,[2,[2,1]]]/24
                nifti_image *lie_bracket_img1_lie2=nifti_copy_nim_info(lie_bracket_img2_lie1);
                lie_bracket_img1_lie2->data=(void *)malloc(lie_bracket_img1_lie2->nvox*lie_bracket_img1_lie2->nbyper);
@@ -4216,8 +4165,7 @@ void compute_BCH_update1(nifti_image *img1, // current field
    shared(voxelNumber, res, lie_bracket_img1_lie2Ptr) \
    private(i)
  #endif
-               for(i=0; i<voxelNumber; ++i)
-                  res[i] -= lie_bracket_img1_lie2Ptr[i]/24.0;
+               for(i=0; i<voxelNumber; ++i) res[i] -= lie_bracket_img1_lie2Ptr[i]/24.0;
                nifti_image_free(lie_bracket_img1_lie2);
             }// >3
          }// >2
@@ -4235,14 +4183,12 @@ void compute_BCH_update(nifti_image *img1, // current field
                         nifti_image *img2, // gradient
                         int type)
 {
-   if(img1->datatype!=img2->datatype)
-   {
+   if(img1->datatype!=img2->datatype) {
       reg_print_fct_error("compute_BCH_update");
       reg_print_msg_error("Both input images are expected to be of similar type");
       reg_exit();
    }
-   switch(img1->datatype)
-   {
+   switch(img1->datatype) {
    case NIFTI_TYPE_FLOAT32:
       compute_BCH_update1<float>(img1, img2, type);
       break;
@@ -4279,8 +4225,7 @@ void intensitiesToSplineCoefficients(DTYPE *values, int number)
    DTYPE currentPole = pole;
    DTYPE currentOpposite = pow(pole,(DTYPE)(2.0*(DTYPE)number-1.0));
    DTYPE sum=0.0;
-   for(int i=1; i<number; i++)
-   {
+   for(int i=1; i<number; i++) {
       sum += (currentPole - currentOpposite) * values[i];
       currentPole *= pole;
       currentOpposite /= pole;
@@ -4288,8 +4233,7 @@ void intensitiesToSplineCoefficients(DTYPE *values, int number)
    values[0] = (DTYPE)((values[0] - pole*pole*(values[0] + sum)) / (1.0 - pow(pole,(DTYPE)(2.0*(double)number+2.0))));
 
    //other values forward
-   for(int i=1; i<number; i++)
-   {
+   for(int i=1; i<number; i++) {
       values[i] += pole * values[i-1];
    }
 
@@ -4300,8 +4244,7 @@ void intensitiesToSplineCoefficients(DTYPE *values, int number)
    values[number-1] = ipp * values[number-1];
 
    //other values backward
-   for(int i=number-2; 0<=i; i--)
-   {
+   for(int i=number-2; 0<=i; i--) {
       values[i] = pole * values[i+1] + ipp*values[i];
    }
    return;
@@ -4312,20 +4255,16 @@ void reg_spline_GetDeconvolvedCoefficents_core(nifti_image *img)
 {
    double *coeff=(double *)malloc(img->nvox*sizeof(double));
    DTYPE *imgPtr=static_cast<DTYPE *>(img->data);
-   for(size_t i=0; i<img->nvox; ++i)
-      coeff[i]=imgPtr[i];
-   for(int u=0; u<img->nu; ++u)
-   {
-      for(int t=0; t<img->nt; ++t)
-      {
+   for(size_t i=0; i<img->nvox; ++i) coeff[i]=imgPtr[i];
+   for(int u=0; u<img->nu; ++u) {
+      for(int t=0; t<img->nt; ++t) {
          double *coeffPtr=&coeff[(u*img->nt+t)*img->nx*img->ny*img->nz];
 
          // Along the X axis
          int number = img->nx;
          double *values=new double[number];
          int increment = 1;
-         for(int i=0; i<img->ny*img->nz; i++)
-         {
+         for(int i=0; i<img->ny*img->nz; i++) {
             int start = i*img->nx;
             int end = start + img->nx;
             extractLine<double>(start,end,increment,coeffPtr,values);
@@ -4339,8 +4278,7 @@ void reg_spline_GetDeconvolvedCoefficents_core(nifti_image *img)
          number = img->ny;
          values=new double[number];
          increment = img->nx;
-         for(int i=0; i<img->nx*img->nz; i++)
-         {
+         for(int i=0; i<img->nx*img->nz; i++) {
             int start = i + i/img->nx * img->nx * (img->ny - 1);
             int end = start + img->nx*img->ny;
             extractLine<double>(start,end,increment,coeffPtr,values);
@@ -4351,13 +4289,11 @@ void reg_spline_GetDeconvolvedCoefficents_core(nifti_image *img)
          values=NULL;
 
          // Along the Z axis
-         if(img->nz>1)
-         {
+         if(img->nz>1) {
             number = img->nz;
             values=new double[number];
             increment = img->nx*img->ny;
-            for(int i=0; i<img->nx*img->ny; i++)
-            {
+            for(int i=0; i<img->nx*img->ny; i++) {
                int start = i;
                int end = start + img->nx*img->ny*img->nz;
                extractLine<double>(start,end,increment,coeffPtr,values);
@@ -4370,16 +4306,13 @@ void reg_spline_GetDeconvolvedCoefficents_core(nifti_image *img)
       }//t
    }//u
 
-   for(size_t i=0; i<img->nvox; ++i)
-      imgPtr[i]=coeff[i];
+   for(size_t i=0; i<img->nvox; ++i) imgPtr[i]=coeff[i];
    free(coeff);
 }
 /* *************************************************************** */
 void reg_spline_GetDeconvolvedCoefficents(nifti_image *img)
 {
-
-   switch(img->datatype)
-   {
+   switch(img->datatype) {
    case NIFTI_TYPE_FLOAT32:
       reg_spline_GetDeconvolvedCoefficents_core<float>(img);
       break;
