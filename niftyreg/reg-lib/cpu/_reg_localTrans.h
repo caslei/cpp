@@ -86,8 +86,7 @@ void reg_voxelCentric2NodeCentric(nifti_image *nodeImage,
                                   nifti_image *voxelImage,
                                   float weight,
                                   bool update,
-                                  mat44 *voxelToMillimeter = NULL
-      );
+                                  mat44 *voxelToMillimeter = NULL);
 /* *************************************************************** */
 /** @brief Refine a grid of control points
  * @param referenceImage Image that defined the space of the reference
@@ -97,8 +96,7 @@ void reg_voxelCentric2NodeCentric(nifti_image *nodeImage,
  */
 extern "C++"
 void reg_spline_refineControlPointGrid(nifti_image *controlPointGridImage,
-                                       nifti_image *referenceImage = NULL
-      );
+                                       nifti_image *referenceImage = NULL);
 /* *************************************************************** */
 /** @brief This function compose the a first control point image with a second one:
  * Grid2(x) <= Grid1(Grid2(x)).
@@ -119,8 +117,7 @@ int reg_spline_cppComposition(nifti_image *grid1,
                               nifti_image *grid2,
                               bool displacement1,
                               bool displacement2,
-                              bool bspline
-                              );
+                              bool bspline);
 /* *************************************************************** */
 /** @brief Preforms the composition of two deformation fields
  * The deformation field image is applied to the second image:
@@ -201,9 +198,7 @@ void reg_spline_getFlowFieldFromVelocityGrid(nifti_image *velocityFieldGrid,
  * 4 - w=u+v+0.5*[u,v]+[u,[u,v]]/12-[v,[u,v]]/12-[v,[u,[u,g]]]/24
  */
 extern "C++"
-void compute_BCH_update(nifti_image *img1,
-                        nifti_image *img2,
-                        int type);
+void compute_BCH_update(nifti_image *img1, nifti_image *img2, int type);
 /* *************************************************************** */
 /** @brief This function deconvolve an image by a cubic B-Spline kernel
  * in order to get cubic B-Spline coefficient
