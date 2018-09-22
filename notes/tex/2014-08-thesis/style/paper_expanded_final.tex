@@ -1,0 +1,439 @@
+%!TEX root=../paper/paper.tex
+\chapter{Recognizing Image Style}\label{sec:style_chapter}
+
+\begin{figure}[t]
+\small{
+\centering
+\begin{subfigure}[t]{0.48\linewidth}
+    \begin{tabular}{cc}
+        \includegraphics[width=.43\linewidth]{../style/figures/flickrDatasetExamples/used/resized/hdr.jpg} &
+    \includegraphics[width=.43\linewidth]{../style/figures/flickrDatasetExamples/used/resized/macro.jpg} \\
+    HDR & Macro \\
+        \includegraphics[width=.43\linewidth]{../style/figures/flickrDatasetExamples/used/resized/vintage.jpg} &
+    \includegraphics[width=.43\linewidth]{../style/figures/flickrDatasetExamples/used/resized/noir.jpg} \\
+    Vintage & Noir \\
+        \includegraphics[width=.43\linewidth]{../style/figures/flickrDatasetExamples/used/resized/minimal.jpg} &
+    \includegraphics[width=.43\linewidth]{../style/figures/flickrDatasetExamples/used/resized/hazy.jpg} \\
+    Minimal & Hazy \\
+        \includegraphics[width=.43\linewidth]{../style/figures/flickrDatasetExamples/used/resized/long_exposure.jpg} &
+    \includegraphics[width=.43\linewidth]{../style/figures/flickrDatasetExamples/used/resized/romantic.jpg} \\
+    Long Exposure & Romantic \\
+    \end{tabular}
+    \caption{
+        Flickr Style: 80K images covering 20 styles.
+    }\label{fig:flickr_style_examples}
+\end{subfigure}\hspace{2em}\begin{subfigure}[t]{0.48\linewidth}
+    \begin{tabular}{cc}
+        \includegraphics[width=.43\linewidth]{../style/figures/wikipaintingsDatasetExamples/used/resized/baroque-0.jpg} &
+    \includegraphics[width=.43\linewidth]{../style/figures/wikipaintingsDatasetExamples/used/resized/roccoco-0.jpg} \\
+    Baroque & Roccoco \\
+        \includegraphics[width=.43\linewidth]{../style/figures/wikipaintingsDatasetExamples/used/resized/northern_renaissance-0.jpg} &
+        \includegraphics[width=.43\linewidth]{../style/figures/wikipaintingsDatasetExamples/used/resized/cubism-0.jpg} \\
+    Northern Renaissance & Cubism \\
+        \includegraphics[width=.43\linewidth]{../style/figures/wikipaintingsDatasetExamples/used/resized/impressionism-0.jpg} &
+        \includegraphics[width=.43\linewidth]{../style/figures/wikipaintingsDatasetExamples/used/resized/post_impressionism-0.jpg} \\
+    Impressionism & Post-Impressionism \\
+        \includegraphics[width=.43\linewidth]{../style/figures/wikipaintingsDatasetExamples/used/resized/abs_expressionism-0.jpg} &
+    \includegraphics[width=.43\linewidth]{../style/figures/wikipaintingsDatasetExamples/used/resized/color_field-0.jpg} \\
+    Abs. Expressionism & Color Field Painting \\
+    \end{tabular}
+    \caption{
+        Wikipaintings: 85K images for 25 genres.
+    }\label{fig:wikipaintings_style_examples}
+\end{subfigure}
+}
+\caption{
+    Typical images in different style categories of our datasets.
+}\label{fig:style_examples}
+\end{figure}
+
+\PM{Motivation}
+Deliberately-created images convey meaning, and \textit{visual style} is often a significant component of image meaning.
+For example, a political candidate portrait made in the lush colors of a Renoir painting tells a different story than if it were in the harsh, dark tones of a horror movie.
+Distinct visual styles are apparent in art, cinematography, advertising, and have become extremely popular in amateur photography, with apps like Instagram leading the way.
+While understanding style is crucial to image understanding, very little research in computer vision has explored visual style.
+
+\PM{Definition}
+We define several different \textit{types} of image style, and gather a new, large-scale dataset of photographs annotated with style labels.
+This dataset embodies several different aspects of visual style, including photographic techniques  (``Macro,'' ``HDR''), composition styles (``Minimal,'' ``Geometric''), moods (``Serene,'' ``Melancholy''), genres (``Vintage,'' ``Romantic,'' ``Horror''), and types of scenes (``Hazy,'' ``Sunny'').
+These styles are not mutually exclusive, and represent different attributes of style.
+We also gather a large dataset of visual art (mostly paintings) annotated with art historical style labels, ranging from Renaissance to modern art.
+\autoref{fig:style_examples} shows some samples.
+Analyzing style of non-photorealistic media is interesting as much of our present understanding of visual style arises out of thousands of years of developments in fine art, marked by distinct historical styles.
+
+\section{Method}\label{sec:style_method}
+
+\PM{Approach}
+We test existing classification algorithms on these styles, evaluating several state-of-the-art image features.
+Most previous work in aesthetic style analysis has  used hand-tuned features, such as color histograms.
+We find that deep convolutional neural network (CNN) features perform best for the task.
+This is surprising for several reasons: these features were trained on object class categories (ImageNet), and many styles appear to be primarily about color choices, yet the CNN features handily beat color histogram features.
+This leads to one conclusion of our work: mid-level features derived from object datasets are generic for style recognition, and superior to hand-tuned features.
+We compare our predictors to human observers, using Amazon Mechanical Turk experiments, and find that our classifiers predict Group membership at essentially the same level of accuracy as Turkers.
+We also test on the AVA aesthetic prediction task \parencite{Murray-CVPR-2012}, and show that using the ``deep'' object recognition features improves over the state-of-the-art results.
+
+\PM{Applications and code}
+First, we demonstrate an example of using our method to search for images by style.
+This could be useful for applications such as product search, storytelling, and creating slide presentations.
+In the same vein, visual similarity search results could be filtered by visual style, making possible queries such as ``similar to this image, but more Film Noir.''
+Second, style tags may provide valuable mid-level features for other image understanding tasks.
+For example, there has increasing recent effort in understanding image meaning, aesthetics, interestingness, popularity, and emotion (for example, \parencite{Gygli-ICCV-2013,Isola-CVPR-2011,joo2014,khosla2014}), and style is an important part of meaning.
+Finally, learned predictors could be a useful component in modifying the style of an image.
+All data, trained predictors, and code (including results viewing interface) are available at \url{http://sergeykarayev.com/recognizing-image-style/}.
+
+\subsection{Data Sources}
+
+\PM{Motivation}
+Building an effective model of photographic style requires annotated training data.  To our knowledge, there is only one existing dataset annotated with visual style, and only a narrow range of photographic styles is represented~\parencite{Murray-CVPR-2012}.
+We would like to study a broader range of styles, including different \textit{types} of styles ranging from genres, compositional styles, and moods.
+Morever, large datasets are desirable in order to obtain effective results, and so we would like to obtain data from online communities, such as Flickr.
+
+\subsubsection{Flickr Style}
+
+\PM{Source}
+Although Flickr users often provide free-form tags for their uploaded images, the tags tend to be quite unreliable.
+Instead, we turn to Flickr groups, which are community-curated collections of visual concepts.
+For example, the Flickr Group ``Geometry Beauty'' is described, in part, as ``Circles, triangles, rectangles, symmetric objects, repeated patterns'', and contains over 167K images at time of writing; the ``Film Noir Mood'' group is described as ``Not just  black and white photography, but a dark, gritty, moody feel...'' and comprises over 7K images.
+
+At the outset, we decided on a set of 20 visual styles, further categorized into types:
+\begin{itemize} \itemsep0.5pt
+\item \textbf{Optical techniques:} Macro, Bokeh, Depth-of-Field, Long Exposure, HDR
+\item \textbf{Atmosphere:} Hazy, Sunny
+\item \textbf{Mood:} Serene, Melancholy, Ethereal
+\item \textbf{Composition styles:} Minimal, Geometric, Detailed, Texture
+\item \textbf{Color:} Pastel, Bright
+\item \textbf{Genre:} Noir, Vintage, Romantic, Horror
+\end{itemize}
+
+For each of these stylistic concepts, we found at least one dedicated Flickr Group with clearly defined membership rules.
+From these groups, we collected 4,000 positive examples for each label, for a total of 80,000 images.
+Example images are shown in \autoref{fig:flickr_style_examples}.
+
+\PM{Dealing with Noise}
+The derived labels are considered clean in the positive examples, but may be noisy in the negative examples, in the same way as the ImageNet dataset \parencite{Deng-CVPR-2009}.
+That is, a picture labeled as \emph{Sunny} is indeed \emph{Sunny}, but it may also be \emph{Romantic}, for which it is not labeled.
+We consider this an unfortunate but acceptable reality of working with a large-scale dataset.
+Following ImageNet, we still treat the absence of a label as indication that the image is a negative example for that label.
+Mechanical Turk experiments described in \autoref{sec:mech_turk_evaluation} serve to allay our concerns.
+
+\subsubsection{Wikipaintings}
+
+\PM{Source}
+We also provide a new dataset for classifying painting style.
+To our knowledge, no previous large-scale dataset exists for this task -- although very recently a large dataset of artwork did appear for other tasks \parencite{Mensink2014}.
+We collect a dataset of 100,000 high-art images -- mostly paintings -- labeled with artist, style, genre, date, and free-form tag information by a community of experts on the \texttt{Wikipaintings.org} website.
+Our dataset presents significant stylistic diversity, primarily spanning Renaissance styles to modern art movements.% (\autoref{fig:wikipaintings_data} provides further breakdowns).
+We select 25 styles with more than 1,000 examples, for a total of 85,000 images.
+Example images are shown in~\autoref{fig:wikipaintings_style_examples}.
+
+\subsection{Learning algorithm}
+
+\PM{Multi-Class Logistic Regression via SGD}
+We learn to classify novel images according to their style, using the labels assembled in the previous section.
+Because the datasets we deal with are quite large and some of the features are high-dimensional, we consider only linear classifiers, relying on sophisticated features to provide robustiness.
+We use an open-source implementation of Stochastic Gradient Descent with adaptive subgradient \parencite{Agarwal-JMLR-2012}.
+The learning process optimizes the function \[
+\underset{w}{\text{min }} \lambda_1 \|w\|_1 + \frac{\lambda_2}{2} \Vert w \Vert_2^2 + \sum_i \ell(x_i, y_i, w)
+\]
+We set the $L_1$ and $L_2$ regularization parameters and the form of the loss function by validation on a held-out set.
+For the loss $\ell(x, y, w)$, we consider the hinge ($\max(0, 1 - y \cdot w^T x)$) and logistic ($\log(1 + \exp(-y \cdot w^T x))$) functions.
+We set the initial learning rate to $0.5$, and use adaptive subgradient optimization~\parencite{duchi2011adaptive}.
+Our setup is of multi-class classification; we use the One vs. All reduction to binary classifiers.
+
+\subsection{Image Features}
+
+\PM{Motivation}
+In order to classify styles, we must choose appropriate image features.  We hypothesize that image style may be related to many different features, including low-level statistics \parencite{Lyu-PNAS-2004}, color choices, composition, and content.  Hence, we test features that embody these different elements, including features from the object recognition literature.
+We evaluate single-feature performance, as well as second-stage fusion of multiple features.
+
+\paragraph{L*a*b color histogram.}
+Many of the Flickr styles exhibit strong dependence on color. For example, \emph{Noir} images are nearly all black-and-white, while most \emph{Horror} images are very dark, and \emph{Vintage} images use old photographic colors. We use a standard color histogram feature, computed on the whole image.
+The 784-dimensional joint histogram in CIELAB color space has 4, 14, and 14 bins in the L*, a*, and b* channels, following Palermo et al.~\parencite{Palermo-ECCV-2012}, who showed this to be the best performing single feature for determining the date of historical color images.
+
+\paragraph{GIST.}
+The classic gist descriptor \parencite{Oliva-IJCV-2001} is known to perform well for scene classification and retrieval of images visually similar at a low-resolution scale, and thus can represent image composition to some extent.
+We use the INRIA LEAR implementation, resizing images to 256 by 256 pixels and extracting a 960-dimensional color GIST feature.
+
+\paragraph{Graph-based visual saliency.}
+We also model composition with a visual attention feature \parencite{Harel-NIPS-2006}.
+The feature is fast to compute and has been shown to predict human fixations in natural images basically as well as an individual human (humans are far better in aggregate, however).
+The 1024-dimensional feature is computed from images resized to 256 by 256 pixels.
+
+\paragraph{Meta-class binary features.}
+Image content can be predictive of individual styles, e.g., \emph{Macro} images include many images of insects and flowers. The \texttt{mc-bit} feature~\parencite{Bergamo-CVPR-2012} is a 15,000-dimensional bit vector feature learned as a non-linear combination of classifiers trained using existing features (e.g., SIFT, GIST, Self-Similarity) on thousands of random ImageNet synsets, including internal ILSVRC2010 nodes.
+In essence, MC-bit is a hand-crafted ``deep'' architecture, stacking classifiers and pooling operations on top of lower-level features.
+
+\paragraph{Deep convolutional net.}
+Current state-of-the-art results on ImageNet, the largest image classification challenge, have come from a deep convolutional network trained in a fully-supervised manner \parencite{krizhevsky2012imagenet}.
+We use the Caffe \parencite{Jia13caffe} open-source implementation of the ImageNet-winning eght-layer convolutional network, trained on over a million images annotated with 1,000 ImageNet classes.
+We investigate using features from two different levels of the network, referred to as DeCAF$_5$ and DeCAF$_6$ (following \parencite{Donahue2013}).
+The features are 8,000- and 4,000-dimensional and are computed from images center-cropped and resized to 256 by 256 pixels.
+
+\paragraph{Content classifiers.}
+Following Dhar et al.~\parencite{Dhar-CVPR-2011}, who use high-level classifiers as features for their aesthetic rating prediction task, we evaluate using object classifier confidences as features.
+Specifically, we train classifiers for all 20 classes of the PASCAL VOC \parencite{pascal-voc-2010} using the DeCAF$_6$ feature.
+The resulting classifiers are quite reliable, obtaining $0.7$ mean AP on the VOC 2012.
+We aggregate the data to train four classifiers for ``animals'', ``vehicles'', ``indoor objects'' and ``people''.
+
+\paragraph{Fusion.}
+These aggregate classes are presumed to discriminate between vastly different types of images -- types for which different style signals may apply.
+For example, a \emph{Romantic} scene with people may be largely about the composition of the scene, whereas, \emph{Romantic} scenes with vehicles may be largely described by color.
+To enable our classifiers to learn content-dependent style, we can take the outer product of a feature channel with the four aggregate content classifiers.
+
+\section{Evaluation}\label{sec:style_evaluation}
+
+\begin{table}
+\caption[Mean APs on AVA Style, Flickr Style, and Wikipaintings for single-channel features and their second-stage combinations.]{
+    Mean APs on three datasets for the considered single-channel features and their second-stage combination.
+    As some features were clearly worse than others on the AVA Style dataset, only the better features were evaluated on larger datasets.
+}
+\label{tab:mean_aps}
+\centering
+\vspace{1em}
+\footnotesize{
+\begin{tabular}{lrrrrrrrrr}
+\toprule
+{}                & Fusion x Content & DeCAF$_6$ & MC-bit & L*a*b* Hist & GIST  & Saliency & random \\
+\midrule
+AVA Style         & \textbf{0.581}   & 0.579     & 0.539  & 0.288       & 0.220 & 0.152    & 0.132 \\
+Flickr            & \textbf{0.368}   & 0.336     & 0.328  & -           & -     & -        & 0.052 \\
+Wikipaintings     & \textbf{0.473}   & 0.356     & 0.441  & -           & -     & -        & 0.043 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\subsection{Experiment: Flickr Style}
+
+\PM{Setup}
+We learn and predict style labels on the 80,000 images labeled with 20 different visual styles of our new Flickr Style dataset, using 20\% of the data for testing, and another 20\% for parameter-tuning validation.
+There are several performance metrics we consider.
+Average Precision evaluation (as reported in \autoref{tab:mean_aps} and in \autoref{tab:flickr_ap_table}) is computed on a random class-balanced subset of the test data (each class has equal prevalence).
+%We compute confusion matrices (\autoref{fig:flickr_conf}, \autoref{fig:wp_conf}, \autoref{fig:ava_style_conf}) on the same data.
+We compute confusion matrices (\autoref{fig:flickr_conf}, \autoref{fig:wp_conf}) on the same data.
+Per-class accuracies are computed on subsets of the data balanced by the binary label, such that chance performance is 50\%.
+We follow these decisions in all following experiments.
+
+\PM{Single features}
+The best single-channel feature is DeCAF$_6$ with 0.336 mean AP; feature fusion obtains 0.368 mean AP.
+Per-class APs range from 0.17 [\emph{Depth of Field}] to  0.62 [\emph{Macro}].
+Per-class accuracies range from 68\% [\emph{Romantic}, \emph{Depth of Field}] to 85\% [\emph{Sunny}, \emph{Noir}, \emph{Macro}].
+The average per-class accuracy is 78\%.
+We show the most confident style classifications on the test set of Flickr Style in \autoref{fig:flickr_on_flickr1} through \autoref{fig:flickr_on_flickr3}.
+
+\PM{Analysis}
+Upon inspection of the confusion matrices, we saw points of understandable confusion: \emph{Depth of Field} vs. \emph{Macro}, \emph{Romantic} vs. \emph{Pastel}, \emph{Vintage} vs. \emph{Melancholy}.
+There are also surprising sources of mistakes: \emph{Macro} vs. \emph{Bright/Energetic}, for example.
+To explain this particular confusion, we observed that lots of \emph{Macro} photos contain bright flowers, insects, or birds, often against vibrant greenery.
+Here, at least, the content of the image dominates its style label.
+To explore further content-style correlations, we plot the outputs of PASCAL object class classifiers (one of our features) on the Flickr dataset in~\autoref{fig:content_correlation}.
+We can observe that some styles have strong correlations to content (e.g., \emph{Hazy} occurs with \emph{vehicle}, \emph{HDR} doesn't occur with \emph{cat}).
+
+\PM{Fusion}
+We hypothesize that style is content-dependent: a \emph{Romantic} portrait may have different low-level properties than a \emph{Romantic} sunset.
+We form a new feature as an outer product of our content classifier features with the second-stage late fusion features (``Fusion $\times$ Content'' in all results figures).
+These features gave the best results, thus supporting the hypothesis.
+
+\begin{figure}[h]
+\centering
+    \includegraphics[width=\linewidth]{../style/figures/content_correlation2/pascal_on_flickr.pdf}
+    \caption[Correlation of PASCAL content classifier predictions with ground truth Flickr Style labels.]{
+        Correlation of PASCAL content classifier predictions (rows) against ground truth Flickr Style labels (columns).
+        We see, for instance, that the Macro style is highly correlated with presence of animals, and that Long Exposure and Sunny style photographs often feature vehicles.
+    }\label{fig:content_correlation}
+\end{figure}
+
+\subsubsection{Mechanical Turk Evaluation}\label{sec:mech_turk_evaluation}
+
+\PM{Setup}
+In order to provide a human baseline for evaluation, we performed a Mechanical Turk study.
+For each style, Turkers were shown positive and negative examples for each Flickr Group, and then they evaluated whether each image in the test set was part of the given style.
+We treat the Flickr group memberships as ground truth as before, and then evaluate Turkers' ability to accurately determine group membership.
+Measures were taken to remove spam workers, as described below.
+For efficiency, one quarter of the test set was used, and two redundant styles (Bokeh and Detailed) were removed.
+Each test image was evaluated by 3 Turkers, and the majority vote taken as the human result for this image.
+
+\PM{Details}
+Test images were grouped into 10 images per Human Interface Task (HIT). Each task asks the Turker to evaluate the style (e.g., ``Is this image VINTAGE?'') for each image.  For each style, we provided a short blurb describing the style in words, and provided 12-15 hand-chosen positive and negative examples for each Flickr Group.
+To defend against spammers, each HIT included 2 sentinels: images which were very clearly positives and similar to the examples.  HITs were rejected when Turkers got both sentinels wrong.
+Turkers were paid $0.10$ per HIT, and were allowed to perform multiple hits.  Manual inspection of the results indicate that the Turkers understood the task and were performing effectively.  A few Turkers sent unsolicited feedback indicating that they were really enjoying the HITs (``some of the photos are beautiful'') and wanted to perform them as effectively as possible.
+
+\PM{Results}
+Results are presented in \autoref{tab:flickr_vs_mturk} and \autoref{tab:flickr_vs_mturk2}.
+In total, Turkers achieved 75\% mean accuracy (ranging from 61\% [\emph{Romantic}] to 92\% [\emph{Macro}]) across styles, in comparison to 78\% mean accuracy (ranging from 68\% [\emph{Depth of Field}] to 87\% [\emph{Macro}]) of our best method.
+Our algorithm did significantly worse than Turkers on \emph{Macro} and \emph{Horror}, and significantly better on \emph{Vintage}, \emph{Romantic}, \emph{Pastel}, \emph{Detailed}, \emph{HDR}, and \emph{Long Exposure} styles.
+We additionally used the Turker opinion as ground truth for our method's predictions.
+In switching from the default Flickr to the MTurk ground truth, our method's accuracy hardly changed from 78\% to 77\%.
+However, we saw that the accuracy of our \emph{Vintage}, \emph{Detailed}, \emph{Long Exposure}, \emph{Minimal}, \emph{HDR}, and \emph{Sunny} style classifiers significantly decreased, indicating machine-human disagreement on those styles.
+
+\PM{Analysis}
+Some of this variance may be due to subtle difference from the Turk tasks that we provided, as compared to the definitions of the Flickr groups, but may also due to the Flickr groups' incorporating images that do not quite fit the common definition of the given style.
+For example, there may be a mismatch between different notions of \emph{Romantic} and \emph{vintage}, and how inclusively these terms are defined.
+Regardless, the high agreement seen in study validates our choice of data source.
+
+\subsection{Experiment: Wikipaintings}
+
+\PM{Setup and Results}
+With the same setup and features as in the Flickr experiments, we evaluate 85,000 images labeled with 25 different art styles.
+Detailed results are provided in \autoref{tab:wikipaintings_ap_table} and \autoref{tab:wp_accuracies}.
+The best single-channel feature is MC-bit with 0.441 mean AP; feature fusion obtains 0.473 mean AP.
+Per-class accuracies range from 72\% [\emph{Symbolism}, \emph{Expressionism}, \emph{Art Nouveau}] to 94\% [\emph{Ukiyo-e}, \emph{Minimalism}, \emph{Color Field Painting}].
+We did not perform a Mechanical Turk analysis of this dataset, as the Wikipainting community-of-experts labels were deemed inherently less noisy than Flickr Groups.
+
+\subsection{Experiment: AVA Style}
+
+\PM{Setup and Results}
+AVA \parencite{Murray-CVPR-2012} is a dataset of 250K images from \texttt{dpchallenge.net}.
+We evaluate classification of aesthetic rating and of 14 different photographic style labels on the 14,000 images of the AVA dataset that have such labels.
+For the style labels, the publishers of the dataset provide a train/test split, where training images have only one label, but test images may have more than one label \parencite{Murray-CVPR-2012}.
+Our results are presented in \autoref{tab:ava_style_ap_table}.
+For style classification, the best single feature is the DeCAF$_6$ convolution network feature, obtaining 0.579 mean AP.
+Feature fusion improves the result to 0.581 mean AP; both results beat the previous state-of-the-art of 0.538 mean AP \parencite{Murray-CVPR-2012}.
+Our results beat 0.54 mAP using both the AVA-provided class-imbalanced test split, and the class-balanced subsample that we consider to be more correct evaluation, and for which we provide numbers.
+
+\PM{Low-level features}
+In all metrics, the DeCAF and MC-bit features significantly outperformed more low-level features on this dataset.
+For this reason, we did not evaluate the low-level features on the larger Flickr and Wikipaintings datasets (the AVA experiment was chronologically first).
+
+\subsection{Application: Style-Based Image Search}
+
+\PM{Cross-dataset style}
+Style classifiers learned on our datasets can be used toward novel goals.
+For example, sources of stock photography or design inspiration may be better navigated with a vocabulary of style.
+Currently, companies expend labor to manually annotate stock photography with such labels.
+With our approach, any image collection can be searchable and rankable by style.
+To demonstrate, we apply our Flickr-learned style classifiers to a new dataset of 80K images gathered on Pinterest (also available with our code release); some results are shown in \autoref{fig:flickr_on_pinterest}.
+Interestingly, styles learned from photographs can be used to order paintings, and styles learned from paintings can be used to order photographs, as illustrated in \autoref{fig:photo_painting}.
+
+\begin{figure*}[ht]
+\centering
+\includegraphics[width=\linewidth]{../style/figures/style_by_style.pdf}
+\caption[Cross-dataset understanding of style demonstrated by applying Wikipaintings-learned classifiers to phoitographs, and Flickr-learned classifiers to paintings.]{
+    Cross-dataset style.
+    On the left are shown top scorers from the Wikipaintings set, for styles learned on the Flickr set.
+    On the right, Flickr photographs are accordingly sorted by Painting style.
+    (Figure best viewed in color.)
+}
+\label{fig:photo_painting}
+\end{figure*}
+
+\newcommand{\dgap}{.65in}
+\begin{figure}
+\begin{subfigure}[t]{0.48\linewidth}
+    \begin{tabular}{m{.05in}|m{\dgap} m{\dgap} m{\dgap}}
+    \begin{turn}{90}\small{Bright}\end{turn} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/dress/pred_style_Bright/h/0.jpg} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/dress/pred_style_Bright/h/1.jpg} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/dress/pred_style_Bright/h/2.jpg} \\ \\
+    \begin{turn}{90}\small{Pastel}\end{turn} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/dress/pred_style_Pastel/h/0.jpg} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/dress/pred_style_Pastel/h/1.jpg} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/dress/pred_style_Pastel/h/2.jpg} \\ \\
+    \begin{turn}{90}\small{Ethereal}\end{turn} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/dress/pred_style_Ethereal/h/0.jpg} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/dress/pred_style_Ethereal/h/1.jpg} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/dress/pred_style_Ethereal/h/2.jpg} \\ \\
+    \begin{turn}{90}\small{Noir}\end{turn} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/dress/pred_style_Noir/h/0.jpg} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/dress/pred_style_Noir/h/1.jpg} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/dress/pred_style_Noir/h/2.jpg} \\ \\
+    \begin{turn}{90}\small{Vintage}\end{turn} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/flower/pred_style_Vintage/h/0.jpg} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/flower/pred_style_Vintage/h/2.jpg} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/flower/pred_style_Vintage/h/3.jpg} \\
+    \end{tabular}
+    \caption{Query: ``dress''.}
+\end{subfigure}\hfill\begin{subfigure}[t]{0.48\linewidth}
+    \begin{tabular}{m{.05in}|m{\dgap} m{\dgap} m{\dgap}}
+    \begin{turn}{90}\small{DoF}\end{turn} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/flower/pred_style_Depth_of_Field/h/1.jpg} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/flower/pred_style_Depth_of_Field/h/3.jpg} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/flower/pred_style_Depth_of_Field/h/4.jpg} \\ \\
+    \begin{turn}{90}\small{Romantic}\end{turn} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/flower/pred_style_Romantic/h/0.jpg} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/flower/pred_style_Romantic/h/1.jpg} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/flower/pred_style_Romantic/h/3.jpg} \\ \\
+    \begin{turn}{90}\small{Sunny}\end{turn} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/flower/pred_style_Sunny/h/0.jpg} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/flower/pred_style_Sunny/h/1.jpg} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/flower/pred_style_Sunny/h/2.jpg} \\ \\
+    \begin{turn}{90}\small{Geometric}\end{turn} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/flower/pred_style_Geometric_Composition/h/0.jpg} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/flower/pred_style_Geometric_Composition/h/1.jpg} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/flower/pred_style_Geometric_Composition/h/4.jpg} \\ \\
+    \begin{turn}{90}\small{Serene}\end{turn} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/flower/pred_style_Serene/h/0.jpg} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/flower/pred_style_Serene/h/2.jpg} &
+    \includegraphics[width=.8in]{../style/figures/flickr_on_pinterest/flower/pred_style_Serene/h/3.jpg} \\
+    \end{tabular}
+    \caption{Query: ``flower''.}
+\end{subfigure}
+\\
+\caption[
+Filtering Pinterest image search results by Flickr Style classifier scores.
+]{
+    Example of filtering image search results by style.
+    Our Flickr Style classifiers are applied to images found on Pinterest.
+    The images are searched by the text contents of their captions, then filtered by the response of the style classifiers.
+    Here we show three out of top five results for different query/style combinations.
+}\label{fig:flickr_on_pinterest}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{minipage}[t]{\textwidth}
+    \begin{tabular}{m{.01\linewidth} m{.16\linewidth} m{.16\linewidth} m{.16\linewidth} m{.16\linewidth} m{.16\linewidth}}
+    \begin{turn}{90}\small{Bokeh}\end{turn} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Bokeh/0.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Bokeh/1.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Bokeh/2.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Bokeh/3.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Bokeh/4.jpg} \\
+    \begin{turn}{90}\small{Bright}\end{turn} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Bright/0.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Bright/1.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Bright/2.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Bright/3.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Bright/4.jpg} \\
+    \begin{turn}{90}\small{Depth of Field}\end{turn} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Depth_of_Field/0.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Depth_of_Field/1.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Depth_of_Field/2.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Depth_of_Field/3.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Depth_of_Field/4.jpg} \\
+    \begin{turn}{90}\small{Detailed}\end{turn} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Detailed/0.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Detailed/1.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Detailed/2.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Detailed/3.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Detailed/4.jpg} \\
+    \begin{turn}{90}\small{Ethereal}\end{turn} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Ethereal/0.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Ethereal/1.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Ethereal/2.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Ethereal/3.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Ethereal/4.jpg} \\
+    \begin{turn}{90}\small{Geometric}\end{turn} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Geometric_Composition/0.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Geometric_Composition/1.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Geometric_Composition/2.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Geometric_Composition/3.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Geometric_Composition/4.jpg} \\
+    \begin{turn}{90}\small{Hazy}\end{turn} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Hazy/0.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Hazy/1.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Hazy/2.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Hazy/3.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_Hazy/4.jpg} \\
+    \begin{turn}{90}\small{HDR}\end{turn} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_HDR/0.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_HDR/1.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_HDR/2.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_HDR/3.jpg} &
+    \includegraphics[width=\linewidth]{../style/figures/flickr_on_flickr/pred_style_HDR/4.jpg}
+\end{tabular}
+\end{minipage}
+\caption{
+    Top five most confident predictions on the Flickr Style test set: styles 1-8.
+}\label{fig:flickr_on_flickr1}
+\end{figure}

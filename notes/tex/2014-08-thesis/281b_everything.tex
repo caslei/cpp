@@ -1,0 +1,102 @@
+%!TEX root=paper/paper.tex
+\chapter{Prediction with Features Missing at Test Time}
+
+\section{Abstract}
+We look at prediction with all features available at training time, but only a subset observed at test time.
+Such situations may arise due to sensor loss, or when using test-time instance-specific feature selection.
+We examine three areas of modeling choices:
+
+\begin{enumerate}
+\item For imputation, we look at mean, SVD, joint Gaussian conditioning, and nearest neighbor methods.
+
+\item For classification, we evaluate augmenting the training data with imputed values, modifying the loss function to consider the expected feature ``corruption'', and using non-linear classifiers.
+
+\item We additionally evaluate training different classifiers for different subsets of observed features.
+\end{enumerate}
+
+We evaluate reconstruction and classification error on two datasets: Digits and Scenes-15.
+Two feature selection policies are considered: Random and Clustered.
+For each policy, we consider Independent and Block-wise selection patterns.
+
+We find that mean imputation with classifier retraining is a reasonably well-performing approach.
+Nearest Neighbor methods perform best but are the most expensive.
+Gaussian imputation method performs very well, but is also expensive.
+
+Training classifiers with a loss function modified to expect a certain level of feature corruption did not improve performance.
+Training additional classifiers for clusters of observed feature subsets did not improve performance.
+
+\section{Introduction}
+In supervised prediction problems, \emph{features} extracted from inputs are combined to output a real value (regression) or a label (classification).
+The goal of training is to minimize the \emph{loss} of the predictions with the true values or labels---for example, the accuracy of classification.
+
+We look at a complication of this problem.
+While all features are available at training time, only a subset of features of each instance is observed at test time.
+Such situations can arise in real world deployments of predictive systems due to sensor failure.
+Another motivation for the problem comes from work on dynamic feature selection: to predict with minimum loss on a fixed time budget, different subsets of features are extracted for different instances \parencite{Karayev-NIPS-2012, Xu-ICML-2013}.
+
+Since the training set is fully observed, we can train a classifier with all features.
+At test time, we could attempt to impute the unobserved feature values given the observed ones, and use the classifier trained on the fully observed training set.
+There are many methods of imputing missing values, differing in their power and cost.
+We consider: simple mean imputation; singular value decomposition-based imputation; multivariate Gaussian conditioning; and nearest neighbor imputation with two similarity measures.
+
+In addition to imputing at test time, we can apply the test-time observation process to the training data, impute values, and re-train the classifier.
+This amounts to a regularization that prevents the classifier from relying on any single feature, as it may not be in the observed subset.
+Taking this idea further, we could work the expected feature ``corruption'' into the loss function of the linear classifier, which is equivalent to augmenting the training set with an infinite amount of corrupted data.
+
+The feature selection process may not select features independently.
+It could select features by block instead of one by one, and it could have a bound on the total number of unique subsets that are selected.
+We evaluate in these conditions, and notice that if there is a small bound on the number of subsets, then we can learn a separate classifier for each subset of observed features.
+Even if the bound is not small, we may still derive benefit from training more than one classifier, and at test time using the classifier trained on the closest subset of features to the observed instance.
+
+\section{Problem Formulation}
+
+\begin{mydef} \label{def:problem}
+\textbf{The prediction problem} consists of
+\begin{itemize}
+\item Set $\mathcal{D}$ of $N$ instances of $K$ possible labels: $\mathcal{D} = \{x_n \in \mathcal{X}, y_n \in \{1, \dots, K\}\}_{n=1}^N$.
+
+\item Set $\mathcal{H}$ of $F$ features $\mathcal{H} = \{h_f : \mathcal{X} \mapsto \mathbb{R} \}_{f=1}^F$.\\
+To represent featurized instance, we write $\mathbf{x} = [h_0(x), h_1(x), \dots, h_f(x)]$.
+
+\item Test-time feature selection function $o(x, b): \mathcal{X} \times \mathbb{R} \mapsto \mathbb{B}^F$, where $\mathbb{B} \in \{0, 1\}$, and $b \in [0, 1]$ is given and specifies the fractional selection \emph{budget}.
+
+\item Loss function $\ell(g(x), y): \mathbb{R}^K \times \{1, \dots, K\} \mapsto \mathbb{R}$.
+\end{itemize}
+
+Given $b$, we seek a procedure $g(x)$ that minimizes total loss $\sum \ell(g(x_n), y_n)$ under the condition that $o(x, b)$ is applied to each $x$.
+\end{mydef}
+
+Applied to $x$, $o(x, b)$ gives the binary selection vector $\mathbf{o}$ which splits $\mathbf{x}$ it into observed and unobserved parts such that $\mathbf{x}^m = [\mathbf{x}^\text{o}, \mathbf{x}^\text{u}]$.
+
+$X^c$ denotes the fully observed $N \times F$ training set.
+We assume that we have only sequential access to the missing-feature test instances $\mathbf{x}^m$.
+
+We see three experimental conditions: (1) how to fill in missing values; (2) which loss function to use in learning the classifier and whether to augment the training data; (3) how many classifiers to learn.
+
+
+\section{Classifiers}
+
+In addition to the $k$-NN classifier described above, we consider three linear classifiers, obtained by minimizing:
+\begin{enumerate}
+  \item Logistic loss on fully observed data: simply using $X^c$.
+  \item Logistic loss on synthetically re-imputed version of the data: we obtain $X^m$ through applying $o(x, b)$ on each $x^c$, and then imputing the missing values with the methods described.
+  \item Logistic and quadratic loss derived with Marginalized Corrupted Features (MCF) \parencite{Maaten-ICML-2013}.
+\end{enumerate}
+
+The idea of (3) is to move the expectation of feature corruption into the loss function, which is equivalent to adding an infinite amount of corrupted data to the training set.
+Remarkably, this is not any more computationally complex than the standard loss (although minimization does take longer, empirically).
+
+For example, for blankout noise and logistic loss, we can derive the surrogate loss
+\begin{equation}
+\mathcal{L}(D; \mathbf{\theta}) \leq \sum_{n=1}^N \log \left( 1 + \prod_{f=1}^F \left[ q_f + (1 - q_f) e^{-y_n \theta_f \frac{1}{1 - q_d} x_{nf}} \right] \right)
+\end{equation}
+
+For additional loss functions, see \parencite{Maaten-ICML-2013}.
+
+\subsection{Clustering classifiers}
+
+\section{Evaluation}
+
+
+
+

@@ -1,0 +1,41 @@
+Draft
+-----
+x get in all content from cvpr14 paper into a chapter, make sure everything compiles
+x get in all content from nips12 paper into a chapter, make sure everything compiles
+x get in all content from 281b report into own chapter, make sure everything compiles
+x merge nips12 and cvpr14 intros into own section
+x merge nips12 and cvpr14 related works into own section
+x for cvpr14, see what's missing in method_new (vs method) and adjust accordingly
+x move evaluations to own sections
+x move all MDP method setup to detection chapter: have to rewrite a little bit
+x add 281b report as section to cvpr14 chapter
+x go over classifier training; move eval section to appendix, ensure flow, and remove all mentions of MCF (fine to leave in figures for now)
+x merge nips12 and cvpr14 abstracts and conclusions
+x take first holistic pass over paper, ensuring notation consistency and marginal labels
+x go through slides and insert good figures into thesis
+x add C-CNN as a chapter
+x take another holistic pass, focusing on abstract, conclusion, and appendix
+x adjust figures in style chapter
+x add figures to introduction from dissertation slides
+x write some text about visual features in related work section
+x move style related work to related work and expand a little
+x incorporate trevor's edits
+x add citations to myself
+x add marginals to style chapter
+x get bibliography to print all author names
+x add more future work discussion to conclusion section
+    x submodularity
+    x anytime CNN
+x redo Cascade CNN figure and add another figure showing how to train reject layers with individual losses or with an Anytime loss
+x add discussion of Anytime to the style conclusion
+x add links to all code in the intro
+
+Definitely
+----------
+- run spell-checker, look for broken references [??]
+
+Maybe
+-----
+- organize related work on detection in same way as in intro (break down by proposal and classification methods)
+- add 281b tables
+- re-plot 281b results or use less plots (there's a new summary.pdf)
