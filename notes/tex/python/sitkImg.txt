@@ -1,0 +1,844 @@
+Img = sitk.ReadImage(128,128, sitk.sitkVectorUInt8,5) 
+Img1 = sitk.ReadImage(128,128, sitk.sitkVectorUInt8,5)
+
+# Copies the Origin, Spacing, and Direction from the source image to this image
+Img.CopyInformation(Img1)
+
+thefile = open("Img.txt","w")
+thefile.writelines(["%s\n" % item  for item in dir(Img)])
+thefile.close()
+
+Img[15,6]=0
+Img[1,2] =3
+
+# 图像维度信息
+Img.GetSize()
+Img.GetSpacing()
+Img.GetOrigin()
+Img.GetNumberOfComponentsPerPixel()
+Img.GetNumberOfPixels()
+
+
+
+
+# http://archive.is/20150128025121/erie.nlm.nih.gov/~blowek1/SimpleITK/annotated.html
+# https://itk.org/SimpleITKDoxygen/html/namespaceitk_1_1simple.html
+
+
+
+# 图像的基本统计信息
+# method 1: 计算较慢，
+np.min(Img)
+np.max(Img)
+np.mean(Img)
+np.std(Img)
+
+# method 2: 
+stat = sitk.StatisticsImageFilter()
+stat.Execute(Img)
+stat.GetMinimum()
+stat.GetMaximum()
+stat.GetMean()
+stat.GetSigma()
+stat.GetSum()
+stat.GetVariance()
+
+
+
+img2 = sitk.Sqrt(Img)
+img3 = sitk.Exp(Img)
+img4 = sitk.Cos(Img)
+img4 = sitk.Sin(Img)
+img4 = sitk.Tan(Img)
+
+# +，-，*，/, %, 
+img4 = sitk.Abs(img4)
+img4 = sitk.Add(img2,img3)
+img4 = sitk.Subtract(img1,img2)
+img5 = sitk.Multiply(img3,5)
+img5 = sitk.Divide(img4,img3)
+img3 = sitk.Cast(img3, sitk.sitkUInt32)
+img5 = sitk.Modulus(img3,5) # 取余数的图像必须是整数类型
+
+
+img5 = sitk.And(img3,img4)
+img6 = sitk.Or(img3,img4)
+img6 = sitk.Not(img3)
+
+
+
+
+thefile = open("Img.txt", "a")
+thefile.write(["%s\n" % item  for item in dir(sitk)])
+thefile.close()
+
+# write "dir(Img)" to file
+Img.CopyInformation() # 
+Img.EraseMetaData() # 
+Img.GetDepth() # 
+Img.GetDimension() # 
+Img.GetDirection() # 
+Img.GetHeight() # 
+Img.GetITKBase() # 
+Img.GetMetaData() # 
+Img.GetMetaDataKeys() # 
+Img.GetNumberOfComponentsPerPixel() # 
+Img.GetNumberOfPixels() # 
+Img.GetOrigin() # 
+Img.GetPixel() # 
+Img.GetPixelAsComplexFloat64() # 
+Img.GetPixelID() # 
+Img.GetPixelIDTypeAsString() # 
+Img.GetPixelIDValue() # 
+Img.GetSize() # 
+Img.GetSpacing() # 
+Img.GetWidth() # 
+Img.HasMetaDataKey() # 
+Img.MakeUnique() # 
+Img.SetDirection() # 
+Img.SetMetaData() # 
+Img.SetOrigin() # 
+Img.SetPixel() # 
+Img.SetPixelAsComplexFloat64() # 
+Img.SetSpacing() # 
+Img.TransformContinuousIndexToPhysicalPoint() # 
+Img.TransformIndexToPhysicalPoint() # 
+Img.TransformPhysicalPointToContinuousIndex() # 
+Img.TransformPhysicalPointToIndex() # 
+
+
+
+
+
+#-------------------------------------------------------------------------------------------------------------
+# write "dir(sitk)" to file
+# https://itk.org/SimpleITKDoxygen/html/namespaceitk_1_1simple.html
+#-------------------------------------------------------------------------------------------------------------
+sitk.Abs()                                                         # Computes the absolute value of each pixel.
+sitk.AbsImageFilter()
+sitk.AbsoluteValueDifference()                                     # Implements pixel-wise the computation of absolute value difference
+sitk.AbsoluteValueDifferenceImageFilter()
+sitk.Acos()                                                        # Computes the inverse cosine of each pixel
+sitk.AcosImageFilter()
+sitk.AdaptiveHistogramEqualization()                               # Power Law Adaptive Histogram Equalization
+sitk.AdaptiveHistogramEqualizationImageFilter()
+sitk.Add()# Pixel-wise addition of two images
+sitk.AddImageFilter()
+sitk.AdditiveGaussianNoise() # Alter an image with additive Gaussian white noise
+sitk.AdditiveGaussianNoiseImageFilter()
+sitk.AffineTransform() # An affine transformation about a fixed center with translation for a 2D or 3D coordinate.
+sitk.AggregateLabelMap() # Collapses all labels into the first label
+sitk.AggregateLabelMapFilter() # 
+sitk.And() # Implements the AND bitwise operator pixel-wise between two images
+sitk.AndImageFilter()
+sitk.AntiAliasBinary() # A method for estimation of a surface from a binary volume.
+sitk.AntiAliasBinaryImageFilter()
+sitk.ApproximateSignedDistanceMap() # Create a map of the approximate signed distance from the boundaries of a binary image.
+sitk.ApproximateSignedDistanceMapImageFilter()
+sitk.Asin() # Computes the sine of each pixel
+sitk.AsinImageFilter()
+sitk.Atan() # Computes the one-argument inverse tangent of each pixel
+sitk.Atan2() # Computes two argument inverse tangent.
+sitk.Atan2ImageFilter()
+sitk.AtanImageFilter()
+sitk.Bilateral() # Blurs an image while preserving edges
+sitk.BilateralImageFilter()
+sitk.BinaryClosingByReconstruction() # binary closing by reconstruction of an image.
+sitk.BinaryClosingByReconstructionImageFilter()
+sitk.BinaryContour() # Labels the pixels on the border of the objects in a binary image.
+sitk.BinaryContourImageFilter()
+sitk.BinaryDilate() # Fast binary dilation
+sitk.BinaryDilateImageFilter()
+sitk.BinaryErode() # Fast binary erosion
+sitk.BinaryErodeImageFilter()
+sitk.BinaryFillhole() # Remove holes not connected to the boundary of the image
+sitk.BinaryFillholeImageFilter()
+sitk.BinaryGrindPeak() # Remove the objects not connected to the boundary of the image
+sitk.BinaryGrindPeakImageFilter()
+sitk.BinaryImageToLabelMap() # Label the connected components in a binary image and produce a collection of label objects
+sitk.BinaryImageToLabelMapFilter() # 
+sitk.BinaryMagnitude() # Computes the square root of the sum of squares of corresponding input pixels
+sitk.BinaryMagnitudeImageFilter()
+sitk.BinaryMedian() # Applies a version of the median filter optimized for binary images
+sitk.BinaryMedianImageFilter()
+sitk.BinaryMinMaxCurvatureFlow() # Denoise a binary image using min/max curvature flow
+sitk.BinaryMinMaxCurvatureFlowImageFilter()
+sitk.BinaryMorphologicalClosing() # binary morphological closing of an image
+sitk.BinaryMorphologicalClosingImageFilter()
+sitk.BinaryMorphologicalOpening() # binary morphological opening of an image
+sitk.BinaryMorphologicalOpeningImageFilter()
+sitk.BinaryNot() # Implements the BinaryNot logical operator pixel-wise between two images
+sitk.BinaryNotImageFilter()
+sitk.BinaryOpeningByReconstruction() # binary morphological closing of an image
+sitk.BinaryOpeningByReconstructionImageFilter()
+sitk.BinaryProjection() # Binary projection
+sitk.BinaryProjectionImageFilter()
+sitk.BinaryReconstructionByDilation() # binary reconstruction by dilation of an image
+sitk.BinaryReconstructionByDilationImageFilter()
+sitk.BinaryReconstructionByErosion() # binary reconstruction by erosion of an image
+sitk.BinaryReconstructionByErosionImageFilter()
+sitk.BinaryThinning() # This filter computes one-pixel-wide edges of the input image
+sitk.BinaryThinningImageFilter()
+sitk.BinaryThreshold() # Binarize an input image by thresholding
+sitk.BinaryThresholdImageFilter()
+sitk.BinaryThresholdProjection() # BinaryThreshold projection
+sitk.BinaryThresholdProjectionImageFilter()
+sitk.BinomialBlur() # Performs a separable blur on each dimension of an image
+sitk.BinomialBlurImageFilter()
+sitk.BinShrink() # Reduce the size of an image by an integer factor in each dimension while performing averaging of an input neighborhood
+sitk.BinShrinkImageFilter()
+sitk.BitwiseNot() # Implements pixel-wise generic operation on one image
+sitk.BitwiseNotImageFilter()
+sitk.BlackTopHat() # Black top hat extract local minima that are smaller than the structuring element
+sitk.BlackTopHatImageFilter()
+sitk.BoundedReciprocal() # Computes 1/(1+x) for each pixel in the image
+sitk.BoundedReciprocalImageFilter()
+sitk.BoxMean() # Implements a fast rectangular mean filter using the accumulator approach
+sitk.BoxMeanImageFilter()
+sitk.BoxSigma() # Implements a fast rectangular sigma filter using the accumulator approach
+sitk.BoxSigmaImageFilter()
+sitk.BSplineTransform() # A deformable transform over a bounded spatial domain using a BSpline representation for a 2D or 3D coordinate space
+sitk.BSplineTransformInitializer() # a helper class intended to initialize the control point grid such that it has a physically consistent definition
+sitk.BSplineTransformInitializerFilter() # 
+sitk.CannyEdgeDetection() # an implementation of a Canny edge detector for scalar-valued images
+sitk.CannyEdgeDetectionImageFilter()
+sitk.Cast() # convert images to other types of images
+sitk.CastImageFilter()
+sitk.CenteredTransformInitializer() # a helper class intended to initialize the center of rotation and the translation of Transforms having the center of rotation among their parameters
+sitk.CenteredTransformInitializerFilter() # 
+sitk.CenteredVersorTransformInitializer() # 
+sitk.CenteredVersorTransformInitializerFilter() # 
+sitk.ChangeLabel() # Change Sets of Labels
+sitk.ChangeLabelImageFilter()
+sitk.ChangeLabelLabelMap() # Replace the label Ids of selected LabelObjects with new label Ids
+sitk.ChangeLabelLabelMapFilter() # 
+sitk.CheckerBoard() # Combines two images in a checkerboard pattern
+sitk.CheckerBoardImageFilter()
+sitk.Clamp() # Casts input pixels to output pixel type and clamps the output pixel values to a specified range
+sitk.ClampImageFilter()
+sitk.ClosingByReconstruction() # Closing by reconstruction of an image
+sitk.ClosingByReconstructionImageFilter()
+sitk.CollidingFronts() # Selects a region of space where two independent fronts run towards each other
+sitk.CollidingFrontsImageFilter()
+sitk.Command() # An implementation of the Command design pattern for callback
+sitk.ComplexToImaginary() # Computes pixel-wise the imaginary part of a complex image
+sitk.ComplexToImaginaryImageFilter()
+sitk.ComplexToModulus() # Computes pixel-wise the Modulus of a complex image
+sitk.ComplexToModulusImageFilter()
+sitk.ComplexToPhase() # Computes pixel-wise the modulus of a complex image
+sitk.ComplexToPhaseImageFilter()
+sitk.ComplexToReal() # Computes pixel-wise the real(x) part of a complex image
+sitk.ComplexToRealImageFilter()
+sitk.Compose() # combine several scalar images into a multicomponent image
+sitk.ComposeImageFilter()
+sitk.ConfidenceConnected() # Segment pixels with similar statistics using connectivity
+sitk.ConfidenceConnectedImageFilter()
+sitk.ConnectedComponent() # Label the objects in a binary image
+sitk.ConnectedComponentImageFilter()
+sitk.ConnectedThreshold() # Label pixels that are connected to a seed and lie within a range of values
+sitk.ConnectedThresholdImageFilter()
+sitk.ConstantPad() # Increase the image size by padding with a constant value
+sitk.ConstantPadImageFilter()
+sitk.Convolution() # Convolve a given image with an arbitrary image kernel
+sitk.ConvolutionImageFilter()
+sitk.Cos() # Computes the cosine of each pixel
+sitk.CosImageFilter()
+sitk.Crop() # Decrease the image size by cropping the image by an itk::Size at both the upper and lower bounds of the largest possible region
+sitk.CropImageFilter()
+sitk.CurvatureAnisotropicDiffusion() # performs anisotropic diffusion on a scalar Image using the modified curvature diffusion equation (MCDE)
+sitk.CurvatureAnisotropicDiffusionImageFilter()
+sitk.CurvatureFlow() # Denoise an image using curvature driven flow
+sitk.CurvatureFlowImageFilter()
+sitk.CyclicShift() # Perform a cyclic spatial shift of image intensities on the image grid
+sitk.CyclicShiftImageFilter()
+sitk.DanielssonDistanceMap() # computes the distance map of the input image as an approximation with pixel accuracy to the Euclidean distance
+sitk.DanielssonDistanceMapImageFilter()
+sitk.DemonsRegistrationFilter() # Deformably register two images using the demons algorithm
+sitk.Derivative() # Computes the directional derivative of an image. The directional derivative at each pixel location is computed by convolution with a derivative operator of user-specified order
+sitk.DerivativeImageFilter()
+sitk.DiffeomorphicDemonsRegistrationFilter() # Deformably register two images using a diffeomorphic demons algorithm
+sitk.DilateObjectMorphology() # dilation of an object in an image
+sitk.DilateObjectMorphologyImageFilter()
+sitk.DiscreteGaussian() # Blurs an image by separable convolution with discrete gaussian kernels
+sitk.DiscreteGaussianImageFilter()
+sitk.DiscreteGaussianDerivative() # Calculates image derivatives using discrete derivative gaussian kernels
+sitk.DiscreteGaussianDerivativeImageFilter()
+sitk.DisplacementFieldJacobianDeterminant() # 
+sitk.DisplacementFieldJacobianDeterminantFilter() # 
+sitk.DisplacementFieldTransform() # A dense deformable transform over a bounded spatial domain for 2D or 3D coordinates space
+sitk.Divide() # Pixel-wise division of two images
+sitk.DivideImageFilter()
+sitk.DivideFloor() # Implements pixel-wise generic operation of two images, or of an image and a constant
+sitk.DivideFloorImageFilter()
+sitk.DivideReal() # Implements pixel-wise generic operation of two images, or of an image and a constant.
+sitk.DivideRealImageFilter()
+sitk.DoubleDoubleMap() # proxy of c++ std::map<(double,double)> class
+sitk.DoubleThreshold() # Binarize an input image using double thresholding
+sitk.DoubleThresholdImageFilter()
+sitk.EdgePotential() # Computes the edge potential of an image from the image gradient.
+sitk.EdgePotentialImageFilter()
+sitk.Equal() # Implements pixel-wise generic operation of two images, or of an image and a constant
+sitk.EqualImageFilter()
+sitk.ErodeObjectMorphology() # Erosion of an object in an image
+sitk.ErodeObjectMorphologyImageFilter()
+sitk.Euler2DTransform() # A rigid 2D transform with rotation in radians around a fixed center with translation
+sitk.Euler3DTransform() # A rigid 3D transform with rotation in radians around a fixed center with translation
+sitk.Exp() # Computes the exponential function of each pixel
+sitk.ExpImageFilter()
+sitk.ExpNegative() # Computes the function exp(-K.x) for each input pixel
+sitk.ExpNegativeImageFilter()
+sitk.Expand() # Expand the size of an image by an integer factor in each dimension
+sitk.ExpandImageFilter()
+sitk.Extract() # Decrease the image size by cropping the image to the selected region bounds
+sitk.ExtractImageFilter()
+sitk.FFTConvolution() # 
+sitk.FFTConvolutionImageFilter()
+sitk.FFTNormalizedCorrelation() # 
+sitk.FFTNormalizedCorrelationImageFilter()
+sitk.FFTPad() # 
+sitk.FFTPadImageFilter()
+sitk.FFTShift() # 
+sitk.FFTShiftImageFilter()
+sitk.FastApproximateRank() # 
+sitk.FastApproximateRankImageFilter()
+sitk.FastMarching() # 
+sitk.FastMarchingBase() # 
+sitk.FastMarchingBaseImageFilter()
+sitk.FastMarchingImageFilter()
+sitk.FastMarchingUpwindGradient() # 
+sitk.FastMarchingUpwindGradientImageFilter()
+sitk.FastSymmetricForcesDemonsRegistrationFilter() # 
+sitk.Flip() # 
+sitk.FlipImageFilter()
+sitk.ForwardFFT() # 
+sitk.ForwardFFTImageFilter()
+sitk.GaborImageSource() # 
+sitk.GaborSource() # 
+sitk.GaussianImageSource() # 
+sitk.GaussianSource() # 
+sitk.GeodesicActiveContourLevelSet() # 
+sitk.GeodesicActiveContourLevelSetImageFilter()
+sitk.GetArrayFromImage() # 
+sitk.GetArrayViewFromImage() # 
+sitk.GetImageFromArray() # 
+sitk.GetPixelIDValueAsString() # 
+sitk.GetPixelIDValueFromString() # 
+sitk.Gradient() # 
+sitk.GradientAnisotropicDiffusion() # 
+sitk.GradientAnisotropicDiffusionImageFilter()
+sitk.GradientImageFilter()
+sitk.GradientMagnitude() # 
+sitk.GradientMagnitudeImageFilter()
+sitk.GradientMagnitudeRecursiveGaussian() # 
+sitk.GradientMagnitudeRecursiveGaussianImageFilter()
+sitk.GradientRecursiveGaussian() # 
+sitk.GradientRecursiveGaussianImageFilter()
+sitk.GrayscaleConnectedClosing() # 
+sitk.GrayscaleConnectedClosingImageFilter()
+sitk.GrayscaleConnectedOpening() # 
+sitk.GrayscaleConnectedOpeningImageFilter()
+sitk.GrayscaleDilate() # 
+sitk.GrayscaleDilateImageFilter()
+sitk.GrayscaleErode() # 
+sitk.GrayscaleErodeImageFilter()
+sitk.GrayscaleFillhole() # 
+sitk.GrayscaleFillholeImageFilter()
+sitk.GrayscaleGeodesicDilate() # 
+sitk.GrayscaleGeodesicDilateImageFilter()
+sitk.GrayscaleGeodesicErode() # 
+sitk.GrayscaleGeodesicErodeImageFilter()
+sitk.GrayscaleGrindPeak() # 
+sitk.GrayscaleGrindPeakImageFilter()
+sitk.GrayscaleMorphologicalClosing() # 
+sitk.GrayscaleMorphologicalClosingImageFilter()
+sitk.GrayscaleMorphologicalOpening() # 
+sitk.GrayscaleMorphologicalOpeningImageFilter()
+sitk.Greater() # 
+sitk.GreaterEqual() # 
+sitk.GreaterEqualImageFilter()
+sitk.GreaterImageFilter()
+sitk.GridImageSource() # 
+sitk.GridSource() # 
+sitk.HAVE_NUMPY() # 
+sitk.HConcave() # 
+sitk.HConcaveImageFilter()
+sitk.HConvex() # 
+sitk.HConvexImageFilter()
+sitk.HMaxima() # 
+sitk.HMaximaImageFilter()
+sitk.HMinima() # 
+sitk.HMinimaImageFilter()
+sitk.HalfHermitianToRealInverseFFT() # 
+sitk.HalfHermitianToRealInverseFFTImageFilter()
+sitk.Hash() # 
+sitk.HashImageFilter()
+sitk.HausdorffDistanceImageFilter()
+sitk.HistogramMatching() # 
+sitk.HistogramMatchingImageFilter()
+sitk.HuangThreshold() # 
+sitk.HuangThresholdImageFilter()
+sitk.Image() # 
+sitk.ImageFileReader() # 
+sitk.ImageFileWriter() # 
+sitk.ImageFilter_0() # 
+sitk.ImageFilter_1() # 
+sitk.ImageFilter_2() # 
+sitk.ImageFilter_3() # 
+sitk.ImageFilter_4() # 
+sitk.ImageFilter_5() # 
+sitk.ImageReaderBase() # 
+sitk.ImageRegistrationMethod() # 
+sitk.ImageSeriesReader() # 
+sitk.ImageSeriesReader_GetGDCMSeriesFileNames() # 
+sitk.ImageSeriesReader_GetGDCMSeriesIDs() # 
+sitk.ImageSeriesWriter() # 
+sitk.IntensityWindowing() # 
+sitk.IntensityWindowingImageFilter()
+sitk.IntermodesThreshold() # 
+sitk.IntermodesThresholdImageFilter()
+sitk.InverseDeconvolution() # 
+sitk.InverseDeconvolutionImageFilter()
+sitk.InverseDisplacementField() # 
+sitk.InverseDisplacementFieldImageFilter()
+sitk.InverseFFT() # 
+sitk.InverseFFTImageFilter()
+sitk.InvertDisplacementField() # 
+sitk.InvertDisplacementFieldImageFilter()
+sitk.InvertIntensity() # 
+sitk.InvertIntensityImageFilter()
+sitk.IsoContourDistance() # 
+sitk.IsoContourDistanceImageFilter()
+sitk.IsoDataThreshold() # 
+sitk.IsoDataThresholdImageFilter()
+sitk.IsolatedConnected() # 
+sitk.IsolatedConnectedImageFilter()
+sitk.IsolatedWatershed() # 
+sitk.IsolatedWatershedImageFilter()
+sitk.JoinSeries() # 
+sitk.JoinSeriesImageFilter()
+sitk.KittlerIllingworthThreshold() # 
+sitk.KittlerIllingworthThresholdImageFilter()
+sitk.LabelContour() # 
+sitk.LabelContourImageFilter()
+sitk.LabelImageToLabelMap() # 
+sitk.LabelImageToLabelMapFilter() # 
+sitk.LabelIntensityStatisticsImageFilter()
+sitk.LabelMapContourOverlay() # 
+sitk.LabelMapContourOverlayImageFilter()
+sitk.LabelMapMask() # 
+sitk.LabelMapMaskImageFilter()
+sitk.LabelMapOverlay() # 
+sitk.LabelMapOverlayImageFilter()
+sitk.LabelMapToBinary() # 
+sitk.LabelMapToBinaryImageFilter()
+sitk.LabelMapToLabel() # 
+sitk.LabelMapToLabelImageFilter()
+sitk.LabelMapToRGB() # 
+sitk.LabelMapToRGBImageFilter()
+sitk.LabelOverlapMeasuresImageFilter()
+sitk.LabelOverlay() # 
+sitk.LabelOverlayImageFilter()
+sitk.LabelShapeStatisticsImageFilter()
+sitk.LabelStatisticsImageFilter()
+sitk.LabelToRGB() # 
+sitk.LabelToRGBImageFilter()
+sitk.LabelUniqueLabelMap() # 
+sitk.LabelUniqueLabelMapFilter() # 
+sitk.LabelVoting() # 
+sitk.LabelVotingImageFilter()
+sitk.LandmarkBasedTransformInitializer() # 
+sitk.LandmarkBasedTransformInitializerFilter() # 
+sitk.LandweberDeconvolution() # 
+sitk.LandweberDeconvolutionImageFilter()
+sitk.Laplacian() # 
+sitk.LaplacianImageFilter()
+sitk.LaplacianRecursiveGaussian() # 
+sitk.LaplacianRecursiveGaussianImageFilter()
+sitk.LaplacianSegmentationLevelSet() # 
+sitk.LaplacianSegmentationLevelSetImageFilter()
+sitk.LaplacianSharpening() # 
+sitk.LaplacianSharpeningImageFilter()
+sitk.Less() # 
+sitk.LessEqual() # 
+sitk.LessEqualImageFilter()
+sitk.LessImageFilter()
+sitk.LevelSetMotionRegistrationFilter() # 
+sitk.LiThreshold() # 
+sitk.LiThresholdImageFilter()
+sitk.Log() # 
+sitk.Log10() # 
+sitk.Log10ImageFilter()
+sitk.LogImageFilter()
+sitk.MagnitudeAndPhaseToComplex() # 
+sitk.MagnitudeAndPhaseToComplexImageFilter()
+sitk.Mask() # 
+sitk.MaskImageFilter()
+sitk.MaskNegated() # 
+sitk.MaskNegatedImageFilter()
+sitk.MaskedFFTNormalizedCorrelation() # 
+sitk.MaskedFFTNormalizedCorrelationImageFilter()
+sitk.Maximum() # 
+sitk.MaximumEntropyThreshold() # 
+sitk.MaximumEntropyThresholdImageFilter()
+sitk.MaximumImageFilter()
+sitk.MaximumProjection() # 
+sitk.MaximumProjectionImageFilter()
+sitk.Mean() # 
+sitk.MeanImageFilter()
+sitk.MeanProjection() # 
+sitk.MeanProjectionImageFilter()
+sitk.Median() # 
+sitk.MedianImageFilter()
+sitk.MedianProjection() # 
+sitk.MedianProjectionImageFilter()
+sitk.MergeLabelMap() # 
+sitk.MergeLabelMapFilter() # 
+sitk.MinMaxCurvatureFlow() # 
+sitk.MinMaxCurvatureFlowImageFilter()
+sitk.Minimum() # 
+sitk.MinimumImageFilter()
+sitk.MinimumMaximumImageFilter()
+sitk.MinimumProjection() # 
+sitk.MinimumProjectionImageFilter()
+sitk.MirrorPad() # 
+sitk.MirrorPadImageFilter()
+sitk.Modulus() # Computes the modulus (x % dividend) pixel-wise
+sitk.ModulusImageFilter()
+sitk.MomentsThreshold() # 
+sitk.MomentsThresholdImageFilter()
+sitk.MorphologicalGradient() # 
+sitk.MorphologicalGradientImageFilter()
+sitk.MorphologicalWatershed() # 
+sitk.MorphologicalWatershedFromMarkers() # 
+sitk.MorphologicalWatershedFromMarkersImageFilter()
+sitk.MorphologicalWatershedImageFilter()
+sitk.MultiLabelSTAPLE() # 
+sitk.MultiLabelSTAPLEImageFilter()
+sitk.Multiply() # 
+sitk.MultiplyImageFilter()
+sitk.N4BiasFieldCorrection() # 
+sitk.N4BiasFieldCorrectionImageFilter()
+sitk.NaryAdd() # 
+sitk.NaryAddImageFilter()
+sitk.NaryMaximum() # 
+sitk.NaryMaximumImageFilter()
+sitk.NeighborhoodConnected() # 
+sitk.NeighborhoodConnectedImageFilter()
+sitk.Noise() # 
+sitk.NoiseImageFilter()
+sitk.Normalize() # 
+sitk.NormalizeImageFilter()
+sitk.NormalizeToConstant() # 
+sitk.NormalizeToConstantImageFilter()
+sitk.NormalizedCorrelation() # 
+sitk.NormalizedCorrelationImageFilter()
+sitk.Not() # 
+sitk.NotEqual() # 
+sitk.NotEqualImageFilter()
+sitk.NotImageFilter()
+sitk.OpeningByReconstruction() # 
+sitk.OpeningByReconstructionImageFilter()
+sitk.Or() # 
+sitk.OrImageFilter()
+sitk.OtsuMultipleThresholds() # 
+sitk.OtsuMultipleThresholdsImageFilter()
+sitk.OtsuThreshold() # 
+sitk.OtsuThresholdImageFilter()
+sitk.Paste() # 
+sitk.PasteImageFilter()
+sitk.PatchBasedDenoising() # 
+sitk.PatchBasedDenoisingImageFilter()
+sitk.PermuteAxes() # 
+sitk.PermuteAxesImageFilter()
+sitk.PhysicalPointImageSource() # 
+sitk.PhysicalPointSource() # 
+sitk.Pow() # 
+sitk.PowImageFilter()
+sitk.ProcessObject() # 
+sitk.ProcessObject_GetGlobalDefaultCoordinateTolerance() # 
+sitk.ProcessObject_GetGlobalDefaultDebug() # 
+sitk.ProcessObject_GetGlobalDefaultDirectionTolerance() # 
+sitk.ProcessObject_GetGlobalDefaultNumberOfThreads() # 
+sitk.ProcessObject_GetGlobalWarningDisplay() # 
+sitk.ProcessObject_GlobalDefaultDebugOff() # 
+sitk.ProcessObject_GlobalDefaultDebugOn() # 
+sitk.ProcessObject_GlobalWarningDisplayOff() # 
+sitk.ProcessObject_GlobalWarningDisplayOn() # 
+sitk.ProcessObject_SetGlobalDefaultCoordinateTolerance() # 
+sitk.ProcessObject_SetGlobalDefaultDebug() # 
+sitk.ProcessObject_SetGlobalDefaultDirectionTolerance() # 
+sitk.ProcessObject_SetGlobalDefaultNumberOfThreads() # 
+sitk.ProcessObject_SetGlobalWarningDisplay() # 
+sitk.ProjectedLandweberDeconvolution() # 
+sitk.ProjectedLandweberDeconvolutionImageFilter()
+sitk.PyCommand() # 
+sitk.Rank() # 
+sitk.RankImageFilter()
+sitk.ReadImage() # 
+sitk.ReadTransform() # 
+sitk.RealAndImaginaryToComplex() # 
+sitk.RealAndImaginaryToComplexImageFilter()
+sitk.RealToHalfHermitianForwardFFT() # 
+sitk.RealToHalfHermitianForwardFFTImageFilter()
+sitk.ReconstructionByDilation() # 
+sitk.ReconstructionByDilationImageFilter()
+sitk.ReconstructionByErosion() # 
+sitk.ReconstructionByErosionImageFilter()
+sitk.RecursiveGaussian() # 
+sitk.RecursiveGaussianImageFilter()
+sitk.RegionOfInterest() # 
+sitk.RegionOfInterestImageFilter()
+sitk.RegionalMaxima() # 
+sitk.RegionalMaximaImageFilter()
+sitk.RegionalMinima() # 
+sitk.RegionalMinimaImageFilter()
+sitk.RelabelComponent() # 
+sitk.RelabelComponentImageFilter()
+sitk.RelabelLabelMap() # 
+sitk.RelabelLabelMapFilter() # 
+sitk.RenyiEntropyThreshold() # 
+sitk.RenyiEntropyThresholdImageFilter()
+sitk.Resample() # 
+sitk.ResampleImageFilter()
+sitk.RescaleIntensity() # 
+sitk.RescaleIntensityImageFilter()
+sitk.RichardsonLucyDeconvolution() # 
+sitk.RichardsonLucyDeconvolutionImageFilter()
+sitk.SITK_ITK_VERSION_MAJOR() # 
+sitk.SITK_ITK_VERSION_MINOR() # 
+sitk.SITK_ITK_VERSION_PATCH() # 
+sitk.STAPLE() # 
+sitk.STAPLEImageFilter()
+sitk.SaltAndPepperNoise() # 
+sitk.SaltAndPepperNoiseImageFilter()
+sitk.ScalarChanAndVeseDenseLevelSet() # 
+sitk.ScalarChanAndVeseDenseLevelSetImageFilter()
+sitk.ScalarConnectedComponent() # 
+sitk.ScalarConnectedComponentImageFilter()
+sitk.ScalarImageKmeans() # 
+sitk.ScalarImageKmeansImageFilter()
+sitk.ScalarToRGBColormap() # 
+sitk.ScalarToRGBColormapImageFilter()
+sitk.ScaleSkewVersor3DTransform() # 
+sitk.ScaleTransform() # 
+sitk.ScaleVersor3DTransform() # 
+sitk.ShanbhagThreshold() # 
+sitk.ShanbhagThresholdImageFilter()
+sitk.ShapeDetectionLevelSet() # 
+sitk.ShapeDetectionLevelSetImageFilter()
+sitk.ShiftScale() # 
+sitk.ShiftScaleImageFilter()
+sitk.ShotNoise() # 
+sitk.ShotNoiseImageFilter()
+sitk.Show() # 
+sitk.Shrink() # 
+sitk.ShrinkImageFilter()
+sitk.Sigmoid() # 
+sitk.SigmoidImageFilter()
+sitk.SignedDanielssonDistanceMap() # 
+sitk.SignedDanielssonDistanceMapImageFilter()
+sitk.SignedMaurerDistanceMap() # 
+sitk.SignedMaurerDistanceMapImageFilter()
+sitk.Similarity2DTransform() # 
+sitk.Similarity3DTransform() # 
+sitk.SimilarityIndexImageFilter()
+sitk.SimpleContourExtractor() # 
+sitk.SimpleContourExtractorImageFilter()
+sitk.SimpleITK() # 
+sitk.Sin() # 
+sitk.SinImageFilter()
+sitk.Slice() # 
+sitk.SliceImageFilter()
+sitk.SmoothingRecursiveGaussian() # 
+sitk.SmoothingRecursiveGaussianImageFilter()
+sitk.SobelEdgeDetection() # 
+sitk.SobelEdgeDetectionImageFilter()
+sitk.SpeckleNoise() # 
+sitk.SpeckleNoiseImageFilter()
+sitk.Sqrt() # 
+sitk.SqrtImageFilter()
+sitk.Square() # 
+sitk.SquareImageFilter()
+sitk.SquaredDifference() # 
+sitk.SquaredDifferenceImageFilter()
+sitk.StandardDeviationProjection() # 
+sitk.StandardDeviationProjectionImageFilter()
+sitk.StatisticsImageFilter()
+sitk.Subtract() # 
+sitk.SubtractImageFilter()
+sitk.SumProjection() # 
+sitk.SumProjectionImageFilter()
+sitk.SwigPyIterator() # 
+sitk.SymmetricForcesDemonsRegistrationFilter() # 
+sitk.Tan() # 
+sitk.TanImageFilter()
+sitk.TernaryAdd() # 
+sitk.TernaryAddImageFilter()
+sitk.TernaryMagnitude() # 
+sitk.TernaryMagnitudeImageFilter()
+sitk.TernaryMagnitudeSquared() # 
+sitk.TernaryMagnitudeSquaredImageFilter()
+sitk.Threshold() # 
+sitk.ThresholdImageFilter()
+sitk.ThresholdMaximumConnectedComponents() # 
+sitk.ThresholdMaximumConnectedComponentsImageFilter()
+sitk.ThresholdSegmentationLevelSet() # 
+sitk.ThresholdSegmentationLevelSetImageFilter()
+sitk.TikhonovDeconvolution() # 
+sitk.TikhonovDeconvolutionImageFilter()
+sitk.Tile() # 
+sitk.TileImageFilter()
+sitk.Transform() # 
+sitk.TransformToDisplacementField() # 
+sitk.TransformToDisplacementFieldFilter() # 
+sitk.TranslationTransform() # 
+sitk.TriangleThreshold() # 
+sitk.TriangleThresholdImageFilter()
+sitk.UnaryMinus() # 
+sitk.UnaryMinusImageFilter()
+sitk.ValuedRegionalMaxima() # 
+sitk.ValuedRegionalMaximaImageFilter()
+sitk.ValuedRegionalMinima() # 
+sitk.ValuedRegionalMinimaImageFilter()
+sitk.VectorBool() # 
+sitk.VectorConfidenceConnected() # 
+sitk.VectorConfidenceConnectedImageFilter()
+sitk.VectorConnectedComponent() # 
+sitk.VectorConnectedComponentImageFilter()
+sitk.VectorDouble() # 
+sitk.VectorFloat() # 
+sitk.VectorIndexSelectionCast() # 
+sitk.VectorIndexSelectionCastImageFilter()
+sitk.VectorInt16() # 
+sitk.VectorInt32() # 
+sitk.VectorInt64() # 
+sitk.VectorInt8() # 
+sitk.VectorMagnitude() # 
+sitk.VectorMagnitudeImageFilter()
+sitk.VectorOfImage() # 
+sitk.VectorString() # 
+sitk.VectorUInt16() # 
+sitk.VectorUInt32() # 
+sitk.VectorUInt64() # 
+sitk.VectorUInt8() # 
+sitk.VectorUIntList() # 
+sitk.Version() # 
+sitk.Version_BuildDate() # 
+sitk.Version_ExtendedVersionString() # 
+sitk.Version_ITKMajorVersion() # 
+sitk.Version_ITKMinorVersion() # 
+sitk.Version_ITKPatchVersion() # 
+sitk.Version_ITKVersionString() # 
+sitk.Version_MajorVersion() # 
+sitk.Version_MinorVersion() # 
+sitk.Version_PatchVersion() # 
+sitk.Version_TweakVersion() # 
+sitk.Version_VersionString() # 
+sitk.VersorRigid3DTransform() # 
+sitk.VersorTransform() # 
+sitk.VotingBinary() # 
+sitk.VotingBinaryHoleFilling() # 
+sitk.VotingBinaryHoleFillingImageFilter()
+sitk.VotingBinaryImageFilter()
+sitk.VotingBinaryIterativeHoleFilling() # 
+sitk.VotingBinaryIterativeHoleFillingImageFilter()
+sitk.Warp() # 
+sitk.WarpImageFilter()
+sitk.WhiteTopHat() # 
+sitk.WhiteTopHatImageFilter()
+sitk.WienerDeconvolution() # 
+sitk.WienerDeconvolutionImageFilter()
+sitk.WrapPad() # 
+sitk.WrapPadImageFilter()
+sitk.WriteImage() # 
+sitk.WriteTransform() # 
+sitk.Xor() # 
+sitk.XorImageFilter()
+sitk.YenThreshold() # 
+sitk.YenThresholdImageFilter()
+sitk.ZeroCrossing() # 
+sitk.ZeroCrossingBasedEdgeDetection() # 
+sitk.ZeroCrossingBasedEdgeDetectionImageFilter()
+sitk.ZeroCrossingImageFilter()
+sitk.ZeroFluxNeumannPad() # 
+sitk.ZeroFluxNeumannPadImageFilter()
+sitk.cvar() # 
+sitk.numpy() # 
+sitk.operator() # 
+sitk.sitkAbortEvent() # 
+sitk.sitkAffine() # 
+sitk.sitkAnnulus() # 
+sitk.sitkAnyEvent() # 
+sitk.sitkBSpline() # 
+sitk.sitkBSplineTransform() # 
+sitk.sitkBall() # 
+sitk.sitkBlackmanWindowedSinc() # 
+sitk.sitkBox() # 
+sitk.sitkComplexFloat32() # 
+sitk.sitkComplexFloat64() # 
+sitk.sitkComposite() # 
+sitk.sitkCosineWindowedSinc() # 
+sitk.sitkCross() # 
+sitk.sitkDeleteEvent() # 
+sitk.sitkDisplacementField() # 
+sitk.sitkEndEvent() # 
+sitk.sitkEuler() # 
+sitk.sitkFloat32() # 
+sitk.sitkFloat64() # 
+sitk.sitkGaussian() # 
+sitk.sitkHammingWindowedSinc() # 
+sitk.sitkIdentity() # 
+sitk.sitkInt16() # 
+sitk.sitkInt32() # 
+sitk.sitkInt64() # 
+sitk.sitkInt8() # 
+sitk.sitkIterationEvent() # 
+sitk.sitkLabelGaussian() # 
+sitk.sitkLabelUInt16() # 
+sitk.sitkLabelUInt32() # 
+sitk.sitkLabelUInt64() # 
+sitk.sitkLabelUInt8() # 
+sitk.sitkLanczosWindowedSinc() # 
+sitk.sitkLinear() # 
+sitk.sitkMultiResolutionIterationEvent() # 
+sitk.sitkNearestNeighbor() # 
+sitk.sitkPolygon3() # 
+sitk.sitkPolygon4() # 
+sitk.sitkPolygon5() # 
+sitk.sitkPolygon6() # 
+sitk.sitkPolygon7() # 
+sitk.sitkPolygon8() # 
+sitk.sitkPolygon9() # 
+sitk.sitkProgressEvent() # 
+sitk.sitkQuaternionRigid() # 
+sitk.sitkScale() # 
+sitk.sitkScaleLogarithmic() # 
+sitk.sitkScaleSkewVersor() # 
+sitk.sitkSimilarity() # 
+sitk.sitkStartEvent() # 
+sitk.sitkTranslation() # 
+sitk.sitkUInt16() # 
+sitk.sitkUInt32() # 
+sitk.sitkUInt64() # 
+sitk.sitkUInt8() # 
+sitk.sitkUnknown() # 
+sitk.sitkUserEvent() # 
+sitk.sitkVectorFloat32() # 
+sitk.sitkVectorFloat64() # 
+sitk.sitkVectorInt16() # 
+sitk.sitkVectorInt32() # 
+sitk.sitkVectorInt64() # 
+sitk.sitkVectorInt8() # 
+sitk.sitkVectorUInt16() # 
+sitk.sitkVectorUInt32() # 
+sitk.sitkVectorUInt64() # 
+sitk.sitkVectorUInt8() # 
+sitk.sitkVersor() # 
+sitk.sitkVersorRigid() # 
+sitk.sitkWallClock() # 
+sitk.sitkWelchWindowedSinc() # 
+sitk.sys() # 
+sitk.weakref() # 
+sitk.weakref_proxy() # 
+
+
