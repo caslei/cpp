@@ -1,7 +1,29 @@
 %!TEX root=paper/paper.tex
-\chapter{Detection with the Cascade CNN}\label{sec:ccnn_chapter}
+\chapter{Basic C Language}\label{sec:basic_chapter}
 
-\PM{Motivation}
+\PM{Keywords}
+
+There are a total of 32 keywords for C language defined by ANSI:
+\begin{table}
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+auto       & double    & int       & struct           &  break 	     & else 	      & long \\
+\hline
+switch     & case      & enum      & register         & typedef      & extern         & return \\
+\hline
+union      & const     & float     & short            & unsigned     & continue       & for  \\
+\hline
+signed     & void      & default   & goto             & sizeof       & volatile       & do  \\
+\hline
+if         & while     & static    & inline           & restrict     & _Bool_Complex  & _Imaginary   \\
+\hline
+_Alignas   & _Alignof  & _Atomic   &  _Static_assert  &   _Noreturn  & _Thread_local  &   _Generic \\
+\hline
+\end{tabular}
+\end{table}
+
+
+ 由ANSI标准定义的C关键字
 With the rise of Convolutional Neural Networks (CNNs) for visual recognition, the state-of-the-art in detection has shifted.
 Whereas in \autoref{sec:det_problem}, a detector model was trained per class, and evaluated densely on the image, currently best-performing methods train one detector for all classes, and evaluate on a subset of possible image regions \parencite{Girshick-CVPR-2014}.
 The method is still computationally expensive, taking about 10 seconds per image even with multi-threaded matrix and convolution operations.
