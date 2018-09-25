@@ -27,38 +27,65 @@ unsigned  & void   & volatile  &  while  & \textit{inline}    & \textit{restrict
 根据关键字的作用，可以将关键字分为\textit{数据类型关键字}和\textit{流程控制关键字}两大类。
 
 \begin{enumerate}[label=\arabic*)]
-	\item 基本数据类型(5个)
+	\item \textit{数据类型关键字}
 	\begin{enumerate}
-		\item void: 声明函数无返回值或无参数，声明无类型指针，显式丢弃运算结果
-		\item char: 字符型类型数据，属于整型数据的一种
-		\item int: 整型数据，通常为编译器指定的机器字长
-		\item float: 单精度浮点型数据
-		\item double: 双精度浮点型数据
+		\item 基本数据类型(5个)
+		\begin{enumerate}
+			\item void: 声明函数无返回值或无参数，声明无类型指针，显式丢弃运算结果
+			\item char: 字符型类型数据，属于整型数据的一种
+			\item int: 整型数据，通常为编译器指定的机器字长
+			\item float: 单精度浮点型数据
+			\item double: 双精度浮点型数据
+		\end{enumerate}
+		\item 类型修饰关键字(4个)
+		\begin{enumerate}
+			\item short: 修饰int，短整型数据，可省略被修饰的int。
+			\item long: 修饰int，长整形数据，可省略被修饰的int
+			\item signed: 修饰整型数据，有符号数据类型
+			\item unsigned: 修饰整型数据，无符号数据类型
+		\end{enumerate}
+		\item 复杂类型关键字(5个)
+		\begin{enumerate}
+			\item struct: 结构体声明
+			\item union: 共用体声明
+			\item enum: 枚举声明
+			\item typedef: 声明类型别名
+			\item sizeof: 得到特定类型或特定类型变量的字节大小
+		\end{enumerate}
+		\item 存储级别关键字(6个)
+		\begin{enumerate}
+			\item auto: 指定为自动变量，由编译器自动分配及释放。通常在栈上分配
+			\item static: 指定为静态变量，分配在静态变量区，修饰函数时，指定函数作用域为文件内部
+			\item register: 指定为寄存器变量，建议编译器将变量存储到寄存器中使用，也可以修饰函数形参，建议编译器通过寄存器而不是堆栈传递参数
+			\item extern: 指定对应变量为外部变量，即在另外的目标文件中定义，可以认为是约定由另外文件声明的对象的一个``引用"
+			\item const: 与volatile合称“cv特性”，指定变量不可被当前线程/进程改变（但有可能被系统或其他线程/进程改变）
+			\item volatile: 与const合称“cv特性”，指定变量的值有可能会被系统或其他进程/线程改变，强制编译器每次从内存中取得该变量的值
+		\end{enumerate}	
 	\end{enumerate}
-	\item 类型修饰关键字(4个)
+	\item \textit{流程控制关键字}
 	\begin{enumerate}
-		\item short: 修饰int，短整型数据，可省略被修饰的int。
-		\item long: 修饰int，长整形数据，可省略被修饰的int
-		\item signed: 修饰整型数据，有符号数据类型
-		\item unsigned: 修饰整型数据，无符号数据类型
+		\item 跳转结构(4个)
+		\begin{enumerate}
+			\item return ：用在函数体中，返回特定值（或者是void值，即不返回值）
+			\item continue ：结束当前循环，开始下一轮循环
+			\item break ：跳出当前循环或switch结构
+			\item goto ：无条件跳转语句
+		\end{enumerate}
+		\item 分支结构(5个)
+		\begin{enumerate}
+			\item if ：条件语句
+			\item else ：条件语句否定分支(与if连用)
+			\item switch ：开关语句(多重分支语句)
+			\item case ：开关语句中的分支标记
+			\item default ：开关语句中的``其他分治，可选。
+		\end{enumerate}
+		\item 循环结构(3个)
+		\begin{enumerate}
+			\item for ：for循环结构
+			\item do ：do循环结构
+			\item while ：while循环结构
+		\end{enumerate}	
 	\end{enumerate}
-	\item 复杂类型关键字(5个)
-	\begin{enumerate}
-		\item struct: 结构体声明
-		\item union: 共用体声明
-		\item enum: 枚举声明
-		\item typedef: 声明类型别名
-		\item sizeof: 得到特定类型或特定类型变量的字节大小
-	\end{enumerate}
-	\item 存储级别关键字(6个)
-	\begin{enumerate}
-		\item auto: 指定为自动变量，由编译器自动分配及释放。通常在栈上分配
-		\item static: 指定为静态变量，分配在静态变量区，修饰函数时，指定函数作用域为文件内部
-		\item register: 指定为寄存器变量，建议编译器将变量存储到寄存器中使用，也可以修饰函数形参，建议编译器通过寄存器而不是堆栈传递参数
-		\item extern: 指定对应变量为外部变量，即在另外的目标文件中定义，可以认为是约定由另外文件声明的对象的一个``引用"
-		\item const: 与volatile合称“cv特性”，指定变量不可被当前线程/进程改变（但有可能被系统或其他线程/进程改变）
-		\item volatile: 与const合称“cv特性”，指定变量的值有可能会被系统或其他进程/线程改变，强制编译器每次从内存中取得该变量的值
-	\end{enumerate}	
 \end{enumerate}
 
 
