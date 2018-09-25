@@ -2,32 +2,32 @@
 \chapter{Basic C Language}\label{sec:basic_chapter}
 
 \PM{Keywords}
+由ANSI标准定义的C语言关键字共32个 :
 
-There are a total of 32 keywords for C language defined by ANSI:
 \begin{table}
 \begin{tabular}{|l|l|l|l|l|}
 \hline
-auto       & double    & int       & struct           &  break 	     & else 	      & long \\
+auto      & break  & case      & char    & const  	   & continue	  & default   \\
 \hline
-switch     & case      & enum      & register         & typedef      & extern         & return \\
+do        & double &  else     & enum    & extern      & float        & for       \\
 \hline
-union      & const     & float     & short            & unsigned     & continue       & for  \\
+goto      & if     & int       & long    & register    &  return      & short     \\
 \hline
-signed     & void      & default   & goto             & sizeof       & volatile       & do  \\
+signed    & sizeof & static    & sturct  & switch      & typedef      & union     \\
 \hline
-if         & while     & static    & inline           & restrict     & _Bool_Complex  & _Imaginary   \\
+unsigned  & void   & volatile  &  while  & \textit{inline}    & \textit{restrict}     & \textit{_Bool_Complex}   \\
 \hline
-_Alignas   & _Alignof  & _Atomic   &  _Static_assert  &   _Noreturn  & _Thread_local  &   _Generic \\
+\textit{_Imaginary} & \textit{_Alignas} & \textit{_Alignof}  & \textit{_Atomic}   & \textit{_Static_assert}  &  \textit{_Noreturn}  & \textit{_Thread_local}     \\
+\hline
+\textit{_Generic}  & & & & & &  \\
 \hline
 \end{tabular}
 \end{table}
 
 
- 由ANSI标准定义的C关键字
-With the rise of Convolutional Neural Networks (CNNs) for visual recognition, the state-of-the-art in detection has shifted.
-Whereas in \autoref{sec:det_problem}, a detector model was trained per class, and evaluated densely on the image, currently best-performing methods train one detector for all classes, and evaluate on a subset of possible image regions \parencite{Girshick-CVPR-2014}.
-The method is still computationally expensive, taking about 10 seconds per image even with multi-threaded matrix and convolution operations.
-The strategy to speed detection up, however, has to change.
+
+
+   
 
 \input{../ccnn/method}
 
