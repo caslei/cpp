@@ -38,7 +38,7 @@
 \hypersetup{ citecolor=Cerulean, urlcolor=Cerulean } 
 
 % Prevent page breaks in the middle of paragraphs.
-\widowpenalties 1 10000
+% \widowpenalties 1 10000
 \raggedbottom
 
 % Format paragraphs as sections
@@ -57,16 +57,12 @@
 \def\sectionautorefname{Section}
 \def\subsectionautorefname{Section}
 
-
 %=============================================================
-%    begin document
-%=============================================================
-\begin{document}
 \title{c plus plus notes}
 \author{王雷}
-\degreesemester{Fall}
-\degreeyear{2018}
-\today
+%\degreesemester{Fall}
+%\degreeyear{2018}
+
 %\degree{Doctor of Philosophy}
 %\chair{Professor Trevor Darrell}
 %\othermembers{
@@ -77,32 +73,43 @@
 %\numberofmembers{4}
 %\field{Computer Science}
 
-%================================
-
 \maketitle
+% \today
 % Comment out for final.
 % \approvalpage
-%\copyrightpage
-%\input{../abstract}
+% \copyrightpage
+% \input{../abstract}
+
+\tableofcontents
 
 %================================
-\begin{frontmatter}
+%\begin{frontmatter}
 %   \input{../dedication}
-    \newpage
-    \tableofcontents
+%    \newpage
+%    \tableofcontents
 %    \newpage
 %   \listoffigures % maybe cancel
 %    \newpage
 %   \listoftables  % maybe cancel
 %    \newpage
 %   \input{../acknowledgements}
-\end{frontmatter}
+%\end{frontmatter}
 
 %================================
 \pagestyle{headings}
 
 %================================
-\input{./chapter01}
+
+
+%=============================================================
+%    begin document
+%=============================================================
+\begin{document}
+
+
+%================================
+%\input{./chapter01}
+
 % \input{../chapter02}
 % \input{../chapter03}
 % \input{../chapter04}
