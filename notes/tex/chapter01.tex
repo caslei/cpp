@@ -4,30 +4,13 @@
 \section{Keywords}
 由ANSI标准定义的C语言关键字共32个 :
 
-\begin{table}
-\begin{tabular}{|l|l|l|l|l|l|l|}
-\hline
-auto      & break  & case      & char    & const  	   & continue	  & default   \\
-\hline
-do        & double &  else     & enum    & extern      & float        & for       \\
-\hline
-goto      & if     & int       & long    & register    &  return      & short     \\
-\hline
-signed    & sizeof & static    & sturct  & switch      & typedef      & union     \\
-\hline
-unsigned  & void   & volatile  &  while  & \textit{inline}    & \textit{restrict}     & \textit{_Bool_Complex}   \\
-\hline
-\textit{_Imaginary} & \textit{_Alignas} & \textit{_Alignof}  & \textit{_Atomic}   & \textit{_Static_assert}  &  \textit{_Noreturn}  & \textit{_Thread_local}     \\
-\hline
-\textit{_Generic}  & & & & & &  \\
-\hline
-\end{tabular}
-\end{table}
+\input{./chapter01_keywords.tex}
 
-根据关键字的作用，可以将关键字分为\textit{数据类型关键字}和\textit{流程控制关键字}两大类。
+
+根据关键字的作用，可以将关键字分为\textbf{数据类型关键字}和\textbf{流程控制关键字}两大类。
 
 \begin{enumerate}[label=\arabic*)]
-	\item \textit{数据类型关键字}
+	\item \emph{数据类型关键字}
 	\begin{enumerate}
 		\item 基本数据类型(5个)
 		\begin{enumerate}
@@ -62,7 +45,8 @@ unsigned  & void   & volatile  &  while  & \textit{inline}    & \textit{restrict
 			\item volatile: 与const合称“cv特性”，指定变量的值有可能会被系统或其他进程/线程改变，强制编译器每次从内存中取得该变量的值
 		\end{enumerate}	
 	\end{enumerate}
-	\item \textit{流程控制关键字}
+
+	\item \emph{流程控制关键字}
 	\begin{enumerate}
 		\item 跳转结构(4个)
 		\begin{enumerate}
@@ -77,7 +61,7 @@ unsigned  & void   & volatile  &  while  & \textit{inline}    & \textit{restrict
 			\item else ：条件语句否定分支(与if连用)
 			\item switch ：开关语句(多重分支语句)
 			\item case ：开关语句中的分支标记
-			\item default ：开关语句中的``其他分治，可选。
+			\item default ：开关语句中的``其他"分支，可选。
 		\end{enumerate}
 		\item 循环结构(3个)
 		\begin{enumerate}
@@ -89,3 +73,12 @@ unsigned  & void   & volatile  &  while  & \textit{inline}    & \textit{restrict
 \end{enumerate}
 
 
+
+
+
+
+\begin{tabular}{lp{4.5cm} l}
+\textit{1:} & 若\textit{expression==0}, 输出错误提示，终止程序 \\ \hline
+\textit{2:} & 若\textit{expression!=0}, 继续执行下条语句 \\ \hline
+\textit{3:} & 若在\textit{assert.h}前定义\textit{\#define NDEBUG} 则所有 \textit{assert}失效
+\end{tabular} 
