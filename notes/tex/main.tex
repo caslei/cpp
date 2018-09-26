@@ -4,122 +4,63 @@
 % https://github.com/sergeyk/thesis_writeups
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\documentclass{./style/ucbthesis} % 'ucbthesis.cls' class file
+\documentclass{book}
 
-%=============================================================
-%     reference files
-%=============================================================
-% \usepackage[backend=bibtex,citestyle=authoryear-icomp,bibstyle=authoryear,maxbibnames=9]{biblatex}
-% \setlength{\bibitemsep}{.4\baselineskip}
-% \addbibresource{../style/mendeley_bibtex.bib}
-% \addbibresource{../style/mendeley_bibtex_edited.bib}
-% \addbibresource{../style/manual_additions.bib}
-%=============================================================
 
-\usepackage{./style/paragraph-marginals} % 'paragraph-marginals.sty' style file
+%================================
+%    preamble
+%================================
 \usepackage{indentfirst}
-\usepackage{xcolor} % [usenames,dvipsnames]
-\usepackage{graphicx} % [pdftex]
+\usepackage{xcolor}
+\usepackage{graphicx}
 \usepackage{amsmath, amssymb, amsthm}
 \usepackage{algorithm2e}
-\usepackage{booktabs}
-\setlength{\extrarowheight}{.33\baselineskip}
+
 \usepackage{url}
 \usepackage{titlesec}
 \usepackage{float}
 \usepackage{subcaption}
-\usepackage{enumitem, multirow, tabularx, array}
 \usepackage{rotating}
-\usepackage{enumerate}
+
+\usepackage{multirow, tabularx, array}
+\usepackage{enumitem}
+%\usepackage{enumerate} 不能与enumitem同时存在
 
 \usepackage[UTF8]{ctex} % for chinese
-%=============================================================
+
+\usepackage{booktabs}
+\setlength{\extrarowheight}{.33\baselineskip}
+
 \usepackage[colorlinks]{hyperref}
 \hypersetup{ citecolor=Cerulean, urlcolor=Cerulean } 
 
-% Prevent page breaks in the middle of paragraphs.
-% \widowpenalties 1 10000
-\raggedbottom
+%\raggedbottom
 
 % Format paragraphs as sections
 \setcounter{tocdepth}{3}
 \setcounter{secnumdepth}{3}
 
-%% Math commands
-\newtheorem{theorem}{Theorem}
-\newtheorem{mydef}{Definition}
-\DeclareMathOperator*{\argmin}{arg\,min}
-\DeclareMathOperator*{\argmax}{arg\,max}
 
-%% Misc commands
-\def\algorithmautorefname{Algorithm}
-\def\chapterautorefname{Chapter}
-\def\sectionautorefname{Section}
-\def\subsectionautorefname{Section}
-
-%=============================================================
-\title{c plus plus notes}
+%================================
+\title{work notes}
 \author{王雷}
-%\degreesemester{Fall}
-%\degreeyear{2018}
+\date{\today}
 
-%\degree{Doctor of Philosophy}
-%\chair{Professor Trevor Darrell}
-%\othermembers{
-%Professor Ken Goldberg\\
-%Professor Pieter Abbeel\\
-%Dr Mario Fritz
-%}
-%\numberofmembers{4}
-%\field{Computer Science}
-
+%================================
+%    begin document
+%================================
+\begin{document}
 \maketitle
-% \today
-% Comment out for final.
-% \approvalpage
-% \copyrightpage
-% \input{../abstract}
-
 \tableofcontents
 
 %================================
-%\begin{frontmatter}
-%   \input{../dedication}
-%    \newpage
-%    \tableofcontents
-%    \newpage
-%   \listoffigures % maybe cancel
-%    \newpage
-%   \listoftables  % maybe cancel
-%    \newpage
-%   \input{../acknowledgements}
-%\end{frontmatter}
-
-%================================
-\pagestyle{headings}
-
-%================================
+\input{./chapter01}
 
 
-%=============================================================
-%    begin document
-%=============================================================
-\begin{document}
-
-
-%================================
-%\input{./chapter01}
 
 % \input{../chapter02}
 % \input{../chapter03}
 % \input{../chapter04}
 % \input{../chapter05}
 
-%================================
-%\appendix
-%\input{../imputation_evaluation}
-%\input{../style/appendix}
-
-%================================
-% \printbibliography
 \end{document}
