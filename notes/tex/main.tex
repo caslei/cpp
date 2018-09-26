@@ -4,7 +4,7 @@
 % https://github.com/sergeyk/thesis_writeups
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\documentclass{../style/ucbthesis} % 'ucbthesis.cls' class file
+\documentclass{./style/ucbthesis} % 'ucbthesis.cls' class file
 
 %=============================================================
 %     reference files
@@ -16,10 +16,10 @@
 % \addbibresource{../style/manual_additions.bib}
 %=============================================================
 
-\usepackage{../style/paragraph-marginals} % 'paragraph-marginals.sty' style file
+\usepackage{./style/paragraph-marginals} % 'paragraph-marginals.sty' style file
 \usepackage{indentfirst}
-\usepackage[usenames,dvipsnames]{xcolor}
-\usepackage[pdftex]{graphicx}
+\usepackage{xcolor} % [usenames,dvipsnames]
+\usepackage{graphicx} % [pdftex]
 \usepackage{amsmath, amssymb, amsthm}
 \usepackage{algorithm2e}
 \usepackage{booktabs}
@@ -102,11 +102,11 @@
 \pagestyle{headings}
 
 %================================
-\input{../chapter01}
-\input{../chapter02}
-\input{../chapter03}
-\input{../chapter04}
-\input{../chapter05}
+\input{./chapter01}
+% \input{../chapter02}
+% \input{../chapter03}
+% \input{../chapter04}
+% \input{../chapter05}
 
 %================================
 %\appendix
