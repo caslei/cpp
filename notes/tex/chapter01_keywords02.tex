@@ -1,0 +1,41 @@
+\begin{table}[htbp]
+\begin{center}
+\small{\begin{tabular}{|p{0.075\linewidth}|p{0.075\linewidth}|p{0.8\linewidth}|}
+\hline  
+\multicolumn{3}{|l|}{\textbf{数据类型关键字}} \\ \hline
+\multirow{5}{*}{\begin{tabular}{c} 基本类 \\型关键 \\字(5) \\\end{tabular}}  & void & 声明函数无返回值或无参数，声明无类型指针，显式丢弃运算结果 \\
+																			& char & 字符型类型数据，属于整型数据的一种 \\  
+																			& int & 整型数据，通常为编译器指定的机器字长 \\ 
+																			& float & 单精度浮点型数据 \\  
+																			& double & 双精度浮点型数据 \\ \hline
+\multirow{4}{*}{\begin{tabular}{c} 类型修 \\饰关键 \\字(4) \\\end{tabular}}  &  short & 修饰int，短整型数据，可省略被修饰的int \\
+																			& long & 修饰int，长整形数据，可省略被修饰的int  \\ 
+																			& signed & 修饰整型数据，有符号数据类型 \\ 
+																			& unsigned & 修饰整型数据，无符号数据类型 \\ \hline
+\multirow{5}{*}{\begin{tabular}{c} 复杂类 \\型关键 \\字(5) \\\end{tabular}}  &  struct & 结构体声明 \\
+																			& union & 共用体声明  \\ 
+																			& enum & 枚举声明 \\ 
+																			& typedef & 声明类型别名 \\ 
+																			& sizeof & 计算数据类型或变量长度(即所占字节数) \\ \hline
+\multirow{6}{*}{\begin{tabular}{c} \\~\\~\\ 存储级 \\别关键 \\字(6) \\\end{tabular}}  & auto & 指定为自动变量，由编译器自动分配及释放。通常在栈上分配 \\ 
+																			& static & 指定为静态变量，分配在静态变量区，修饰函数时，指定函数作用域为文件内部 \\  
+																			& register & 指定为寄存器变量，建议编译器将变量存储到寄存器中使用，也可以修饰函数形参，建议编译器通过寄存器而不是堆栈传递参数 \\  
+																			& extern & 指定对应变量为外部变量，即在另外的目标文件中定义，可以认为是约定由另外文件声明的对象的一个``引用"\\  
+																			& const & (1) 声明变量为常量, (2) char *const p; 到char的const指针 (指针本身为const), (3) char const *p; 到const char的指针 (所指对象为const)\\ 
+																			& volatile & 指定变量的值有可能会被系统或其他进程/线程改变，强制从内存中取得变量的值, (2) 用volatile定义的变量会在程序外被改变,每次都必须从内存中读取，而不能重复使用放在cache或寄存器中的备份, (3) volatile关键词影响编译器编译的结果，用volatile声明的变量表示该变量随时可能发生变化，与该变量有关的运算，不要进行编译优化，以免出错 \\  \hline
+\multicolumn{3}{|l|}{\textbf{流程控制关键字}}  \\  \hline
+\multirow{4}{*}{\begin{tabular}{c} 跳转结 \\构关键 \\字(4) \\\end{tabular}}  & return & 用在函数体中，返回特定值(可以带参数，也可不带参数) \\
+																			& continue & (1) 跳过本次循环余下的语句，开始下一轮循环, (2) 只作用于离它最近的循环：for, while, do...while \\ 
+																			& break & (1) 终止离它最近的循环, (2) 跳出switch结构, \\
+																			& goto & 无条件跳转语句 \\ \hline
+\multirow{5}{*}{\begin{tabular}{c} 分支结 \\构关键 \\字(5) \\\end{tabular}}  & if & 条件语句 \\
+																			& else & 条件语句否定分支(与if连用) \\ 
+																			& switch & 开关语句(多重分支语句) \\  
+																			& case & 开关语句中的分支标记 \\  
+																			& default & 开关语句中的``其他"分支，可选。 \\ \hline
+\multirow{3}{*}{\begin{tabular}{c} 循环结 \\构关键 \\字(3) \\\end{tabular}}  & for & for循环结构，for(1;2;3)4;的执行顺序为1->2->4->3->2...循环，其中2为循环条件 \\ 
+																			& do & do循环结构，do 1; while(2); 的执行顺序是 1->2->1...循环，2为循环条件 \\ 
+																			& while & while循环结构，while(1) 2; 的执行顺序是1->2->1...循环，1为循环条件  \\  \hline
+\end{tabular} }
+\end{center}
+\end{table}
