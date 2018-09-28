@@ -84,73 +84,73 @@
 % \end{tabular} 
 
 
-\begin{enumerate}[label=\arabic*)]
-	\item \emph{数据类型关键字}
-	\begin{enumerate}[label=\arabic*)]
-		\item 基本数据类型(5个)
-		\begin{tabular}{lp{4.5cm} l}
-			void: & 声明函数无返回值或无参数，声明无类型指针，显式丢弃运算结果 \\ 
-			char: & 字符型类型数据，属于整型数据的一种 \\ 
-			int: & 整型数据，通常为编译器指定的机器字长 \\ 
-			float: & 单精度浮点型数据 \\ 
-			double: & 双精度浮点型数据 \\ 
-		\end{tabular}
+% \begin{enumerate}[label=\arabic*)]
+% 	\item \emph{数据类型关键字}
+% 	\begin{enumerate}[label=\arabic*)]
+% 		\item 基本数据类型(5个)
+% 		\begin{tabular}{lp{4.5cm} l}
+% 			void: & 声明函数无返回值或无参数，声明无类型指针，显式丢弃运算结果 \\ 
+% 			char: & 字符型类型数据，属于整型数据的一种 \\ 
+% 			int: & 整型数据，通常为编译器指定的机器字长 \\ 
+% 			float: & 单精度浮点型数据 \\ 
+% 			double: & 双精度浮点型数据 \\ 
+% 		\end{tabular}
 
-		\item 类型修饰关键字(4个)
-		\begin{tabular}{lp{4.5cm} l}
-			short: & 修饰int，短整型数据，可省略被修饰的int \\ 
-			long: & 修饰int，长整形数据，可省略被修饰的int \\ 
-			signed: & 修饰整型数据，有符号数据类型 \\ 
-			unsigned: & 修饰整型数据，无符号数据类型 \\ 
-		\end{tabular}
+% 		\item 类型修饰关键字(4个)
+% 		\begin{tabular}{lp{4.5cm} l}
+% 			short: & 修饰int，短整型数据，可省略被修饰的int \\ 
+% 			long: & 修饰int，长整形数据，可省略被修饰的int \\ 
+% 			signed: & 修饰整型数据，有符号数据类型 \\ 
+% 			unsigned: & 修饰整型数据，无符号数据类型 \\ 
+% 		\end{tabular}
 
-		\item 复杂类型关键字(5个)
-		\begin{tabular}{lp{4.5cm} l}
-			struct: & 结构体声明 \\ 
-			union: & 共用体声明  \\ 
-			enum: & 枚举声明 \\ 
-			typedef: & 声明类型别名 \\ 
-			sizeof: & 得到特定类型或特定类型变量的字节大小 \\ 
-		\end{tabular}
+% 		\item 复杂类型关键字(5个)
+% 		\begin{tabular}{lp{4.5cm} l}
+% 			struct: & 结构体声明 \\ 
+% 			union: & 共用体声明  \\ 
+% 			enum: & 枚举声明 \\ 
+% 			typedef: & 声明类型别名 \\ 
+% 			sizeof: & 得到特定类型或特定类型变量的字节大小 \\ 
+% 		\end{tabular}
 
-		\item 存储级别关键字(6个)
-		\begin{tabular}{lp{4.5cm} l}
-			auto: & 指定为自动变量，由编译器自动分配及释放。通常在栈上分配 \\ 
-			static: & 指定为静态变量，分配在静态变量区，修饰函数时，指定函数作用域为文件内部 \\ 
-			register: & 指定为寄存器变量，建议编译器将变量存储到寄存器中使用，也可以修饰函数形参，建议编译器通过寄存器而不是堆栈传递参数 \\ 
-			extern: & 指定对应变量为外部变量，即在另外的目标文件中定义，可以认为是约定由另外文件声明的对象的一个``引用" \\ 
-			const: & 与volatile合称“cv特性”，指定变量不可被当前线程/进程改变（但有可能被系统或其他线程/进程改变） \\ 
-			volatile: & 与const合称“cv特性”，指定变量的值有可能会被系统或其他进程/线程改变，强制编译器每次从内存中取得该变量的值 \\ 
-		\end{tabular}	
-	\end{enumerate}
+% 		\item 存储级别关键字(6个)
+% 		\begin{tabular}{lp{4.5cm} l}
+% 			auto: & 指定为自动变量，由编译器自动分配及释放。通常在栈上分配 \\ 
+% 			static: & 指定为静态变量，分配在静态变量区，修饰函数时，指定函数作用域为文件内部 \\ 
+% 			register: & 指定为寄存器变量，建议编译器将变量存储到寄存器中使用，也可以修饰函数形参，建议编译器通过寄存器而不是堆栈传递参数 \\ 
+% 			extern: & 指定对应变量为外部变量，即在另外的目标文件中定义，可以认为是约定由另外文件声明的对象的一个``引用" \\ 
+% 			const: & 与volatile合称“cv特性”，指定变量不可被当前线程/进程改变（但有可能被系统或其他线程/进程改变） \\ 
+% 			volatile: & 与const合称“cv特性”，指定变量的值有可能会被系统或其他进程/线程改变，强制编译器每次从内存中取得该变量的值 \\ 
+% 		\end{tabular}	
+% 	\end{enumerate}
 
-	\item \emph{流程控制关键字}
-	\begin{enumerate}[label=\arabic*)]
-		\item 跳转结构(4个)
-		\begin{tabular}{lp{4.5cm} l}
-			return: & 用在函数体中，返回特定值（或者是void值，即不返回值） \\ 
-			continue: & 结束当前循环，开始下一轮循环 \\ 
-			break: & 跳出当前循环或switch结构 \\ 
-			goto: & 无条件跳转语句 \\ 
-		\end{tabular}
+% 	\item \emph{流程控制关键字}
+% 	\begin{enumerate}[label=\arabic*)]
+% 		\item 跳转结构(4个)
+% 		\begin{tabular}{lp{4.5cm} l}
+% 			return: & 用在函数体中，返回特定值（或者是void值，即不返回值） \\ 
+% 			continue: & 结束当前循环，开始下一轮循环 \\ 
+% 			break: & 跳出当前循环或switch结构 \\ 
+% 			goto: & 无条件跳转语句 \\ 
+% 		\end{tabular}
 		
-		\item 分支结构(5个)
-		\begin{tabular}{lp{4.5cm} l}
-			if: & 条件语句 \\ 
-			else: & 条件语句否定分支(与if连用) \\ 
-			switch: & 开关语句(多重分支语句) \\ 
-			case: & 开关语句中的分支标记 \\ 
-			default: & 开关语句中的``其他"分支，可选。 \\ 
-		\end{tabular}
+% 		\item 分支结构(5个)
+% 		\begin{tabular}{lp{4.5cm} l}
+% 			if: & 条件语句 \\ 
+% 			else: & 条件语句否定分支(与if连用) \\ 
+% 			switch: & 开关语句(多重分支语句) \\ 
+% 			case: & 开关语句中的分支标记 \\ 
+% 			default: & 开关语句中的``其他"分支，可选。 \\ 
+% 		\end{tabular}
 
-		\item 循环结构(3个)
-		\begin{tabular}{lp{4.5cm} l}
-			for: & for循环结构 \\ 
-			do: & do循环结构 \\ 
-			while: & while循环结构
-		\end{tabular}
-	\end{enumerate}
-\end{enumerate}
+% 		\item 循环结构(3个)
+% 		\begin{tabular}{lp{4.5cm} l}
+% 			for: & for循环结构 \\ 
+% 			do: & do循环结构 \\ 
+% 			while: & while循环结构
+% 		\end{tabular}
+% 	\end{enumerate}
+% \end{enumerate}
 
 
 
@@ -172,10 +172,131 @@
 \hline
 A & B & C & D & \multicolumn{7}{|c|}{F}  \\ \hline
 \multirow{ 2}{*}{1} & 0 & 6 & 230 & 35 & 40 & 55 & 25 & 40 & 35 & \\
-& 1 & 5 & 195 & 25 & 50 & 35 & 40 & 45 &  &  \\ \hline
+                    & 1 & 5 & 195 & 25 & 50 & 35 & 40 & 45 &  &  \\ \hline
 \end{tabular}
 \caption{A test caption}
 \label{table2}
 \end{table}
 
 % \end{document}
+
+
+
+
+% \begin{table}[htbp]
+% \begin{center}
+% \small{\begin{tabular}{|l|l|l|l|}
+% \hline   
+% \multirow{20}{*}{\rotatebox{-90}{数据类型关键字}} & \multirow{5}{*}{\rotatebox{-90}{基本数据类型(5个)}}    & void: & 声明函数无返回值或无参数，声明无类型指针，显式丢弃运算结果 \\ \hline
+%                                 &                                     & char: & 字符型类型数据，属于整型数据的一种 \\  \hline
+%                                 &                                     & int: & 整型数据，通常为编译器指定的机器字长 \\  \hline
+%                                 &                                      & float: & 单精度浮点型数据 \\  \hline
+%                                 &                                      & double: & 双精度浮点型数据 \\ \hline
+                               
+%                                 & \multirow{4}{*}{\rotatebox{-90}{类型修饰关键字(4个)}}  &  short: & 修饰int，短整型数据，可省略被修饰的int \\ \hline
+%                                 &                                      & long: & 修饰int，长整形数据，可省略被修饰的int  \\ \hline
+%                                 &                                      & signed: & 修饰整型数据，有符号数据类型 \\ \hline
+%                                 &                                      & unsigned: & 修饰整型数据，无符号数据类型 \\ \hline
+
+%                                 & \multirow{5}{*}{\rotatebox{-90}{复杂类型关键字(5个)}}  &  struct: & 结构体声明 \\ \hline
+%                                 &                                      & union: & 共用体声明  \\ \hline
+%                                 &                                      & enum: & 枚举声明 \\ \hline
+%                                 &                                      & typedef: & 声明类型别名 \\ \hline
+%                                 &                                      & sizeof: & 得到特定类型或特定类型变量的字节大小 \\ \hline
+			
+%                                 & \multirow{6}{*}{\rotatebox{-90}{存储级别关键字(6个)}}  & auto: & 指定为自动变量，由编译器自动分配及释放。通常在栈上分配 \\  \hline
+%                                 &                                      & static: & 指定为静态变量，分配在静态变量区，修饰函数时，指定函数作用域为文件内部 \\  \hline
+%                                 &                                      & register: & 指定为寄存器变量，建议编译器将变量存储到寄存器中使用 \\  \hline
+%                                 &                                      & extern: & 指定对应变量为外部变量，即在另外的目标文件中定义\\  \hline
+%                                 &                                      & const: & 与volatile合称“cv特性”，指定变量不可被当前线程/进程改变 \\  \hline
+%                                 &                                      & volatile: & 指定变量的值有可能会被系统或其他进程/线程改变，强制从内存中取得变量的值 \\  \hline
+
+% \multirow{12}{*}{\rotatebox{-90}{流程控制关键字}} & \multirow{4}{*}{\rotatebox{-90}{跳转结构(4个)}}        & return: & 用在函数体中，返回特定值（或者是void值，即不返回值） \\ \hline
+%                                 &                                      & continue: & 结束当前循环，开始下一轮循环 \\ \hline
+%                                 &                                      & break: & 跳出当前循环或switch结构 \\ \hline
+%                                 &                                      & goto: & 无条件跳转语句 \\ \hline
+
+%                                 & \multirow{5}{*}{\rotatebox{-90}{分支结构(5个)}}        & if: & 条件语句 \\ \hline
+%                                 &                                      & else: & 条件语句否定分支(与if连用) \\ \hline
+%                                 &                                      & switch: & 开关语句(多重分支语句) \\ \hline
+%                                 &                                      & case: & 开关语句中的分支标记 \\ \hline
+%                                 &                                      & default: & 开关语句中的``其他"分支，可选。 \\ \hline
+
+%                                 & \multirow{3}{*}{\rotatebox{-90}{循环结构(3个)}}       & for: & for循环结构 \\  \hline
+%                                 &                                      & do: & do循环结构 \\  \hline
+%                                 &                                      & while: & while循环结构  \\  \hline
+% \end{tabular} }
+% \end{center}
+% \end{table}
+
+
+
+
+\begin{table}[htbp]
+\begin{center}
+\small{\begin{tabular}{|l|l|l|}
+\hline  
+\multicolumn{3}{|l|}{数据类型关键字} \\ \hline
+
+\multirow{5}{*}{基本数据类型(5个)}    & void: & 声明函数无返回值或无参数，声明无类型指针，显式丢弃运算结果 \\
+& char: & 字符型类型数据，属于整型数据的一种 \\  
+& int: & 整型数据，通常为编译器指定的机器字长 \\ 
+& float: & 单精度浮点型数据 \\  
+& double: & 双精度浮点型数据 \\ \hline
+                               
+\multirow{4}{*}{类型修饰关键字(4个)}  &  short: & 修饰int，短整型数据，可省略被修饰的int \\
+& long: & 修饰int，长整形数据，可省略被修饰的int  \\ 
+& signed: & 修饰整型数据，有符号数据类型 \\ 
+& unsigned: & 修饰整型数据，无符号数据类型 \\ \hline
+
+\multirow{5}{*}{复杂类型关键字(5个)}  &  struct: & 结构体声明 \\
+& union: & 共用体声明  \\ 
+& enum: & 枚举声明 \\ 
+& typedef: & 声明类型别名 \\ 
+& sizeof: & 得到特定类型或特定类型变量的字节大小 \\ \hline
+			
+\multirow{6}{*}{存储级别关键字(6个)}  & auto: & 指定为自动变量，由编译器自动分配及释放。通常在栈上分配 \\ 
+& static: & 指定为静态变量，分配在静态变量区，修饰函数时，指定函数作用域为文件内部 \\  
+& register: & 指定为寄存器变量，建议编译器将变量存储到寄存器中使用 \\  
+& extern: & 指定对应变量为外部变量，即在另外的目标文件中定义\\  
+& const: & 与volatile合称“cv特性”，指定变量不可被当前线程/进程改变 \\ 
+& volatile: & 指定变量的值有可能会被系统或其他进程/线程改变，强制从内存中取得变量的值 \\  \hline
+
+\multicolumn{3}{|l|}{流程控制关键字}  \\  \hline
+
+\multirow{4}{*}{跳转结构(4个)}  & return: & 用在函数体中，返回特定值（或者是void值，即不返回值） \\
+& continue: & 结束当前循环，开始下一轮循环 \\ 
+& break: & 跳出当前循环或switch结构 \\
+& goto: & 无条件跳转语句 \\ \hline
+
+\multirow{5}{*}{分支结构(5个)}        & if: & 条件语句 \\
+& else: & 条件语句否定分支(与if连用) \\ 
+& switch: & 开关语句(多重分支语句) \\  
+& case: & 开关语句中的分支标记 \\  
+& default: & 开关语句中的``其他"分支，可选。 \\ \hline
+
+\multirow{3}{*}{循环结构(3个)}      & for: & for循环结构 \\ 
+& do: & do循环结构 \\ 
+& while: & while循环结构  \\  \hline
+\end{tabular} }
+\end{center}
+\end{table}
+
+
+
+% \begin{tikzpicture}
+% \node [mybox](box){
+%     \begin{minipage}{0.3\textwidth}
+%         \url{https://www.cnblogs.com/chio/archive/2008/06/18/1225028.html}:\\
+%         \textit{void assert(int expression);}
+%         \begin{center}
+%            \small{\begin{tabular}{lp{4.5cm} l}
+%                 \textit{1:} & 若\textit{expression==0}, 输出错误提示，终止程序 \\ \hline
+%                 \textit{2:} & 若\textit{expression!=0}, 继续执行下条语句 \\ \hline
+%                 \textit{3:} & 若在\textit{assert.h}前定义\textit{\#define NDEBUG} 则所有 \textit{assert}失效
+%             \end{tabular} }
+%         \end{center}
+%     \end{minipage}
+% }; \\
+% \node[fancytitle, right=10pt] at (box.north west) {<assert.h>};
+% \end{tikzpicture
