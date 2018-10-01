@@ -21,7 +21,8 @@
 
 	To get a total number of images along the temporal axis:
 
-		num_scan = get_nii_frame(NIFTI_file_name);
+		%==================================================
+		num_scan = get_nii_frame(NIFTI_file_name); 
 
 	You can also load the header extension if it exists:
 
@@ -39,6 +40,7 @@
 
 	To make the structure from any 3D (or 4D) data:
 
+		%==================================================
 		img = rand(91,109,91); or
 		img = rand(64,64,21,18);
 		nii = make_nii(img [, voxel_size, origin, datatype] );
@@ -68,6 +70,7 @@
 
 	To add a colorbar:
 
+		%==================================================
 		opt.usecolorbar = 1;
 		view_nii(gcf, opt);
 
@@ -96,6 +99,8 @@
 		view_nii(gcf, nii, opt);
 
 	This is an example to plot EEG source imaging on top of T1 background:
+	
+		%==================================================
 		1. download overlay.zip and unzip it from:
 		   http://www.rotman-baycrest.on.ca/~jimmy/NIFTI/overlay.zip
 		2. T1 = load_nii('T1.nii');
