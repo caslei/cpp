@@ -25,20 +25,19 @@ else
     fprintf(['[NiftyReg Build Tests] ', output_path, ...
         '/refImg2D.nii.gz already exists\n'])
 end
-if ~exist([output_path, '/refImg3D.nii.gz'], 'file')
 
+if ~exist([output_path, '/refImg3D.nii.gz'], 'file')
     [~,~,ext] = fileparts(ref2D_path);
     if strcmp(ext,'.gz')
         copyfile(ref3D_path, [output_path, '/refImg3D.nii.gz'], 'f');
     else
         copyfile(ref3D_path, [output_path, '/refImg3D.nii'], 'f');
         gzip([output_path, '/refImg3D.nii'])
-
     end
     fprintf('[NiftyReg Build Tests]Input 3D file copied\n');
 else
     fprintf(['[NiftyReg Build Tests] ', output_path, ...
-        '/refImg3D.nii.gz already exists\n'])
+		'/refImg3D.nii.gz already exists\n'])
 end
 
 ref2D=[output_path, '/refImg2D.nii.gz'];
