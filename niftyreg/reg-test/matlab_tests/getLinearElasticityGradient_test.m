@@ -7,8 +7,9 @@ defField_name = {def2D_name, def3D_name};
 for i=1:2
     %Read the grid image
     grid_image = load_untouch_nii(grid_name{i});
-    grid_data = grid_image.img;
+    grid_data = grid_image.img; % get data from '.nii' file
     orientation = zeros(3,3);
+    % pixel coordinates x-y-z
     orientation(1:3,1) = grid_image.hdr.hist.srow_x(1:3);
     orientation(1:3,2) = grid_image.hdr.hist.srow_y(1:3);
     orientation(1:3,3) = grid_image.hdr.hist.srow_z(1:3);
@@ -22,7 +23,7 @@ for i=1:2
 
     % Precompute the basis values
     basis = getBSplineCoefficient(0);
-    first = getBSplineCoefficientFirstOrder(0);
+    first = getBSplineCoefficientFirstOrder(0); % first order derivative
     % Compute the value at the control point position only
     for x=2:grid_dim(1)-1
         for y=2:grid_dim(2)-1
