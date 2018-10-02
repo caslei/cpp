@@ -50,11 +50,9 @@ for i=1:2
                 newPosition = single(double(spl_matrix) * double([ii-1 jj-1 kk-1 1]'));
 
                 gridField(ii,jj,kk,1,1)= gridField(ii,jj,kk,1,1)+newPosition(1);
-                gridField(ii,jj,kk,1,2)= ...
-                    gridField(ii,jj,kk,1,2)+newPosition(2);
+                gridField(ii,jj,kk,1,2)= gridField(ii,jj,kk,1,2)+newPosition(2);
                 if grid_dim(3) > 1
-                    gridField(ii,jj,kk,1,3)= ...
-                        gridField(ii,jj,kk,1,3)+newPosition(3);
+                    gridField(ii,jj,kk,1,3)= gridField(ii,jj,kk,1,3)+newPosition(3);
                 end
             end
         end
@@ -65,6 +63,7 @@ for i=1:2
         first_x = floor(x/spacing);
         norm_x = x/spacing - first_x;
         basis_x = getBSplineCoefficient(norm_x);
+
         for y=0:input_dim(2)-1
             first_y = floor(y/spacing);
             norm_y = y/spacing - first_y;
@@ -76,10 +75,9 @@ for i=1:2
                 for a=1:4
                     for b=1:4
                         basis = basis_x(a) * basis_y(b);
-                        current_value_x=current_value_x + basis * ...
-                            gridField(first_x+a, first_y+b, 1, 1, 1);
-                        current_value_y=current_value_y + basis * ...
-                            gridField(first_x+a, first_y+b, 1, 1, 2);
+
+                        current_value_x=current_value_x + basis * gridField(first_x+a, first_y+b, 1, 1, 1);
+                        current_value_y=current_value_y + basis * gridField(first_x+a, first_y+b, 1, 1, 2);
                     end
                 end
                 expectedField(x+1, y+1, 1, 1, 1)=current_value_x;
@@ -96,23 +94,10 @@ for i=1:2
                     for a=1:4
                         for b=1:4
                             for c=1:4
-                                basis = basis_x(a) * basis_y(b) * ...
-                                    basis_z(c);
-                                current_value_x=current_value_x+basis*...
-                                    gridField(first_x+a, ...
-                                    first_y+b, ...
-                                    first_z+c, ...
-                                    1, 1);
-                                current_value_y=current_value_y+basis*...
-                                    gridField(first_x+a, ...
-                                    first_y+b, ...
-                                    first_z+c, ...
-                                    1, 2);
-                                current_value_z=current_value_z+basis*...
-                                    gridField(first_x+a, ...
-                                    first_y+b, ...
-                                    first_z+c, ...
-                                    1, 3);
+                                basis = basis_x(a) * basis_y(b) * basis_z(c);
+                                current_value_x=current_value_x+basis* gridField(first_x+a, first_y+b, first_z+c, 1, 1);
+                                current_value_y=current_value_y+basis* gridField(first_x+a, first_y+b, first_z+c, 1, 2);
+                                current_value_z=current_value_z+basis* gridField(first_x+a, first_y+b, first_z+c, 1, 3);
                             end
                         end
                     end
@@ -125,12 +110,9 @@ for i=1:2
     end
     %% Save the deformation field image
     expectedField_nii=make_nii(expectedField,...
-        [input_image.hdr.dime.pixdim(2),...
-         input_image.hdr.dime.pixdim(3),...
-         input_image.hdr.dime.pixdim(4)],...
-        [], ...
-        16 ...
-        );
+        [input_image.hdr.dime.pixdim(2), input_image.hdr.dime.pixdim(3), input_image.hdr.dime.pixdim(4)],...
+        [], 16);
+
     expectedField_nii.hdr.dime.pixdim(1)=input_image.hdr.dime.pixdim(1);
     expectedField_nii.hdr.hist.quatern_b=input_image.hdr.hist.quatern_b;
     expectedField_nii.hdr.hist.quatern_c=input_image.hdr.hist.quatern_c;
