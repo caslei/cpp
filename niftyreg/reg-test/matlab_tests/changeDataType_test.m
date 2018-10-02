@@ -38,9 +38,9 @@ save_untouch_nii(single_nii, [output_path,'/refImg3D_float.nii.gz']);
 refImg3D=load_untouch_nii(refImg3D_name);
 %
 uchar_nii = refImg3D;
-uchar_nii.img = uint8(refImg3D.img);
-uchar_nii.hdr.dime.datatype = uchar_datatype;
-uchar_nii.hdr.dime.bitpix = uchar_bitpix;
+uchar_nii.img = uint8(refImg3D.img);            % uint8 data type
+uchar_nii.hdr.dime.datatype = uchar_datatype;   % uint8 data type
+uchar_nii.hdr.dime.bitpix = uchar_bitpix;       % uint8 data type
 %
 save_untouch_nii(uchar_nii, [output_path,'/refImg3D_uchar.nii.gz']);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
