@@ -27,15 +27,15 @@ uchar_bitpix = 8;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 refImg3D = load_untouch_nii(refImg3D_name); % read the Nifti file
 HMatrix = eye(4,4,'single');
-HMatrix(1,:) = refImg3D.hdr.hist.srow_x;
+HMatrix(1,:) = refImg3D.hdr.hist.srow_x; % x,y,z coordinates
 HMatrix(2,:) = refImg3D.hdr.hist.srow_y;
 HMatrix(3,:) = refImg3D.hdr.hist.srow_z;
 %HMatrix
 %% Generate a random affine tansformation matrix:
 %A=rand(4,4,'single');
 A=rand(4,4)+ eye(4,4);
-A(end,:)  =[0 0 0 1];
-A=single(A);
+A(end,:)  =[0 0 0 1]; % the last row
+A=single(A);          % 'single' datatype
 %%
 % A(1,:)=[0.9074931	0.01773963	-0.01136361	-1.596654];
 % A(2,:)=[0.009297408	0.9127377	-0.1370281	-7.986477];
