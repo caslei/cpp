@@ -391,18 +391,15 @@ function img_slice = nearest_neighbor(img, dim1, dim2, M, bg)
    img_slice = zeros(dim1(1:2));
 
    %  Dimension of transformed 3D volume
-   %
    xdim1 = dim1(1);
    ydim1 = dim1(2);
 
    %  Dimension of original 3D volume
-   %
    xdim2 = dim2(1);
    ydim2 = dim2(2);
    zdim2 = dim2(3);
 
    %  initialize new_Y accumulation
-   %
    Y2X = 0;
    Y2Y = 0;
    Y2Z = 0;
@@ -410,13 +407,11 @@ function img_slice = nearest_neighbor(img, dim1, dim2, M, bg)
    for y = 1:ydim1
 
       %  increment of new_Y accumulation
-      %
       Y2X = Y2X + M(1,2);		% new_Y to old_X
       Y2Y = Y2Y + M(2,2);		% new_Y to old_Y
       Y2Z = Y2Z + M(3,2);		% new_Y to old_Z
 
       %  backproject new_Y accumulation and translation to old_XYZ
-      %
       old_X = Y2X + M(1,4);
       old_Y = Y2Y + M(2,4);
       old_Z = Y2Z + M(3,4);
@@ -425,7 +420,6 @@ function img_slice = nearest_neighbor(img, dim1, dim2, M, bg)
 
          %  accumulate the increment of new_X and apply it
          %  to the backprojected old_XYZ
-         %
          old_X = M(1,1) + old_X  ;
          old_Y = M(2,1) + old_Y  ;
          old_Z = M(3,1) + old_Z  ;
@@ -435,18 +429,14 @@ function img_slice = nearest_neighbor(img, dim1, dim2, M, bg)
          zi = round(old_Z);
 
          %  within boundary of original image
-         %
          if (	xi >= 1 & xi <= xdim2 & ...
 		yi >= 1 & yi <= ydim2 & ...
 		zi >= 1 & zi <= zdim2	)
 
             img_slice(x,y) = img(xi,yi,zi);
-
          else
             img_slice(x,y) = bg;
-
          end	% if boundary
-
       end	% for x
    end		% for y
 
@@ -455,29 +445,24 @@ function img_slice = nearest_neighbor(img, dim1, dim2, M, bg)
 
 %--------------------------------------------------------------------
 function img_slice = bresenham(img, dim1, dim2, M, bg)
-
    img_slice = zeros(dim1(1:2));
 
    %  Dimension of transformed 3D volume
-   %
    xdim1 = dim1(1);
    ydim1 = dim1(2);
 
    %  Dimension of original 3D volume
-   %
    xdim2 = dim2(1);
    ydim2 = dim2(2);
    zdim2 = dim2(3);
 
    for y = 1:ydim1
-
       start_old_XYZ = round(M*[0     y 0 1]');
       end_old_XYZ   = round(M*[xdim1 y 0 1]');
 
       [X Y Z] = bresenham_line3d(start_old_XYZ, end_old_XYZ);
 
       %  line error correction
-      %
 %      del = end_old_XYZ - start_old_XYZ;
  %     del_dom = max(del);
   %    idx_dom = find(del==del_dom);
@@ -491,9 +476,7 @@ function img_slice = bresenham(img, dim1, dim2, M, bg)
 % line error correction removed because it is too slow
 
       for x = 1:xdim1
-
          %  rescale ratio
-         %
          i = round(x * length(X) / xdim1);
 
          if i < 1
@@ -507,7 +490,6 @@ function img_slice = bresenham(img, dim1, dim2, M, bg)
          zi = Z(i);
 
          %  within boundary of the old XYZ space
-         %
          if (	xi >= 1 & xi <= xdim2 & ...
 		yi >= 1 & yi <= ydim2 & ...
 		zi >= 1 & zi <= zdim2	)
@@ -516,7 +498,6 @@ function img_slice = bresenham(img, dim1, dim2, M, bg)
 
 %            if line_error > 1
  %              x = x + 1;
-
 %               if x <= xdim1
  %                 img_slice(x,y) = img(xi,yi,zi);
   %                line_error = line_slope - 1;
@@ -526,9 +507,7 @@ function img_slice = bresenham(img, dim1, dim2, M, bg)
 
          else
             img_slice(x,y) = bg;
-
          end	% if boundary
-
       end	% for x
    end		% for y
 
