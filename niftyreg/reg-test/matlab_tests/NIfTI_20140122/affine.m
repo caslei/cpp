@@ -72,7 +72,8 @@
 %	shading flat; colormap(map); view(-66, 66);
 %
 %  Example 2 (2D interpolation):
-%	load mri.mat;   old_img=D(:,:,1,13)';
+%	load mri.mat; 
+%	old_img=D(:,:,1,13)';
 %	old_M = [1 0 0; 0 1 0; 0 0 1];
 %	new_img = affine(old_img, old_M, [.2 .4]);
 %	figure; image(old_img); colormap(map);
@@ -88,7 +89,7 @@
 %  - Jimmy Shen (jimmy@rotman-baycrest.on.ca)
 %
 function [new_img, new_M] = affine(old_img, old_M, new_elem_size, verbose, bg, method)
-
+   % check if variable 'old_img' and 'old_M' exist
    if ~exist('old_img','var') | ~exist('old_M','var')
       error('Usage: [new_img new_M] = affine(old_img, old_M, [new_elem_size], [verbose], [bg], [method]);');
    end
