@@ -1,6 +1,7 @@
 function SSD_test(img1, img2, output_path)
     current1 = load_untouch_nii(img1); % read the Nifti file
     current2 = load_untouch_nii(img2); % read the Nifti file
+
     currentImg1 = double(current1.img);
     currentImg2 = double(current2.img);
     %
@@ -18,7 +19,7 @@ function SSD_test(img1, img2, output_path)
         imgDim = 2;
     end
     %
-    nt1 = dimVect1(5);
+    nt1 = dimVect1(5); % images with differetn time series for the same subject
     nt2 = dimVect2(5);
     %
     if (nt1 ~= nt2)
