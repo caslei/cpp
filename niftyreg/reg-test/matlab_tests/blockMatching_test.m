@@ -53,7 +53,6 @@ for dim=[2,3]
                     else
                         mEnd = min(m,blockCoord_mno(1)+BLOCK_WIDTH_MINUS1);
                         nEnd = min(n,blockCoord_mno(2)+BLOCK_WIDTH_MINUS1);
-                        
                         tmpImg = refImgImg(blockCoord_mno(1):mEnd,blockCoord_mno(2):nEnd);
                     end
                 elseif dim==3
@@ -64,12 +63,10 @@ for dim=[2,3]
                         tmpImg = refImgImg(blockCoord_mno(1):blockCoord_mno(1)+BLOCK_WIDTH_MINUS1,...
                             blockCoord_mno(2):blockCoord_mno(2)+BLOCK_WIDTH_MINUS1,...
                             blockCoord_mno(3):blockCoord_mno(3)+BLOCK_WIDTH_MINUS1);
-                        
                     else
                         mEnd = min(m,blockCoord_mno(1)+BLOCK_WIDTH_MINUS1);
                         nEnd = min(n,blockCoord_mno(2)+BLOCK_WIDTH_MINUS1);
                         oEnd = min(o,blockCoord_mno(3)+BLOCK_WIDTH_MINUS1);
-                        
                         tmpImg = refImgImg(blockCoord_mno(1):mEnd, blockCoord_mno(2):nEnd, blockCoord_mno(3):oEnd);
                     end
                 else
@@ -115,7 +112,6 @@ for dim=[2,3]
                         %
                         referencePosition=HMatrix*[blockCoord_xyz,1]';
                         warpedPosition=HMatrix*[newBlockCoord_xyz,1]';
-                        %
                         expectedBlockMatching(blockIndex,:)=[referencePosition(1) referencePosition(2) referencePosition(3) warpedPosition(1) warpedPosition(2) warpedPosition(3)];
                         expectedBlockMatchingPixel(blockIndex,:)=[blockCoord_xyz(1) blockCoord_xyz(2) blockCoord_xyz(3) newBlockCoord_xyz(1) newBlockCoord_xyz(2) newBlockCoord_xyz(3)];
                         
