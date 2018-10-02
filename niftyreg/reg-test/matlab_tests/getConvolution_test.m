@@ -21,19 +21,22 @@ for z=1:length(lin_function)
         end
     end
 end
+
 %% Gaussian kernel computation
 gau_kernel=zeros(31,31,31);
 gauss_function = gaussmf(-15:1:15, [5, 0]);
-gauss_function = gauss_function ./ sum(gauss_function);
+% 'normalization' is very important
+gauss_function = gauss_function ./ sum(gauss_function); 
+
 for z=1:31
     for y=1:31
         for x=1:31
             gau_kernel(x,y,z) = gauss_function(x) * ...
-                gauss_function(y) * ...
-                gauss_function(z);
+                gauss_function(y) * gauss_function(z);
         end
     end
 end
+
 %% Spline kernel
 spline_function = zeros(length(-2:0.2:2),1);
 for x=-10:1:10
@@ -44,7 +47,9 @@ for x=-10:1:10
         spline_function(x+11) = -(dist-2)*(dist-2)*(dist-2)/6;
     end
 end
+% 'normalization' is very important!!!
 spline_function = spline_function / sum(spline_function);
+
 spl_kernel=zeros(length(spline_function), ...
     length(spline_function), ...
     length(spline_function));
