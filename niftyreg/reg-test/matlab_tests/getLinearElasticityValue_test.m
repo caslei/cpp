@@ -158,14 +158,14 @@ for i=1:2
             end
         end
     end
-    dlmwrite([output_path,'/le_spline_dense',num2str(i+1),'D.txt'], ...
-        constraint_dense/ numel(def_data), ...
-        'precision','%.6f','delimiter',' ');
+    dlmwrite([output_path,'/le_spline_dense',num2str(i+1),'D.txt'], constraint_dense/ numel(def_data), 'precision','%.6f','delimiter',' ');
+    % clear intermediate variables 
     clear grid_image;
     
     orientation(1:3,1) = def_image.hdr.hist.srow_x(1:3);
     orientation(1:3,2) = def_image.hdr.hist.srow_y(1:3);
     orientation(1:3,3) = def_image.hdr.hist.srow_z(1:3);
+
     orientation = inv(orientation);
     basis=[1,0];
     first=[-1,1];
@@ -186,18 +186,10 @@ for i=1:2
                 jacobian = zeros(2,2);
                 for a=1:2
                     for b=1:2
-                        jacobian(1,1)=jacobian(1,1) + ...
-                            first(a) * basis(b) * ...
-                            def_data(X+a-1, Y+b-1, 1, 1, 1);
-                        jacobian(1,2)=jacobian(1,2) + ...
-                            basis(a) * first(b) * ...
-                            def_data(X+a-1, Y+b-1, 1, 1, 1);
-                        jacobian(2,1)=jacobian(2,1) + ...
-                            first(a) * basis(b) * ...
-                            def_data(X+a-1, Y+b-1, 1, 1, 2);
-                        jacobian(2,2)=jacobian(2,2) + ...
-                            basis(a) * first(b) * ...
-                            def_data(X+a-1, Y+b-1, 1, 1, 2);
+                        jacobian(1,1)=jacobian(1,1) + first(a) * basis(b) * def_data(X+a-1, Y+b-1, 1, 1, 1);
+                        jacobian(1,2)=jacobian(1,2) + basis(a) * first(b) * def_data(X+a-1, Y+b-1, 1, 1, 1);
+                        jacobian(2,1)=jacobian(2,1) + first(a) * basis(b) * def_data(X+a-1, Y+b-1, 1, 1, 2);
+                        jacobian(2,2)=jacobian(2,2) + basis(a) * first(b) * def_data(X+a-1, Y+b-1, 1, 1, 2);
                     end
                 end
                 jacobian = orientation(1:2,1:2) * jacobian';
@@ -206,8 +198,7 @@ for i=1:2
                 jacobian = jacobian - eye(2);
                 for a=1:2
                     for b=1:2
-                        constraint_dense = constraint_dense + ...
-                            (0.5*(jacobian(a,b)+jacobian(b,a)))^2;
+                        constraint_dense = constraint_dense + (0.5*(jacobian(a,b)+jacobian(b,a)))^2;
                     end
                 end
             else
@@ -221,35 +212,17 @@ for i=1:2
                     for a=1:2
                         for b=1:2
                             for c=1:2
-                                jacobian(1,1)=jacobian(1,1) + ...
-                                    first(a) * basis(b) * basis(c) * ...
-                                    def_data(X+a-1, Y+b-1, Z+c-1, 1, 1);
-                                jacobian(1,2)=jacobian(1,2) + ...
-                                    basis(a) * first(b) * basis(c) * ...
-                                    def_data(X+a-1, Y+b-1, Z+c-1, 1, 1);
-                                jacobian(1,3)=jacobian(1,3) + ...
-                                    basis(a) * basis(b) * first(c) * ...
-                                    def_data(X+a-1, Y+b-1, Z+c-1, 1, 1);
+                                jacobian(1,1)=jacobian(1,1) + first(a) * basis(b) * basis(c) * def_data(X+a-1, Y+b-1, Z+c-1, 1, 1);
+                                jacobian(1,2)=jacobian(1,2) + basis(a) * first(b) * basis(c) * def_data(X+a-1, Y+b-1, Z+c-1, 1, 1);
+                                jacobian(1,3)=jacobian(1,3) + basis(a) * basis(b) * first(c) * def_data(X+a-1, Y+b-1, Z+c-1, 1, 1);
                                 
-                                jacobian(2,1)=jacobian(2,1) + ...
-                                    first(a) * basis(b) * basis(c) * ...
-                                    def_data(X+a-1, Y+b-1, Z+c-1, 1, 2);
-                                jacobian(2,2)=jacobian(2,2) + ...
-                                    basis(a) * first(b) * basis(c) * ...
-                                    def_data(X+a-1, Y+b-1, Z+c-1, 1, 2);
-                                jacobian(2,3)=jacobian(2,3) + ...
-                                    basis(a) * basis(b) * first(c) * ...
-                                    def_data(X+a-1, Y+b-1, Z+c-1, 1, 2);
+                                jacobian(2,1)=jacobian(2,1) + first(a) * basis(b) * basis(c) * def_data(X+a-1, Y+b-1, Z+c-1, 1, 2);
+                                jacobian(2,2)=jacobian(2,2) + basis(a) * first(b) * basis(c) * def_data(X+a-1, Y+b-1, Z+c-1, 1, 2);
+                                jacobian(2,3)=jacobian(2,3) + basis(a) * basis(b) * first(c) * def_data(X+a-1, Y+b-1, Z+c-1, 1, 2);
                                 
-                                jacobian(3,1)=jacobian(3,1) + ...
-                                    first(a) * basis(b) * basis(c) * ...
-                                    def_data(X+a-1, Y+b-1, Z+c-1, 1, 3);
-                                jacobian(3,2)=jacobian(3,2) + ...
-                                    basis(a) * first(b) * basis(c) * ...
-                                    def_data(X+a-1, Y+b-1, Z+c-1, 1, 3);
-                                jacobian(3,3)=jacobian(3,3) + ...
-                                    basis(a) * basis(b) * first(c) * ...
-                                    def_data(X+a-1, Y+b-1, Z+c-1, 1, 3);
+                                jacobian(3,1)=jacobian(3,1) + first(a) * basis(b) * basis(c) * def_data(X+a-1, Y+b-1, Z+c-1, 1, 3);
+                                jacobian(3,2)=jacobian(3,2) + basis(a) * first(b) * basis(c) * def_data(X+a-1, Y+b-1, Z+c-1, 1, 3);
+                                jacobian(3,3)=jacobian(3,3) + basis(a) * basis(b) * first(c) * def_data(X+a-1, Y+b-1, Z+c-1, 1, 3);
                             end
                         end
                     end
@@ -259,8 +232,7 @@ for i=1:2
                     jacobian = jacobian - eye(3);
                     for a=1:3
                         for b=1:3
-                            constraint_dense = constraint_dense + ...
-                                (0.5*(jacobian(a,b)+jacobian(b,a)))^2;
+                            constraint_dense = constraint_dense + (0.5*(jacobian(a,b)+jacobian(b,a)))^2;
                         end
                     end
                 end
@@ -268,12 +240,14 @@ for i=1:2
         end
     end
     
-    dlmwrite([output_path,'/le_field_dense',num2str(i+1),'D.txt'], ...
-        constraint_dense/ numel(def_data), ...
-        'precision','%.6f','delimiter',' ');
+    dlmwrite([output_path,'/le_field_dense',num2str(i+1),'D.txt'], constraint_dense/ numel(def_data), 'precision','%.6f','delimiter',' ');
 end
 
 return
+
+
+
+
 
 function R = polarDecomposition(F)
 %% Polar decomposition of a given matrix
