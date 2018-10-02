@@ -5,17 +5,20 @@ vectImageName = {refImg2D_name, refImg3D_name};
 for dim=[2,3]
     BLOCK_WIDTH = 4;
     BLOCK_WIDTH_MINUS1 = BLOCK_WIDTH-1;
+
     refImg=load_untouch_nii(vectImageName{indexImage});
     HMatrix = eye(4,4,'single');
     HMatrix(1,:) = refImg.hdr.hist.srow_x;
     HMatrix(2,:) = refImg.hdr.hist.srow_y;
     HMatrix(3,:) = refImg.hdr.hist.srow_z;
     refImgImg = refImg.img;
+
     %% Size of the input image:
     [m,n,o]=size(refImgImg);
-    %%
+
     floImg=load_untouch_nii(vectImageName{indexImage});
     floImgImg = floImg.img;
+
     expectedBlockMatching = zeros(0,6);
     expectedBlockMatchingPixel = zeros(0,6);
     %% Let's cut our image in BLOCK_WIDTH*BLOCK_WIDTH size
@@ -40,7 +43,6 @@ for dim=[2,3]
                 end
                 
                 blockCoord_xyz=[blockCoord_mno(1)-1, blockCoord_mno(2)-1, blockCoord_mno(3)-1];
-                
                 if dim==2
                     if(blockCoord_mno(1) >= 1 && (blockCoord_mno(1)+BLOCK_WIDTH_MINUS1) <=m...
                             && blockCoord_mno(2) >= 1 && (blockCoord_mno(2)+BLOCK_WIDTH_MINUS1) <=n)
@@ -53,7 +55,6 @@ for dim=[2,3]
                         nEnd = min(n,blockCoord_mno(2)+BLOCK_WIDTH_MINUS1);
                         
                         tmpImg = refImgImg(blockCoord_mno(1):mEnd,blockCoord_mno(2):nEnd);
-                        
                     end
                 elseif dim==3
                     if(blockCoord_mno(1) >= 1 && (blockCoord_mno(1)+BLOCK_WIDTH_MINUS1) <=m...
@@ -69,9 +70,7 @@ for dim=[2,3]
                         nEnd = min(n,blockCoord_mno(2)+BLOCK_WIDTH_MINUS1);
                         oEnd = min(o,blockCoord_mno(3)+BLOCK_WIDTH_MINUS1);
                         
-                        tmpImg = refImgImg(blockCoord_mno(1):mEnd,...
-                            blockCoord_mno(2):nEnd,...
-                            blockCoord_mno(3):oEnd);
+                        tmpImg = refImgImg(blockCoord_mno(1):mEnd, blockCoord_mno(2):nEnd, blockCoord_mno(3):oEnd);
                     end
                 else
                     error('dimension of the image not supported');
@@ -113,7 +112,6 @@ for dim=[2,3]
                                     moveOK = 0;
                                 end
                             end
-                            
                         end
                         
                         newBlockCoord_xyz = [newBlockCoord_mno(1)-1,newBlockCoord_mno(2)-1, newBlockCoord_mno(3)-1];
@@ -158,7 +156,6 @@ for dim=[2,3]
                         bestCC = corr(double(tmpImg1(:)),double(tmpImg2(:)));
                         
                         if dim == 2
-                            %%
                             for vv=-3:1:3
                                 for uu=-3:1:3
                                     %% we should never have edge problems
@@ -217,7 +214,6 @@ for dim=[2,3]
                                 noiseOK = 0;
                             end
                         end
-                        %%
                     end
                     blockIndex = blockIndex+1;
                 end
