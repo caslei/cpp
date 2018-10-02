@@ -143,7 +143,6 @@ function [new_img, new_M] = affine(old_img, old_M, new_elem_size, verbose, bg, m
    end
 
    %  Vertices of img in voxel
-   %
    XYZvox = [	1		1		1
 		1		1		old_dim(3)
 		1		old_dim(2)	1
@@ -157,25 +156,20 @@ function [new_img, new_M] = affine(old_img, old_M, new_elem_size, verbose, bg, m
    old_T = old_M(1:3,4);
 
    %  Vertices of img in millimeter
-   %
    XYZmm = old_R*(XYZvox-1) + repmat(old_T, [1, 8]);
 
    %  Make scale of new_M according to new_elem_size
-   %
    new_M = diag([new_elem_size 1]);
 
    %  Make translation so minimum vertex is moved to [1,1,1]
-   %
    new_M(1:3,4) = round( min(XYZmm,[],2) );
 
    %  New dimensions will be the maximum vertices in XYZ direction (dim_vox)
    %  i.e. compute   dim_vox   via   dim_mm = R*(dim_vox-1)+T
    %  where, dim_mm = round(max(XYZmm,[],2));
-   %
    new_dim = ceil(new_M(1:3,1:3) \ ( round(max(XYZmm,[],2))-new_M(1:3,4) )+1)';
 
    %  Initialize new_img with new_dim
-   %
    new_img = zeros(new_dim(1:3));
 
    %  Mask out any changes from Z axis of transformed volume, since we
@@ -183,7 +177,6 @@ function [new_img, new_M] = affine(old_img, old_M, new_elem_size, verbose, bg, m
    %  increment of mask_Z(3,4) to simulate the cursor movement
    %
    %  i.e. we will use   mask_Z * new_XYZvox   to replace   new_XYZvox
-   %
    mask_Z = diag(ones(1,4));
    mask_Z(3,3) = 0;
 
@@ -195,9 +188,7 @@ function [new_img, new_M] = affine(old_img, old_M, new_elem_size, verbose, bg, m
    %  voxel can be used by the cursor location in the transformed volume.
    %
    %  First, we traverse along Z axis of transformed volume voxel by voxel
-   %
    for z = 1:new_dim(3)
-
       if verbose & ~mod(z,10)
          fprintf('%.2f percent is done.\n', 100*z/new_dim(3));
       end
@@ -230,11 +221,9 @@ function [new_img, new_M] = affine(old_img, old_M, new_elem_size, verbose, bg, m
 
       %  Then, apply unit increment of mask_Z(3,4) to simulate the
       %  cursor movement
-      %
       mask_Z(3,4) = z;
 
       %  Here is the mapping from new_XYZvox to old_XYZvox
-      %
       M = old_M1 \ new_M1 * mask_Z;
 
       switch method
@@ -258,59 +247,48 @@ function [new_img, new_M] = affine(old_img, old_M, new_elem_size, verbose, bg, m
 
 %--------------------------------------------------------------------
 function img_slice = trilinear(img, dim1, dim2, M, bg)
-
    img_slice = zeros(dim1(1:2));
    TINY = 5e-2;					% tolerance
 
    %  Dimension of transformed 3D volume
-   %
    xdim1 = dim1(1);
    ydim1 = dim1(2);
 
    %  Dimension of original 3D volume
-   %
    xdim2 = dim2(1);
    ydim2 = dim2(2);
    zdim2 = dim2(3);
 
    %  initialize new_Y accumulation
-   %
    Y2X = 0;
    Y2Y = 0;
    Y2Z = 0;
 
    for y = 1:ydim1
-
       %  increment of new_Y accumulation
-      %
       Y2X = Y2X + M(1,2);		% new_Y to old_X
       Y2Y = Y2Y + M(2,2);		% new_Y to old_Y
       Y2Z = Y2Z + M(3,2);		% new_Y to old_Z
 
       %  backproject new_Y accumulation and translation to old_XYZ
-      %
       old_X = Y2X + M(1,4);
       old_Y = Y2Y + M(2,4);
       old_Z = Y2Z + M(3,4);
 
       for x = 1:xdim1
-
          %  accumulate the increment of new_X, and apply it
          %  to the backprojected old_XYZ
-         %
          old_X = M(1,1) + old_X  ;
          old_Y = M(2,1) + old_Y  ;
          old_Z = M(3,1) + old_Z  ;
 
          %  within boundary of original image
-         %
          if (	old_X > 1-TINY & old_X < xdim2+TINY & ...
 		old_Y > 1-TINY & old_Y < ydim2+TINY & ...
 		old_Z > 1-TINY & old_Z < zdim2+TINY	)
 
             %  Calculate distance of old_XYZ to its neighbors for
             %  weighted intensity average
-            %
             dx = old_X - floor(old_X);
             dy = old_Y - floor(old_Y);
             dz = old_Z - floor(old_Z);
@@ -398,12 +376,9 @@ function img_slice = trilinear(img, dim1, dim2, M, bg)
                v110*dx*dy*(1-dz) + ...
                v101*dx*(1-dy)*dz + ...
                v111*dx*dy*dz;
-
          else
             img_slice(x,y) = bg;
-
          end	% if boundary
-
       end	% for x
    end		% for y
 
