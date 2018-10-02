@@ -88,7 +88,6 @@ for img=1:length(imgCell)
             16); % 16 is float
     end
     %
-    save_nii(gradient_nii, ...
-        [output_path,'/expectedImageGradient',num2str(imgDim),'D.nii.gz']);
+    save_nii(gradient_nii, [output_path,'/expectedImageGradient',num2str(imgDim),'D.nii.gz']);
 end
 end
