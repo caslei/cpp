@@ -56,7 +56,10 @@
 %  Example 1 (3D rotation):
 %	load mri.mat;   
 %       old_img = double(squeeze(D));
-%	old_M = [0.88 0.5 3 -90; -0.5 0.88 3 -126; 0 0 2 -72; 0 0 0 1];
+%	old_M = [0.88 0.5 3 -90; 
+%               -0.5 0.88 3 -126; 
+%               0 0 2 -72; 
+%               0 0 0 1];
 %	new_img = affine(old_img, old_M, 2);
 %	[x y z] = meshgrid(1:128,1:128,1:27);
 %	sz = size(new_img);
