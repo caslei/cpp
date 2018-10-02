@@ -114,41 +114,49 @@ for i=1:2
         [], 16);
 
     expectedField_nii.hdr.dime.pixdim(1)=input_image.hdr.dime.pixdim(1);
+
     expectedField_nii.hdr.hist.quatern_b=input_image.hdr.hist.quatern_b;
     expectedField_nii.hdr.hist.quatern_c=input_image.hdr.hist.quatern_c;
     expectedField_nii.hdr.hist.quatern_d=input_image.hdr.hist.quatern_d;
     expectedField_nii.hdr.hist.qoffset_x=input_image.hdr.hist.qoffset_x;
     expectedField_nii.hdr.hist.qoffset_y=input_image.hdr.hist.qoffset_y;
     expectedField_nii.hdr.hist.qoffset_z=input_image.hdr.hist.qoffset_z;
+    
     expectedField_nii.hdr.hist.srow_x=def_matrix(1,:);
     expectedField_nii.hdr.hist.srow_y=def_matrix(2,:);
     expectedField_nii.hdr.hist.srow_z=def_matrix(3,:);
+    
     expectedField_nii.hdr.hist=input_image.hdr.hist;
-    save_nii(expectedField_nii, [output_path,'/bspline_def', ...
-        int2str(input_ndim), 'D.nii.gz']);
+    save_nii(expectedField_nii, [output_path,'/bspline_def', int2str(input_ndim), 'D.nii.gz']);
+
     %% Save the control point grid
     gridField_nii=make_nii(gridField,...
         [spacing*input_image.hdr.dime.pixdim(2),...
          spacing*input_image.hdr.dime.pixdim(3),...
          spacing*input_image.hdr.dime.pixdim(4)],...
-        [], ...
-        16 ...
-        );
+        [], 16);
+
     gridField_nii.hdr.dime.pixdim(1)=input_image.hdr.dime.pixdim(1);
+
     gridField_nii.hdr.hist.quatern_b=input_image.hdr.hist.quatern_b;
     gridField_nii.hdr.hist.quatern_c=input_image.hdr.hist.quatern_c;
     gridField_nii.hdr.hist.quatern_d=input_image.hdr.hist.quatern_d;
     gridField_nii.hdr.hist.qoffset_x=input_image.hdr.hist.qoffset_x;
     gridField_nii.hdr.hist.qoffset_y=input_image.hdr.hist.qoffset_y;
     gridField_nii.hdr.hist.qoffset_z=input_image.hdr.hist.qoffset_z;
+
     gridField_nii.hdr.hist=input_image.hdr.hist;
     gridField_nii.hdr.hist.srow_x=spl_matrix(1,:);
     gridField_nii.hdr.hist.srow_y=spl_matrix(2,:);
     gridField_nii.hdr.hist.srow_z=spl_matrix(3,:);
-    save_nii(gridField_nii, [output_path,'/bspline_grid', ...
-        int2str(input_ndim), 'D.nii.gz']);
+    save_nii(gridField_nii, [output_path,'/bspline_grid', int2str(input_ndim), 'D.nii.gz']);
 end
 
+
+
+%=========================================================================
+%                 Basic spline functions
+%=========================================================================
 function basis = getBSplineCoefficient(dist)
 %% Given a normalise position return the 4 corresponding basis values
 basis(1) = (1-dist)*(1-dist)*(1-dist)/6;
