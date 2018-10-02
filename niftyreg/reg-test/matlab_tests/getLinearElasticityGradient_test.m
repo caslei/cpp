@@ -24,11 +24,13 @@ for i=1:2
     % Precompute the basis values
     basis = getBSplineCoefficient(0);
     first = getBSplineCoefficientFirstOrder(0); % first order derivative
+
     % Compute the value at the control point position only
     for x=2:grid_dim(1)-1
         for y=2:grid_dim(2)-1
             if (i+1)==2
                 jacobian = zeros(2,2);
+		% loop for each pixel point in 'jacobian' array
                 for a=1:3
                     for b=1:3
                         jacobian(1,1)=jacobian(1,1) + ...
@@ -68,6 +70,7 @@ for i=1:2
             else
                 for z=2:grid_dim(3)-1
                     jacobian = zeros(3,3);
+		    % loop for each pixel point in 'jacobian' array
                     for a=1:3
                         for b=1:3
                             for c=1:3
