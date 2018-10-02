@@ -1,5 +1,5 @@
 function h = fGaussian3D(siz, sigma)
-%
+% if number of input args equal '1'
 if(nargin == 1)
     if length(siz) ~= 1
         error('size not well defined');
@@ -26,7 +26,7 @@ h(h<eps*max(h(:))) = 0;
 %
 sumh = sum(h(:));
 if sumh ~= 0
-    h  = h/sumh;
+    h  = h/sumh; % 'normalized' is very important!!!
 end
 %
 end
