@@ -43,6 +43,7 @@ A=single(A);          % 'single' datatype
 % A(4,:)=[0	0	0	1];
 % A
 dlmwrite([output_path,'/affine_mat3D.txt'],A,'precision','%.6f','delimiter',' ');
+
 %% READ THE FILE THAT WE HAVE JUST WRITTEN
 fileID = fopen([output_path,'/affine_mat3D.txt'],'r');
 formatSpec = '%f';
@@ -101,11 +102,12 @@ A=single(A);
 % A(4,:)=[0	0 0	1];
 % A
 dlmwrite([output_path,'/affine_mat2D.txt'],A,'precision','%.6f','delimiter',' ');
+
 %% READ THE FILE THAT WE HAVE JUST WRITTEN
 fileID = fopen([output_path,'/affine_mat2D.txt'],'r');
 formatSpec = '%f';
 sizeA = [4 4];
-A = fscanf(fileID,formatSpec,sizeA);
+A = fscanf(fileID,formatSpec,sizeA); % fopen->fscanf->fclose
 fclose(fileID);
 A=single(A');
 %%
@@ -126,9 +128,10 @@ end
 %% 16 = float32
 %% 64 = float64
 expectedField_nii = make_nii(expectedField,...
-    [refImg2D.hdr.dime.pixdim(2),...
-    refImg2D.hdr.dime.pixdim(3),...
-    refImg2D.hdr.dime.pixdim(4)],...
-    [],float_datatype);
+	    [refImg2D.hdr.dime.pixdim(2),...
+	    refImg2D.hdr.dime.pixdim(3),...
+	    refImg2D.hdr.dime.pixdim(4)],...
+	    [],float_datatype);
 %
 save_nii(expectedField_nii, [output_path,'/affine_def2D.nii.gz']);
+
