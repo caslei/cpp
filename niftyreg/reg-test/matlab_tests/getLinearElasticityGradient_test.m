@@ -122,6 +122,7 @@ for i=1:2
                                         jacobian(2,2) * basis(-a+4) * first(-b+4) * basis(-c+4);
                                     gradient(3) = - 2 * ...
                                         jacobian(3,3) * basis(-a+4) * basis(-b+4) * first(-c+4);
+
                                     grad_data(x+a-2,y+b-2,z+c-2,1,1:3) = ...
                                         squeeze(grad_data(x+a-2,y+b-2,z+c-2,1,1:3)) + ...
                                         orientation \ ...
@@ -136,6 +137,7 @@ for i=1:2
         end
     end
     clear basis first
+
     % Save the control point gradient
     gradField_nii=make_nii(grad_data,...
         [grid_image.hdr.dime.pixdim(2),...
@@ -144,6 +146,7 @@ for i=1:2
         [], ...
         16 ...
         );
+
     gradField_nii.hdr.dime.pixdim(1)=grid_image.hdr.dime.pixdim(1);
     gradField_nii.hdr.hist.quatern_b=grid_image.hdr.hist.quatern_b;
     gradField_nii.hdr.hist.quatern_c=grid_image.hdr.hist.quatern_c;
@@ -151,12 +154,14 @@ for i=1:2
     gradField_nii.hdr.hist.qoffset_x=grid_image.hdr.hist.qoffset_x;
     gradField_nii.hdr.hist.qoffset_y=grid_image.hdr.hist.qoffset_y;
     gradField_nii.hdr.hist.qoffset_z=grid_image.hdr.hist.qoffset_z;
+
     gradField_nii.hdr.hist=grid_image.hdr.hist;
     gradField_nii.hdr.hist.srow_x=grid_image.hdr.hist.srow_x;
     gradField_nii.hdr.hist.srow_y=grid_image.hdr.hist.srow_y;
     gradField_nii.hdr.hist.srow_z=grid_image.hdr.hist.srow_z;
     filename_nii=[output_path,'/le_grad_spline_approx', ...
         int2str(i+1), 'D.nii.gz'];
+
     save_nii(gradField_nii, filename_nii);
     fprintf('%s has been saved\n', filename_nii);
 
