@@ -165,6 +165,8 @@ for i=1:2
     save_nii(gradField_nii, filename_nii);
     fprintf('%s has been saved\n', filename_nii);
 
+    %=====================================================================
+    %=====================================================================
     % Read the def image
     def_image = load_untouch_nii(defField_name{i});
     def_dim=[def_image.hdr.dime.dim(2), ...
@@ -174,17 +176,20 @@ for i=1:2
     spacing = grid_image.hdr.dime.pixdim(2) / def_image.hdr.dime.pixdim(2);
     % reset to gradient data
     grad_data = zeros(size(grid_data));
+
     % Compute the value from all voxel position
     for x=0:def_dim(1)-1
          pre_x = floor(x/spacing);
          norm_x = x/spacing - pre_x;
          basis_x = getBSplineCoefficient(norm_x);
          first_x = getBSplineCoefficientFirstOrder(norm_x);
+
          for y=0:def_dim(2)-1
              pre_y = floor(y/spacing);
              norm_y = y/spacing - pre_y;
              basis_y = getBSplineCoefficient(norm_y);
              first_y = getBSplineCoefficientFirstOrder(norm_y);
+
              if (i+1)==2
                  jacobian = zeros(2,2);
                  for a=1:4
@@ -207,6 +212,7 @@ for i=1:2
                  rotation = polarDecomposition(jacobian);
                  jacobian = (rotation) \ jacobian;
                  jacobian = jacobian - eye(2);
+		 % loop for gradient in each pixel point
                  for b=1:4
                      for a=1:4
                          gradient(1) = - 2 * jacobian(1,1) * ...
@@ -226,6 +232,7 @@ for i=1:2
                      norm_z = z/spacing - pre_z;
                      basis_z = getBSplineCoefficient(norm_z);
                      first_z = getBSplineCoefficientFirstOrder(norm_z);
+
                      jacobian = zeros(3,3);
                      for a=1:4
                          for b=1:4
@@ -312,10 +319,13 @@ for i=1:2
      gradField_nii.hdr.hist.srow_z=grid_image.hdr.hist.srow_z;
      filename_nii=[output_path,'/le_grad_spline_dense', ...
          int2str(i+1), 'D.nii.gz'];
+
      save_nii(gradField_nii, filename_nii);
      fprintf('%s has been saved\n', filename_nii);
      clear grid_image;
 
+    %=====================================================================
+    %=====================================================================
     % Gradient from deformation field
     def_data = def_image.img;
     grad_data = zeros(size(def_data));
@@ -469,6 +479,13 @@ for i=1:2
 end
 
 return
+
+
+
+
+
+%=====================================================================
+%=====================================================================
 
 function R = polarDecomposition(F)
 %% Polar decomposition of a given matrix
