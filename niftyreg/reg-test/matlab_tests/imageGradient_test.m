@@ -47,9 +47,11 @@ for img=1:length(imgCell)
         % Convolution of the x axis
         imgGradientX = single(convn(double(currentImg),convKernelX,'valid'));
         imgGradientX(isnan(imgGradientX))=0;
+
         % Convolution of the y axis
         imgGradientY = single(convn(double(currentImg),convKernelY,'valid'));
         imgGradientY(isnan(imgGradientY))=0;
+
         % Convolution of the z axis
         if imgDim == 3
             imgGradientZ = single(convn(double(currentImg),convKernelZ,'valid'));
@@ -57,11 +59,9 @@ for img=1:length(imgCell)
         end
         %
         if imgDim == 2
-            %
             imgGradient(2:end-1,:,1,ii,1)=imgGradientY;
             imgGradient(:,2:end-1,1,ii,2)=imgGradientX;
         else
-            %
             imgGradient(2:end-1,:,:,ii,1)=imgGradientY;
             imgGradient(:,2:end-1,:,ii,2)=imgGradientX;
             imgGradient(:,:,2:end-1,ii,3)=imgGradientZ;
@@ -69,6 +69,9 @@ for img=1:length(imgCell)
     end
     %% SAVE
     % The floating and warped image should have the same datatype !
+    % ===============================================================
+    % =============== the same data type !!! ========================
+    % ===============================================================
     if imgDim > 2
         gradient_nii = make_nii(imgGradient(2:end-1,2:end-1,2:end-1,:),...
             [current.hdr.dime.pixdim(2),...
