@@ -8,16 +8,13 @@ for i=1:2
     %Read the grid image
     grid_image = load_untouch_nii(grid_name{i});
     grid_data = grid_image.img;
+    grid_dim=[grid_image.hdr.dime.dim(2), grid_image.hdr.dime.dim(3), grid_image.hdr.dime.dim(4)];
+
     orientation = zeros(3,3);
     orientation(1:3,1) = grid_image.hdr.hist.srow_x(1:3);
     orientation(1:3,2) = grid_image.hdr.hist.srow_y(1:3);
     orientation(1:3,3) = grid_image.hdr.hist.srow_z(1:3);
-    % function 'inv'
-    orientation = inv(orientation);
-    grid_dim=[  grid_image.hdr.dime.dim(2), ...
-		grid_image.hdr.dime.dim(3), ...
-		grid_image.hdr.dime.dim(4) ...
-		];
+    orientation = inv(orientation); % function 'inv'
     
     constraint_approx = 0;
     % Precompute the basis values
@@ -29,7 +26,7 @@ for i=1:2
         for y=2:grid_dim(2)-1
             if (i+1)==2
                 jacobian = zeros(2,2);
-                for a=1:3
+                for a=1:3 % loop for 3 bspline functions
                     for b=1:3
                         jacobian(1,1)=jacobian(1,1) + first(a) * basis(b) * grid_data(x+a-2, y+b-2, 1, 1, 1);
                         jacobian(1,2)=jacobian(1,2) + basis(a) * first(b) * grid_data(x+a-2, y+b-2, 1, 1, 1);
@@ -81,6 +78,8 @@ for i=1:2
     end
     dlmwrite([output_path,'/le_spline_approx',num2str(i+1),'D.txt'], constraint_approx/ numel(grid_data), 'precision','%.6f','delimiter',' ');
     
+    %=====================================================================
+    %=====================================================================
     %Read the deformation field image
     def_image = load_untouch_nii(defField_name{i});
     def_data = def_image.img;
