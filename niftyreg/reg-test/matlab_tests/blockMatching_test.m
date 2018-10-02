@@ -33,7 +33,7 @@ for dim=[2,3]
     %% Let's move the middle blocks
     %[-5,5]. -5 + (5+5)*rand(10,1);
     blockIndex=1;
-    for oo=2:3:nMax_o
+    for oo=2:3:nMax_o  % oo=2:3:2 => only 2
         for nn=2:3:nbTotalBlock_n-1
             for mm=2:3:nbTotalBlock_m-1
                 if dim==2
@@ -45,7 +45,7 @@ for dim=[2,3]
                 blockCoord_xyz=[blockCoord_mno(1)-1, blockCoord_mno(2)-1, blockCoord_mno(3)-1];
                 if dim==2
                     if(blockCoord_mno(1) >= 1 && (blockCoord_mno(1)+BLOCK_WIDTH_MINUS1) <=m...
-                            && blockCoord_mno(2) >= 1 && (blockCoord_mno(2)+BLOCK_WIDTH_MINUS1) <=n)
+                       && blockCoord_mno(2) >= 1 && (blockCoord_mno(2)+BLOCK_WIDTH_MINUS1) <=n)
                         
                         tmpImg = refImgImg(blockCoord_mno(1):blockCoord_mno(1)+BLOCK_WIDTH_MINUS1,...
                             blockCoord_mno(2):blockCoord_mno(2)+BLOCK_WIDTH_MINUS1);
@@ -58,8 +58,8 @@ for dim=[2,3]
                     end
                 elseif dim==3
                     if(blockCoord_mno(1) >= 1 && (blockCoord_mno(1)+BLOCK_WIDTH_MINUS1) <=m...
-                            && blockCoord_mno(2) >= 1 && (blockCoord_mno(2)+BLOCK_WIDTH_MINUS1) <=n...
-                            && blockCoord_mno(3) >= 1 && (blockCoord_mno(3)+BLOCK_WIDTH_MINUS1) <=o)
+                       && blockCoord_mno(2) >= 1 && (blockCoord_mno(2)+BLOCK_WIDTH_MINUS1) <=n...
+                       && blockCoord_mno(3) >= 1 && (blockCoord_mno(3)+BLOCK_WIDTH_MINUS1) <=o)
                         
                         tmpImg = refImgImg(blockCoord_mno(1):blockCoord_mno(1)+BLOCK_WIDTH_MINUS1,...
                             blockCoord_mno(2):blockCoord_mno(2)+BLOCK_WIDTH_MINUS1,...
@@ -83,8 +83,7 @@ for dim=[2,3]
                 if(refVar > 0 && nbPixel > (BLOCK_WIDTH^dim)/2)
                     noiseOK = 1;
                     while noiseOK
-                        %BLOCK_WIDTH_MINUS1 = in order to keep an overlap of at
-                        %least 1 pixel
+                        %BLOCK_WIDTH_MINUS1 = in order to keep an overlap of at least 1 pixel
                         moveOK = 1;
                         
                         while moveOK
