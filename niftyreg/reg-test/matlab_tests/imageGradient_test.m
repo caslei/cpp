@@ -11,6 +11,7 @@ for img=1:length(imgCell)
     else
         imgDim = 2;
     end
+    %==========================================================
     % Define the padded image dim
     padDimVect = inDimVect;
     padDimVect(2) = padDimVect(2) + 2;
@@ -25,6 +26,7 @@ for img=1:length(imgCell)
     else
         currentImgnD(2:end-1,2:end-1,:,:) = current.img;
     end
+    %==========================================================
     % Define the kernel to use
     if imgDim == 2
         convKernelX = [1 0 -1]/2;
