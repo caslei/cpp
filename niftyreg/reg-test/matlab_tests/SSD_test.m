@@ -42,6 +42,7 @@ function SSD_test(img1, img2, output_path)
         min2=(minImg2 - min12)/range12;
         max1=1 - ((max12 - maxImg1) / range12);
         max2=1 - ((max12 - maxImg2) / range12);
+	% ======== rescaled to the same range ================
         img1 = ((img1-minImg1) ./ (maxImg1-minImg1)) .* ...
             (max1-min1) + min1;
         img2 = ((img2-minImg2) ./ (maxImg2-minImg2)) .* ...
