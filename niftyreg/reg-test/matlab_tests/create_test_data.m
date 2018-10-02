@@ -1,10 +1,12 @@
 function create_test_data(ref2D_path, ref3D_path, output_path)
 %% Add the required files to read and write nifti images
 addpath('./NIfTI_20140122');
+
 %% Create the folder to store the result files
 if (strcmp(output_path,'.') == 1 || strcmp(output_path,'..') == 1)
     error('[NiftyReg Build Tests] cannot create in . or ..');
 end
+
 if ~exist(output_path, 'dir')
     mkdir(output_path);
 end
