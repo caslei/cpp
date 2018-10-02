@@ -69,6 +69,7 @@ for i=1:2
     %% Loop over the convolution type
     for c=1:4
 	% ================================================================
+	% why does it need to division operation for 'image convolution'??
 	% ================================================================
         output_data = convn(input_data, convolution_kernel{c}, 'same');
         output_norm = convn(ones(size(input_data)), convolution_kernel{c}, 'same');
