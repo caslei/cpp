@@ -101,9 +101,7 @@ for dim=[2,3]
                             newnEnd = min(n,newBlockCoord_mno(2)+BLOCK_WIDTH_MINUS1);
                             newoEnd = min(o,newBlockCoord_mno(3)+BLOCK_WIDTH_MINUS1);
                             
-                            if (newmStart >=1 && newmStart <= m...
-                                    && newnStart >=1 && newnStart <= n...
-                                    && newoStart >=1 && newoStart <= o)
+                            if (newmStart >=1 && newmStart <= m && newnStart >=1 && newnStart <= n && newoStart >=1 && newoStart <= o)
                                 [mT,nT,oT] = size(refImgImg(newmStart:newmEnd,newnStart:newnEnd,newoStart:newoEnd));
                                 nbPixel = mT*nT*oT;
                                 
@@ -152,6 +150,7 @@ for dim=[2,3]
                         %% It should be 1 !
                         tmpImg1 = floImgImg(newmStart:newmEnd,newnStart:newnEnd,newoStart:newoEnd);
                         tmpImg2 = refImgImg(mStart:mStart+newmEnd-newmStart,nStart:nStart+newnEnd-newnStart,oStart:oStart+newoEnd-newoStart);
+			% function 'corr' in matlab
                         bestCC = corr(double(tmpImg1(:)),double(tmpImg2(:)));
                         
                         if dim == 2
@@ -166,7 +165,7 @@ for dim=[2,3]
                                     if (currentmStart >=1 && currentmStart <= m && currentnStart >=1 && currentnStart <= n)
                                         tmpImg1 = floImgImg(currentmStart:currentmEnd,currentnStart:currentnEnd);
                                         tmpImg2 = refImgImg(mStart:mStart+currentmEnd-currentmStart,nStart:nStart+currentnEnd-currentnStart);
-                                        currentCC = abs(corr(double(tmpImg1(:)),double(tmpImg2(:))));
+                                        currentCC = abs(corr(double(tmpImg1(:)),double(tmpImg2(:)))); % function 'corr'
                                         
                                         if (currentCC >= bestCC && currentmStart ~= newmStart && currentnStart ~= newnStart)
                                             %% redo the noise
