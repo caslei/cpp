@@ -18,9 +18,9 @@ uchar_bitpix = 8;
 refImg3D=load_untouch_nii(refImg3D_name);
 %
 double_nii = refImg3D;
-double_nii.img = double(refImg3D.img);
-double_nii.hdr.dime.datatype = double_datatype;
-double_nii.hdr.dime.bitpix = double_bitpix;
+double_nii.img = double(refImg3D.img);          % double data type
+double_nii.hdr.dime.datatype = double_datatype; % double data type
+double_nii.hdr.dime.bitpix = double_bitpix;     % double data type
 %
 save_untouch_nii(double_nii, [output_path,'/refImg3D_double.nii.gz']);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -28,9 +28,9 @@ save_untouch_nii(double_nii, [output_path,'/refImg3D_double.nii.gz']);
 refImg3D=load_untouch_nii(refImg3D_name);
 %
 single_nii = refImg3D;
-single_nii.img = single(refImg3D.img);
-single_nii.hdr.dime.datatype = float_datatype;
-single_nii.hdr.dime.bitpix = float_bitpix;
+single_nii.img = single(refImg3D.img);          % float data type
+single_nii.hdr.dime.datatype = float_datatype;  % float data type
+single_nii.hdr.dime.bitpix = float_bitpix;      % float data type
 %
 save_untouch_nii(single_nii, [output_path,'/refImg3D_float.nii.gz']);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
