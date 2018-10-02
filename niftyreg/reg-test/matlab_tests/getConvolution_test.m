@@ -4,13 +4,15 @@ function getConvolution_test(refImg2D_name, refImg3D_name, output_path)
 input_image_name = {refImg2D_name, refImg3D_name};
 %% Initialse the kernels
 convolution_type = {'mea', 'lin', 'gau', 'spl'};
+
 %% Mean kernel computation
 med_kernel=ones(11,11,11) ./ 125;
+
 %% Linear kernel computation
 lin_function = [0:0.2:1, 0.8:-0.2:0];
-lin_kernel=zeros(length(lin_function), ...
-    length(lin_function), ...
+lin_kernel=zeros(length(lin_function), length(lin_function), ...
     length(lin_function));
+    
 for z=1:length(lin_function)
     for y=1:length(lin_function)
         for x=1:length(lin_function)
