@@ -168,8 +168,7 @@ for dim=[2,3]
                                         currentCC = abs(corr(double(tmpImg1(:)),double(tmpImg2(:)))); % function 'corr'
                                         
                                         if (currentCC >= bestCC && currentmStart ~= newmStart && currentnStart ~= newnStart)
-                                            %% redo the noise
-                                            noiseOK = -1;
+                                            noiseOK = -1; %% redo the noise
                                         end
                                     else
                                         disp('edge problems 2D... strange')
@@ -196,6 +195,7 @@ for dim=[2,3]
                                             tmpImg1 = floImgImg(currentmStart:currentmEnd,currentnStart:currentnEnd,currentoStart:currentoEnd);
                                             tmpImg2 = refImgImg(mStart:mStart+currentmEnd-currentmStart,nStart:nStart+currentnEnd-currentnStart,oStart:oStart+currentoEnd-currentoStart);
                                             currentCC = abs(corr(double(tmpImg1(:)),double(tmpImg2(:))));
+
                                             if (currentCC >= bestCC && currentmStart ~= newmStart && currentnStart ~= newnStart && currentoEnd ~= newoStart)
                                                 %% redo the noise
                                                 noiseOK = -1;
@@ -218,12 +218,14 @@ for dim=[2,3]
             end
         end
     end
+
     %% SAVE THE EXPECTED BLOCK MATCHING MATRIX
-    dlmwrite(strcat([output_path, '/expectedBlockMatching_mat',num2str(dim),'D.txt']), ...
-        expectedBlockMatching,'precision','%.6f','delimiter',' ');
+    dlmwrite(strcat([output_path, '/expectedBlockMatching_mat',num2str(dim),'D.txt']), expectedBlockMatching,'precision','%.6f','delimiter',' ');
+
     %% SAVE THE IMAGE
     floImg.img = floImgImg;
     save_untouch_nii(floImg, strcat([output_path, '/warpedBlockMatchingImg',num2str(dim),'D.nii.gz']));
     
     indexImage=indexImage+1;
 end
+
