@@ -43,6 +43,8 @@ end
 ref2D=[output_path, '/refImg2D.nii.gz'];
 ref3D=[output_path, '/refImg3D.nii.gz'];
 
+
+
 %% Create affine matrix and associated deformation fields
 fprintf('[NiftyReg Build Tests] Starting to generate affine deformation fields\n')
 if ~exist([output_path,'/affine_mat2D.txt'], 'file') || ...
@@ -55,6 +57,8 @@ if ~exist([output_path,'/affine_mat2D.txt'], 'file') || ...
 else
     fprintf('[NiftyReg Build Tests] Affine deformation fields already exist\n');
 end
+
+
 %% Create control point grids and associated deformation fields
 fprintf('[NiftyReg Build Tests] Starting to generate spline deformation fields\n')
 if ~exist([output_path,'/bspline_def2D.nii.gz'], 'file') || ...
@@ -67,6 +71,8 @@ if ~exist([output_path,'/bspline_def2D.nii.gz'], 'file') || ...
 else
     fprintf('[NiftyReg Build Tests] Spline deformation fields already exist\n');
 end
+
+
 %% Create data to test the block matching
 fprintf('[NiftyReg Build Tests] Starting to generate Block matching test data\n')
 if ~exist([output_path,'/expectedBlockMatching_mat2D.txt'], 'file') || ...
@@ -79,6 +85,7 @@ if ~exist([output_path,'/expectedBlockMatching_mat2D.txt'], 'file') || ...
 else
     fprintf('[NiftyReg Build Tests] Block matching test data already exist\n');
 end
+
 
 %% Convert input images to different data type
 fprintf('[NiftyReg Build Tests] Starting to generate datatype tests\n')
@@ -94,6 +101,8 @@ if ~exist([output_path,'/refImg2D_uchar.nii.gz'], 'file') || ...
 else
     fprintf('[NiftyReg Build Tests] datatype tests data already exist\n');
 end
+
+
 %% Create interpolated images
 fprintf('[NiftyReg Build Tests] Starting to generate interpolation tests\n')
 if ~exist([output_path,'/warped_nearest2D.nii.gz'], 'file') || ...
@@ -111,6 +120,8 @@ if ~exist([output_path,'/warped_nearest2D.nii.gz'], 'file') || ...
 else
     fprintf('[NiftyReg Build Tests] interpolation tests data already exist\n');
 end
+
+
 %% Create data to test the SVD function
 fprintf('[NiftyReg Build Tests] Starting to generate SVD tests\n')
 if ~exist([output_path,'/inputSVDMatrix.txt'], 'file') || ...
@@ -123,6 +134,8 @@ if ~exist([output_path,'/inputSVDMatrix.txt'], 'file') || ...
 else
     fprintf('[NiftyReg Build Tests] SVD tests data already exist\n');
 end
+
+
 %% Create data to test each matrix operations
 fprintf('[NiftyReg Build Tests] Starting to generate matrix operation tests\n')
 if ~exist([output_path,'/inputMatrix1.txt'], 'file') || ...
@@ -139,6 +152,8 @@ if ~exist([output_path,'/inputMatrix1.txt'], 'file') || ...
 else
     fprintf('[NiftyReg Build Tests] matrix operation tests data already exist\n');
 end
+
+
 %% Create data to test the LS and LTS functions
 fprintf('[NiftyReg Build Tests] Starting to generate LTS tests\n')
 if ~exist([output_path,'/P1_2D.txt'], 'file') || ...
@@ -157,6 +172,8 @@ if ~exist([output_path,'/P1_2D.txt'], 'file') || ...
 else
     fprintf('[NiftyReg Build Tests] LTS tests data already exist\n');
 end
+
+
 %% Create data to test MIND
 fprintf('[NiftyReg Build Tests] Starting to generate MIND tests\n')
 if ~exist([output_path,'/P1_2D.txt'], 'file') || ...
@@ -173,6 +190,8 @@ if ~exist([output_path,'/P1_2D.txt'], 'file') || ...
 else
     fprintf('[NiftyReg Build Tests] MIND 1 tests data already exist\n');
 end
+
+
 if ~exist([output_path,'/P1_2D.txt'], 'file') || ...
    ~exist([output_path,'/P1_3D.txt'], 'file') || ...
    ~exist([output_path,'/expectedMINDDescriptor2D_2.nii.gz'], 'file') || ...
@@ -188,6 +207,8 @@ if ~exist([output_path,'/P1_2D.txt'], 'file') || ...
 else
     fprintf('[NiftyReg Build Tests] MIND 2 tests data already exist\n');
 end
+
+
 %% Create data to test SSD similarity measure
 fprintf('[NiftyReg Build Tests] Starting to generate SSD tests\n')
 if ~exist([output_path,'/expectedSSDValue2D.txt'], 'file') || ...
@@ -201,6 +222,8 @@ if ~exist([output_path,'/expectedSSDValue2D.txt'], 'file') || ...
 else
     fprintf('[NiftyReg Build Tests] SSD tests data already exist\n');
 end
+
+
 %% Create data to test MIND similarity measure
 fprintf('[NiftyReg Build Tests] Starting to generate MIND SSD tests\n')
 if ~exist([output_path,'/expectedMINDSSDValue2D.txt'], 'file') || ...
@@ -213,6 +236,8 @@ if ~exist([output_path,'/expectedMINDSSDValue2D.txt'], 'file') || ...
 else
     fprintf('[NiftyReg Build Tests] MIND SSD tests data already exist\n');
 end
+
+
 %% Create data to test gradient
 fprintf('[NiftyReg Build Tests] Starting to generate gradient tests\n')
 if ~exist([output_path,'/expectedImageGradient2D.nii.gz'], 'file') || ...
@@ -225,6 +250,8 @@ if ~exist([output_path,'/expectedImageGradient2D.nii.gz'], 'file') || ...
 else
     fprintf('[NiftyReg Build Tests] gradient tests data already exist\n');
 end
+
+
 %% Create data to test MIND-SSC
 fprintf('[NiftyReg Build Tests] Starting to generate MINDSSC tests\n')
 if ~exist([output_path,'/P1_2D.txt'], 'file') || ...
@@ -241,6 +268,8 @@ if ~exist([output_path,'/P1_2D.txt'], 'file') || ...
 else
     fprintf('[NiftyReg Build Tests] MINDSSC 1 tests data already exist\n');
 end
+
+
 if ~exist([output_path,'/P1_2D.txt'], 'file') || ...
    ~exist([output_path,'/P1_3D.txt'], 'file') || ...
    ~exist([output_path,'/expectedMINDSSCDescriptor2D_2.nii.gz'], 'file') || ...
@@ -256,6 +285,8 @@ if ~exist([output_path,'/P1_2D.txt'], 'file') || ...
 else
     fprintf('[NiftyReg Build Tests] MINDSSC 2 tests data already exist\n');
 end
+
+
 %% Create data to test the convolution
 fprintf('[NiftyReg Build Tests] Starting to generate convolution\n')
 if ~exist([output_path,'/convolution2D_mea.nii.gz'], 'file') || ...
@@ -272,6 +303,8 @@ if ~exist([output_path,'/convolution2D_mea.nii.gz'], 'file') || ...
 else
     fprintf('[NiftyReg Build Tests] Convolution tests data already exist\n');
 end
+
+
 %% Create data to test the linear elasticity
 fprintf('[NiftyReg Build Tests] Starting to generate linear elasticity data\n')
 if  ~exist([output_path,'/le_spline_approx2D.txt'], 'file') || ...
@@ -291,6 +324,8 @@ if  ~exist([output_path,'/le_spline_approx2D.txt'], 'file') || ...
 else
     fprintf('[NiftyReg Build Tests] Linear elasticity data tests data already exist\n');
 end
+
+
 %% Create data to test the linear elasticity gradient
 fprintf('[NiftyReg Build Tests] Starting to generate linear elasticity gradient data\n')
 if  ~exist([output_path,'/le_grad_spline_approx2D.nii.gz'], 'file') || ...
