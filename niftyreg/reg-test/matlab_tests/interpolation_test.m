@@ -3,17 +3,19 @@ function interpolation_test(img2D_name, img3D_name, def2D_name, def3D_name, outp
 %% Create a warped image from an affine deformation field according to an interpolation order
 %%
 inputImg_name= {img2D_name, img3D_name};
-inputDef_name=  {def2D_name, def3D_name};
+inputDef_name= {def2D_name, def3D_name};
 
 for d=2:3
     % Read the input images
     inputImage = load_untouch_nii(inputImg_name{d-1}); % read the Nifti file
     inputData = single(inputImage.img);
+
     HMatrix = eye(4,4,'single');
     HMatrix(1,:) = inputImage.hdr.hist.srow_x;
     HMatrix(2,:) = inputImage.hdr.hist.srow_y;
     HMatrix(3,:) = inputImage.hdr.hist.srow_z;
     worldToVoxelMatrix = single(inv(double(HMatrix)));
+
     inputDef = load_untouch_nii(inputDef_name{d-1}); % read the Nifti file
     inputDefData = single(inputDef.img);
     
@@ -78,6 +80,8 @@ for d=2:3
             end
         end
         expectedWarpedImage(expectedWarpedImage(:,:,:)==single(-999999)) = NaN;
+
+	% =============== the same data type ===============================
         % The floating and warped image should have the same datatype !
         expectedWarpedImage_nii = make_nii(expectedWarpedImage,...
             [inputDef.hdr.dime.pixdim(2),...
@@ -85,8 +89,7 @@ for d=2:3
             inputDef.hdr.dime.pixdim(4)],...
             [],...
             16); % 16 is float
-        %
-        save_nii(expectedWarpedImage_nii,...
-            [output_path,'/warped_', type{1}, num2str(d), 'D.nii.gz']);
+
+        save_nii(expectedWarpedImage_nii, [output_path,'/warped_', type{1}, num2str(d), 'D.nii.gz']);
     end
 end
