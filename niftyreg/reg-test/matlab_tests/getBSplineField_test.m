@@ -34,20 +34,22 @@ for i=1:2
     def_matrix(1,:)=input_image.hdr.hist.srow_x;
     def_matrix(2,:)=input_image.hdr.hist.srow_y;
     def_matrix(3,:)=input_image.hdr.hist.srow_z;
+
     spl_matrix = eye(4,4,'single');
     spl_matrix(1:3, 1) = def_matrix(1:3, 1) .* spacing;
     spl_matrix(1:3, 2) = def_matrix(1:3, 2) .* spacing;
     spl_matrix(1:3, 3) = def_matrix(1:3, 3) .* spacing;
     spl_matrix(:,4) = def_matrix(:,4);
+
     new_origin = spl_matrix * [-1, -1, -1, 1]';
     spl_matrix(:,4) = new_origin;
     for kk=1:grid_dim(3)
         for jj=1:grid_dim(2)
             for ii=1:grid_dim(1)
-                newPosition = single(double(spl_matrix) * ...
-                    double([ii-1 jj-1 kk-1 1]'));
-                gridField(ii,jj,kk,1,1)= ...
-                    gridField(ii,jj,kk,1,1)+newPosition(1);
+		% displacement field ~= deformable field !!!
+                newPosition = single(double(spl_matrix) * double([ii-1 jj-1 kk-1 1]'));
+
+                gridField(ii,jj,kk,1,1)= gridField(ii,jj,kk,1,1)+newPosition(1);
                 gridField(ii,jj,kk,1,2)= ...
                     gridField(ii,jj,kk,1,2)+newPosition(2);
                 if grid_dim(3) > 1
