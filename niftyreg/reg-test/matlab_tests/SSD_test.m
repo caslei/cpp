@@ -43,12 +43,11 @@ function SSD_test(img1, img2, output_path)
         max1=1 - ((max12 - maxImg1) / range12);
         max2=1 - ((max12 - maxImg2) / range12);
 	% ======== rescaled to the same range ================
-        img1 = ((img1-minImg1) ./ (maxImg1-minImg1)) .* ...
-            (max1-min1) + min1;
-        img2 = ((img2-minImg2) ./ (maxImg2-minImg2)) .* ...
-            (max2-min2) + min2;        
+        img1 = ((img1-minImg1) ./ (maxImg1-minImg1)) .* (max1-min1) + min1;
+        img2 = ((img2-minImg2) ./ (maxImg2-minImg2)) .* (max2-min2) + min2;        
         diff2 = (img1-img2).^2;
         diff2Array=diff2(:);
+	% ========== divide the total number of active pixels ====================
         SSDValue = SSDValue + sum(diff2Array(~isnan(diff2Array)))/sum(~isnan(diff2Array));
     end
     %% Write the result
