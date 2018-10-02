@@ -1,4 +1,5 @@
 function M = LSaffine(p1,p2)
+% for what purposes ??????
 %p1=[x1,y1;
 %    x1',y1';
 %   ...];
@@ -38,7 +39,7 @@ end
 %% Pseudo inverse:
 %% A+ = V*inv(Sig)*U';
 %%
-%SVD de A : A=U*Sig*V'
+%% SVD de A : A=U*Sig*V'
 [U,Sig,V] = svd(double(A),'econ');
 U=single(U);
 Sig=single(Sig);
@@ -81,3 +82,5 @@ else
     M(3,4)= S(12);
 end
 end
+
+% why not use the statement of 'return M' ????????
