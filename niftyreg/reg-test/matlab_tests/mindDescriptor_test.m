@@ -40,7 +40,9 @@ for id=1:size(RSampling,2)
 
     idNaN = find(isnan(refImg2DImg));
     refImg2DImg(idNaN)=-999;
+    % ======================================================================
     refImg2DPrimeImg = imtranslate(refImg2DImg, [ry, rx], 'FillValues', 0);%NaN
+    % ======================================================================
     id999 = find(refImg2DImg==-999);
     refImg2DImg(id999)=NaN;
     id999 = find(refImg2DPrimeImg==-999);
@@ -60,16 +62,16 @@ for id=1:size(RSampling,2)
 
     imgConv = single(conv2(double(diffImg),convKernel,'same'));
     maskConv = single(conv2(double(maskImg),convKernel,'same'));
+    % image 'normalization' for convolution operation
     imgConv = single(double(imgConv)./double(maskConv));
 
     imgConv(maskImg==0)=NaN;
     Dp_array(:,:,1,id) = imgConv;
-    %%
     Vp_array(:,:,id) = Dp_array(:,:,1,id);
 end
 Vp_image = mean(Vp_array,3);
 idZeros=find(Vp_image==0);
-Vp_image(idZeros)=eps;
+Vp_image(idZeros)=eps;  % ======= eps =======
 %%
 for id=1:size(RSampling,2)
     MIND2D_descriptor(:,:,1,id) = single(exp(double(-Dp_array(:,:,1,id))./double(Vp_image)));
@@ -80,6 +82,8 @@ maxMind=max(MIND2D_descriptor,[],4);
 for id=1:size(RSampling,2)
     MIND2D_descriptor(:,:,1,id)=single(double(MIND2D_descriptor(:,:,1,id))./double(maxMind));
 end
+    % ======================================================================
+    % ======================================================================
 %% SAVE
 % The floating and warped image should have the same datatype !
 expectedMIND2DDescriptorImage_nii = make_nii(MIND2D_descriptor,...
@@ -115,8 +119,6 @@ if(rescaleImg)
     minrefImg3D = double(min(refImg3DImg(:)));
     maxrefImg3D = double(max(refImg3DImg(:)));
     refImg3DImg = single((double(refImg3DImg)-minrefImg3D)./(maxrefImg3D-minrefImg3D));
-    %refImg3DPrime = (refImg3DPrime-minrefImg3D)./(maxrefImg3D-minrefImg3D);
-    %%
 end
 %
 Dp_array = zeros([size(refImg3D.img) size(RSampling,2)],'single');
@@ -127,13 +129,17 @@ for id=1:size(RSampling,2)
     rx=RSampling(1,id);
     ry=RSampling(2,id);
     rz=RSampling(3,id);
+
     idNaN = find(isnan(refImg3DImg));
     refImg3DImg(idNaN)=-999;
+    % ======================================================================
     refImg3DPrimeImg = imtranslate(refImg3DImg, [ry, rx, rz], 'FillValues', 0);%NaN
+    % ======================================================================
     id999 = find(refImg3DImg==-999);
     refImg3DImg(id999)=NaN;
     id999 = find(refImg3DPrimeImg==-999);
     refImg3DPrimeImg(id999)=NaN;
+
     diffImg = single(double(refImg3DImg) - double(refImg3DPrimeImg));
     diffImg = single(double(diffImg).^2);
     %% Have to correct the borders by hand
@@ -165,6 +171,8 @@ maxMind=max(MIND3D_descriptor,[],4);
 for id=1:size(RSampling,2)
     MIND3D_descriptor(:,:,:,id)=single(double(MIND3D_descriptor(:,:,:,id))./double(maxMind));
 end
+    % ======================================================================
+    % ======================================================================
 %% SAVE
 % The floating and warped image should have the same datatype !
 expectedMIND3DDescriptorImage_nii = make_nii(MIND3D_descriptor,...
