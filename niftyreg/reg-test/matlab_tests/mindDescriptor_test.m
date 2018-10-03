@@ -8,8 +8,8 @@ p=1;
 convKernel = fspecial('gaussian', 2*p+1, 0.5);
 %%
 refImg2D = load_untouch_nii(img2D); % read the Nifti file
-RSampling = [-1 1 0 0;0 0 -1 1];
 refImg2DImg = single(refImg2D.img);
+RSampling = [-1 1 0 0;0 0 -1 1];
 %
 if (nargin < 5)
     inputMask2D = ones(size(refImg2DImg));
@@ -24,6 +24,7 @@ if(rescaleImg)
     %% TO BE Consitent with NiftyReg - image rescaling
     minrefImg2D = double(min(refImg2DImg(:)));
     maxrefImg2D = double(max(refImg2DImg(:)));
+    % intensity rescale to [0, 1]
     refImg2DImg = single((double(refImg2DImg)-minrefImg2D)./(maxrefImg2D-minrefImg2D));
     %refImg2DPrime = (refImg2DPrime-minrefImg2D)./(maxrefImg2D-minrefImg2D);
     %%
@@ -36,6 +37,7 @@ for id=1:size(RSampling,2)
     %% Let's translate the image by rx, ry pixel
     rx=RSampling(1,id);
     ry=RSampling(2,id);
+
     idNaN = find(isnan(refImg2DImg));
     refImg2DImg(idNaN)=-999;
     refImg2DPrimeImg = imtranslate(refImg2DImg, [ry, rx], 'FillValues', 0);%NaN
@@ -43,19 +45,23 @@ for id=1:size(RSampling,2)
     refImg2DImg(id999)=NaN;
     id999 = find(refImg2DPrimeImg==-999);
     refImg2DPrimeImg(id999)=NaN;
+
+    % ===== orgImg - translatedImg =====
     diffImg = single((double(refImg2DImg)-double(refImg2DPrimeImg)));
     diffImg = single(double(diffImg).^2);
+
     %% Have to correct the borders by hand
     maskImg = zeros(size(diffImg));%2*p+1-1
     maskImg(diffImg > -1) = 1;
-    %inputMask2DT = imtranslate(inputMask2D, [ry, rx], 'FillValues', 0);
     maskImg=maskImg.*inputMask2D;
     %diffImgPadded = padarray(diffImg,[1 1],'circular');
     diffImg(isnan(diffImg))=0;
     diffImg=diffImg.*maskImg;
+
     imgConv = single(conv2(double(diffImg),convKernel,'same'));
     maskConv = single(conv2(double(maskImg),convKernel,'same'));
     imgConv = single(double(imgConv)./double(maskConv));
+
     imgConv(maskImg==0)=NaN;
     Dp_array(:,:,1,id) = imgConv;
     %%
