@@ -17,8 +17,8 @@
 %  
 %  img_idx (optional)  -  a numerical array of 4th dimension indices,
 %	which is the indices of image scan volume. The number of images
-%	scan volumes can be obtained from get_nii_frame.m, or simply
-%	hdr.dime.dim(5). Only the specified volumes will be loaded. 
+%	scan volumes can be obtained from 'get_nii_frame.m', or simply
+%	'hdr.dime.dim(5)'. Only the specified volumes will be loaded. 
 %	All available image volumes will be loaded, if it is default or
 %	empty.
 %
