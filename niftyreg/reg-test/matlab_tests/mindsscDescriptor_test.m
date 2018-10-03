@@ -70,6 +70,11 @@ for id=1:size(RSampling,2)
     maskConv = single(conv2(double(maskImg),convKernel,'same'));
     imgConv = single(double(imgConv)./double(maskConv));
     imgConv(maskImg==0)=NaN;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% the main difference between 'MIND' and 'MINDssc' 
+% lies in the following loop
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     for idtr = 1:2
         idNaN = find(isnan(imgConv));
         imgConv(idNaN)=-999;
@@ -83,6 +88,9 @@ for id=1:size(RSampling,2)
         Vp_array(:,:,store_id) = Dp_array(:,:,1,store_id);
         store_id = store_id +1;
     end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Vp_image = mean(Vp_array,3);
