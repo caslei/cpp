@@ -1,4 +1,5 @@
 function M = LTSrigid_affine(p1, p2, percent_to_keep, max_iter, isAffine)
+% for what purposes ????
 %%
 %p1=[x1,y1;
 %    x1',y1';
@@ -42,6 +43,7 @@ while compteur < max_iter
         residalArray=double(residalArray);
         residalArray=single((residalArray(1,:).^2+residalArray(2,:).^2+residalArray(3,:).^2).^(0.5));
     end
+
     %residalArray=(residalArray(1,:).^2+residalArray(2,:).^2);
     [residalArraySorted,id_sort] = sort(double(residalArray));
     residalArraySorted=single(residalArraySorted);
