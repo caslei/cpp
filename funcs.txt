@@ -54,6 +54,12 @@ delete
 argc
 argv
 size_t // sizeof()
+time_t
+time()
+
+
+
+
 
 NDBUG
 EXIT_FAILURE  // !=0
