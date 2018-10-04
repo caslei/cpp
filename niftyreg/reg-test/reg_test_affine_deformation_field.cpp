@@ -19,8 +19,8 @@
 #define EPS 0.000001
 #define EPS_SINGLE 0.0001
 
-void test(AladinContent *con, int platformCode) {
-
+void test(AladinContent *con, int platformCode)
+{
     Platform *platform = new Platform(platformCode);
 
     Kernel *affineDeformKernel = platform->createKernel(AffineDeformationFieldKernel::getName(), con);
@@ -105,6 +105,7 @@ int main(int argc, char **argv)
     // Compute the difference between the computed and inputed deformation field
     nifti_image *diff_field = nifti_copy_nim_info(inputDeformationField);
     diff_field->data = (void *) malloc(diff_field->nvox*diff_field->nbyper);
+    
     reg_tools_substractImageToImage(inputDeformationField, test_field, diff_field);
     reg_tools_abs_image(diff_field);
     double max_difference = reg_tools_getMaxValue(diff_field, -1);
