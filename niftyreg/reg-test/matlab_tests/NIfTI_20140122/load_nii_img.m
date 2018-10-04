@@ -29,7 +29,6 @@ function [img,hdr] = load_nii_img(hdr,filetype,fileprefix,machine,img_idx,dim5_i
    end
 
    %  check img_idx
-   %
    if ~isempty(img_idx) & ~isnumeric(img_idx)
       error('"img_idx" should be a numerical array.');
    end
@@ -50,7 +49,6 @@ function [img,hdr] = load_nii_img(hdr,filetype,fileprefix,machine,img_idx,dim5_i
    end
 
    %  check dim5_idx
-   %
    if ~isempty(dim5_idx) & ~isnumeric(dim5_idx)
       error('"dim5_idx" should be a numerical array.');
    end
@@ -71,7 +69,6 @@ function [img,hdr] = load_nii_img(hdr,filetype,fileprefix,machine,img_idx,dim5_i
    end
 
    %  check dim6_idx
-   %
    if ~isempty(dim6_idx) & ~isnumeric(dim6_idx)
       error('"dim6_idx" should be a numerical array.');
    end
@@ -92,7 +89,6 @@ function [img,hdr] = load_nii_img(hdr,filetype,fileprefix,machine,img_idx,dim5_i
    end
 
    %  check dim7_idx
-   %
    if ~isempty(dim7_idx) & ~isnumeric(dim7_idx)
       error('"dim7_idx" should be a numerical array.');
    end
@@ -195,7 +191,6 @@ function [img,hdr] = read_image(hdr,filetype,fileprefix,machine,img_idx,dim5_idx
    hdr.dime.dim(find(hdr.dime.dim < 1)) = 1;
 
    %  move pointer to the start of image block
-   %
    switch filetype
    case {0, 1}
       fseek(fid, 0, 'bof');
@@ -228,9 +223,8 @@ function [img,hdr] = read_image(hdr,filetype,fileprefix,machine,img_idx,dim5_idx
       end
 	 
       %MPH: For RGB24, voxel values include 3 separate color planes
-      %
       if hdr.dime.datatype == 128 | hdr.dime.datatype == 511
-	 img_siz = img_siz * 3;
+	      img_siz = img_siz * 3;
       end
 
       img = fread(fid, img_siz, sprintf('*%s',precision));
