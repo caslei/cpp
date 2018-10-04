@@ -103,7 +103,7 @@ function nii = load_untouch_nii(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,
 
    %  Check file extension. If .gz, unpack it into temp folder
    %
-   if length(filename) > 2 & strcmp(filename(end-2:end), '.gz')
+   if length(filename) > 2 & strcmp(filename(end-2:end), '.gz')    %   keyword 'end'
 
       if ~strcmp(filename(end-6:end), '.img.gz') & ...
 	 ~strcmp(filename(end-6:end), '.hdr.gz') & ...
@@ -150,7 +150,6 @@ function nii = load_untouch_nii(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,
    end
 
    %  Read the dataset header
-   %
    [nii.hdr,nii.filetype,nii.fileprefix,nii.machine] = load_nii_hdr(filename);
 
    if nii.filetype == 0
@@ -160,32 +159,26 @@ function nii = load_untouch_nii(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,
       nii.hdr = load_untouch_nii_hdr(nii.fileprefix,nii.machine,nii.filetype);
 
       %  Read the header extension
-      %
       nii.ext = load_nii_ext(filename);
    end
 
    %  Read the dataset body
-   %
    [nii.img,nii.hdr] = load_untouch_nii_img(nii.hdr,nii.filetype,nii.fileprefix, ...
 		nii.machine,img_idx,dim5_idx,dim6_idx,dim7_idx,old_RGB,slice_idx);
 
    %  Perform some of sform/qform transform
-   %
 %   nii = xform_nii(nii, tolerance, preferredForm);
 
    nii.untouch = 1;
 
 
    %  Clean up after gunzip
-   %
    if exist('gzFileName', 'var')
 
       %  fix fileprefix so it doesn't point to temp location
-      %
       nii.fileprefix = gzFileName(1:end-7);
       rmdir(tmpDir,'s');
    end
-
 
    return					% load_untouch_nii
 
