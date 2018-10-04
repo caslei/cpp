@@ -120,7 +120,6 @@ function nii = load_nii(filename, img_idx, dim5_idx, dim6_idx, dim7_idx, ...
    v = version;
 
    %  Check file extension. If .gz, unpack it into temp folder
-   %
    if length(filename) > 2 & strcmp(filename(end-2:end), '.gz')
 
       if ~strcmp(filename(end-6:end), '.img.gz') & ...
@@ -136,13 +135,13 @@ function nii = load_nii(filename, img_idx, dim5_idx, dim6_idx, dim7_idx, ...
          filename1 = filename;
          filename2 = filename;
          filename2(end-6:end) = '';
-         filename2 = [filename2, '.hdr.gz'];
+         filename2 = [filename2, '.hdr.gz']; % string concat
 
          tmpDir = tempname;
          mkdir(tmpDir);
          gzFileName = filename;
 
-         filename1 = gunzip(filename1, tmpDir);
+         filename1 = gunzip(filename1, tmpDir); % function 'gunzip'
          filename2 = gunzip(filename2, tmpDir);
          filename = char(filename1);	% convert from cell to string
       elseif strcmp(filename(end-6:end), '.hdr.gz')
@@ -168,28 +167,22 @@ function nii = load_nii(filename, img_idx, dim5_idx, dim6_idx, dim7_idx, ...
    end
 
    %  Read the dataset header
-   %
    [nii.hdr,nii.filetype,nii.fileprefix,nii.machine] = load_nii_hdr(filename);
 
    %  Read the header extension
-   %
 %   nii.ext = load_nii_ext(filename);
 
    %  Read the dataset body
-   %
    [nii.img,nii.hdr] = load_nii_img(nii.hdr,nii.filetype,nii.fileprefix, ...
 		nii.machine,img_idx,dim5_idx,dim6_idx,dim7_idx,old_RGB);
 
    %  Perform some of sform/qform transform
-   %
    nii = xform_nii(nii, tolerance, preferredForm);
 
    %  Clean up after gunzip
-   %
    if exist('gzFileName', 'var')
 
       %  fix fileprefix so it doesn't point to temp location
-      %
       nii.fileprefix = gzFileName(1:end-7);
       rmdir(tmpDir,'s');
    end
