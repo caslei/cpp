@@ -55,7 +55,6 @@ function [hdr, filetype, fileprefix, machine] = load_nii_hdr(fileprefix)
          fclose(fid);
 
          %  first try reading the opposite endian to 'machine'
-         %
          switch machine,
          case 'ieee-le', machine = 'ieee-be';
          case 'ieee-be', machine = 'ieee-le';
@@ -72,7 +71,6 @@ function [hdr, filetype, fileprefix, machine] = load_nii_hdr(fileprefix)
             if fread(fid,1,'int32') ~= 348
 
                %  Now throw an error
-               %
                msg = sprintf('File "%s" is corrupted.',fn);
                error(msg);
             end
