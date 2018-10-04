@@ -34,7 +34,6 @@ function save_untouch_nii(nii, filename)
    v = version;
 
    %  Check file extension. If .gz, unpack it into temp folder
-   %
    if length(filename) > 2 & strcmp(filename(end-2:end), '.gz')
 
       if ~strcmp(filename(end-6:end), '.img.gz') & ...
@@ -58,7 +57,6 @@ function save_untouch_nii(nii, filename)
    write_nii(nii, filetype, fileprefix);
 
    %  gzip output file if requested
-   %
    if exist('gzFile', 'var')
       if filetype == 1
          gzip([fileprefix, '.img']);
