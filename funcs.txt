@@ -49,10 +49,15 @@ std::pair<>()
 stderr
 stdout
 stdin
+new
+delete
+argc
+argv
+size_t // sizeof()
 
 NDBUG
-EXIT_FAILURE
-EXIT_SUCCESS
+EXIT_FAILURE  // !=0
+EXIT_SUCCESS  // ==0
 
 
 strcmp()
