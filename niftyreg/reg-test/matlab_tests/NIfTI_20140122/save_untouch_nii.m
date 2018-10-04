@@ -182,10 +182,11 @@ function write_nii(nii, filetype, fileprefix)
       fid = fopen(sprintf('%s.img',fileprefix),'w');
    end
 
-   ScanDim = double(hdr.dime.dim(5));		% t
+   ScanDim  = double(hdr.dime.dim(5));		% t
    SliceDim = double(hdr.dime.dim(4));		% z
    RowDim   = double(hdr.dime.dim(3));		% y
    PixelDim = double(hdr.dime.dim(2));		% x
+   
    SliceSz  = double(hdr.dime.pixdim(4));
    RowSz    = double(hdr.dime.pixdim(3));
    PixelSz  = double(hdr.dime.pixdim(2));
