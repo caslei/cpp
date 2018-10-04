@@ -1,4 +1,5 @@
-/** \file nifti1.h
+/** ********************************************************************
+    \file nifti1.h
     \brief Official definition of the nifti1 header.  Written by Bob Cox, SSCC, NIMH.
 
     HISTORY:
@@ -7,7 +8,7 @@
            - added DT_RGBA32 and NIFTI_TYPE_RGBA32
            - added NIFTI_INTENT codes:
                 TIME_SERIES, NODE_INDEX, RGB_VECTOR, RGBA_VECTOR, SHAPE
- */
+ ******************************************************************** */
 
 #ifndef _NIFTI_HEADER_
 #define _NIFTI_HEADER_
