@@ -132,8 +132,10 @@ function nii = make_nii(varargin)
    case 256
       nii.img = int8(nii.img);
    case 511
+      % ==================================================
       img = double(nii.img(:));
       img = single((img - min(img))/(max(img) - min(img)));
+
       nii.img = reshape(img, size(nii.img));
       nii.hdr.dime.glmax = double(max(img));
       nii.hdr.dime.glmin = double(min(img));
