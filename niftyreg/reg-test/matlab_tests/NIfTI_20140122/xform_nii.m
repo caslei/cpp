@@ -62,7 +62,6 @@ function nii = xform_nii(nii, tolerance, preferredForm)
 
    %  save a copy of the header as it was loaded.  This is the
    %  header before any sform, qform manipulation is done.
-   %
    nii.original.hdr = nii.hdr;
 
    if ~exist('tolerance','var') | isempty(tolerance)
@@ -78,11 +77,11 @@ function nii = xform_nii(nii, tolerance, preferredForm)
    %  if scl_slope field is nonzero, then each voxel value in the
    %  dataset should be scaled as: y = scl_slope * x + scl_inter
    %  I bring it here because hdr will be modified by change_hdr.
-   %
    if nii.hdr.dime.scl_slope ~= 0 & ...
 	ismember(nii.hdr.dime.datatype, [2,4,8,16,64,256,512,768]) & ...
 	(nii.hdr.dime.scl_slope ~= 1 | nii.hdr.dime.scl_inter ~= 0)
 
+   %================================================================
       nii.img = ...
 	nii.hdr.dime.scl_slope * double(nii.img) + nii.hdr.dime.scl_inter;
 
@@ -101,7 +100,6 @@ function nii = xform_nii(nii, tolerance, preferredForm)
       nii.hdr.dime.glmin = min(double(nii.img(:)));
 
       %  set scale to non-use, because it is applied in xform_nii
-      %
       nii.hdr.dime.scl_slope = 0;
 
    end
@@ -110,7 +108,6 @@ function nii = xform_nii(nii, tolerance, preferredForm)
 
    %  If datatype is a complex type, then the scaling is to be applied
    %  to both the real and imaginary parts.
-   %
    if nii.hdr.dime.scl_slope ~= 0 & ...
 	ismember(nii.hdr.dime.datatype, [32,1792])
 
@@ -125,14 +122,13 @@ function nii = xform_nii(nii, tolerance, preferredForm)
       nii.hdr.dime.glmin = min(double(nii.img(:)));
 
       %  set scale to non-use, because it is applied in xform_nii
-      %
       nii.hdr.dime.scl_slope = 0;
 
    end
 
    %  There is no need for this program to transform Analyze data
-   %
    if nii.filetype == 0 & exist([nii.fileprefix '.mat'],'file')
+      %======================================================
       load([nii.fileprefix '.mat']);	% old SPM affine matrix
       R=M(1:3,1:3);
       T=M(1:3,4);
@@ -154,13 +150,11 @@ function nii = xform_nii(nii, tolerance, preferredForm)
    [hdr,orient]=change_hdr(hdr,tolerance,preferredForm);
 
    %  flip and/or rotate image data
-   %
    if ~isequal(orient, [1 2 3])
 
       old_dim = hdr.dime.dim([2:4]);
 
       %  More than 1 time frame
-      %
       if ndims(nii.img) > 3
          pattern = 1:prod(old_dim);
       else
@@ -172,11 +166,9 @@ function nii = xform_nii(nii, tolerance, preferredForm)
       end
 
       %  calculate for rotation after flip
-      %
       rot_orient = mod(orient + 2, 3) + 1;
 
       %  do flip:
-      %
       flip_orient = orient - rot_orient;
 
       for i = 1:3
@@ -190,7 +182,6 @@ function nii = xform_nii(nii, tolerance, preferredForm)
       end
 
       %  get index of orient (rotate inversely)
-      %
       [tmp rot_orient] = sort(rot_orient);
 
       new_dim = old_dim;
@@ -202,7 +193,6 @@ function nii = xform_nii(nii, tolerance, preferredForm)
       hdr.dime.pixdim([2:4]) = new_pixdim;
 
       %  re-calculate originator
-      %
       tmp = hdr.hist.originator([1:3]);
       tmp = tmp(rot_orient);
       flip_orient = flip_orient(rot_orient);
@@ -218,7 +208,6 @@ function nii = xform_nii(nii, tolerance, preferredForm)
       hdr.hist.flip_orient = flip_orient;
 
       %  do rotation:
-      %
       if ~isempty(pattern)
          pattern = permute(pattern, rot_orient);
          pattern = pattern(:);
