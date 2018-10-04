@@ -18,6 +18,7 @@
 #include <string>
 
 #include "reg_png.h"
+
 #ifdef _USE_NRRD
 #include "reg_nrrd.h"
 #endif
