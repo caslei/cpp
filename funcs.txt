@@ -1,9 +1,11 @@
+atoi()
 memset()
 sizeof()
 sprintf()
 static_cast<>()
 reinterpret_cast<>()
 fabs()
+fabsf()
 abs()
 malloc()
 calloc()
@@ -14,7 +16,6 @@ ceil()
 // 符号表达式非常常用
 exppression? A:B
 
-NDBUG
 floor()
 error()
 std::runtime_error()
@@ -41,12 +42,24 @@ std::pow()
 std::sqrt()
 std::max_element()
 std::multimap<>()
-
+std::max()
 std::string
+std::pair<>()
 
 stderr
 stdout
 stdin
+
+NDBUG
+EXIT_FAILURE
+EXIT_SUCCESS
+
+
+strcmp()
+strcpy()
+
+
+!=, ==, >=, <=, &&, ||,
 
 
 
