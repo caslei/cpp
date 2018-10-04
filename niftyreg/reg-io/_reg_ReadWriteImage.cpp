@@ -31,7 +31,7 @@ void reg_hack_filename(nifti_image *image, const char *filename)
    strcpy(image->fname,name.c_str());
    strcpy(image->iname,name.c_str());
    // Returns at the end of the function
-   return; // what is returned at last???
+   return; // what is returned at last???, return 'image'
 }
 /* *************************************************************** */
 int reg_io_checkFileFormat(const char *filename)
@@ -57,8 +57,7 @@ int reg_io_checkFileFormat(const char *filename)
    else if(b.find( ".nhdr") != std::string::npos)
       return NR_NRRD_FORMAT;
 #endif
-   else
-   {
+   else {
       reg_print_fct_warn("reg_io_checkFileFormat");
       reg_print_msg_warn("No filename extension provided - the Nifti library is used by default");
    }
@@ -102,7 +101,7 @@ nifti_image *reg_io_ReadImageFile(const char *filename)
 /* *************************************************************** */
 nifti_image *reg_io_ReadImageHeader(const char *filename)
 {
-   // First read the fileformat in order to use the correct library
+   // First read the file format in order to use the correct library
    int fileFormat=reg_io_checkFileFormat(filename);
 
    // Create the nifti image pointer
@@ -151,7 +150,8 @@ void reg_io_WriteImageFile(nifti_image *image, const char *filename)
       std::string b(filename);
       b.replace(b.find( ".png"),4,".nii.gz");
       reg_print_msg_warn("The file can not be saved as png and is converted to nifti");
-      char text[255];sprintf(text,"%s -> %s", filename, b.c_str());
+      char text[255];
+      sprintf(text,"%s -> %s", filename, b.c_str());
       reg_print_msg_warn(text);
       filename=b.c_str();
       fileFormat=NR_NII_FORMAT;
