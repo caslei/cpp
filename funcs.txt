@@ -14,7 +14,7 @@ ceil()
 // 符号表达式非常常用
 exppression? A:B
 
-
+NDBUG
 floor()
 error()
 std::runtime_error()
@@ -42,6 +42,11 @@ std::sqrt()
 std::max_element()
 std::multimap<>()
 
+std::string
+
+stderr
+stdout
+stdin
 
 
 
