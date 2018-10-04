@@ -31,7 +31,7 @@ void reg_hack_filename(nifti_image *image, const char *filename)
    strcpy(image->fname,name.c_str());
    strcpy(image->iname,name.c_str());
    // Returns at the end of the function
-   return;
+   return; // what is returned at last???
 }
 /* *************************************************************** */
 int reg_io_checkFileFormat(const char *filename)
