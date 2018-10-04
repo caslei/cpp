@@ -27,7 +27,8 @@ void check_matching_difference(int dim,
                                float &max_difference)
 {
    float difference;
-   for (int i = 0; i < dim; ++i) {
+   for (int i = 0; i < dim; ++i) 
+   {
       difference = fabsf(referencePosition[i] - expectedReferencePositions[i]);
       max_difference = std::max(difference, max_difference);
       if (difference > EPS){
@@ -52,6 +53,7 @@ void check_matching_difference(int dim,
          reg_exit();
 #endif
       }
+
       difference = fabsf(warpedPosition[i] - expectedWarpedPosition[i]);
       max_difference = std::max(difference, max_difference);
       if (difference > EPS){
