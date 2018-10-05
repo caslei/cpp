@@ -54,7 +54,13 @@ std::getline()
 FILE
 fopen()
 fclose()
+fread()
+fseek()
+fflush()
 
+
+
+typedef struct nifti_1_header nifti_1_header;
 
 
 
