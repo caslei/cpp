@@ -322,6 +322,7 @@ extern "C" {
                     - the units of pixdim can be specified with the xyzt_units
                       field (also described far below).
 
+      =================== bit is very different from byte =====================
       Number of bits per voxel value is in bitpix, which MUST correspond with
       the datatype field.  The total number of bytes in the image data is
         dim[1] * ... * dim[dim[0]] * bitpix / 8
@@ -330,7 +331,7 @@ extern "C" {
       and dimension 5 is for storing multiple values at each spatiotemporal
       voxel.  Some examples:
         - A typical whole-brain FMRI experiment's time series:
-           - dim[0] = 4
+           - dim[0] = 4    // total number of image dimension
            - dim[1] = 64   pixdim[1] = 3.75 xyzt_units =  NIFTI_UNITS_MM
            - dim[2] = 64   pixdim[2] = 3.75             | NIFTI_UNITS_SEC
            - dim[3] = 20   pixdim[3] = 5.0
