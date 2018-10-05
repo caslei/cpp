@@ -588,14 +588,14 @@ extern "C" {
       ----------------------------
       The intent_code field can be used to indicate that the voxel data has
       some particular meaning.  In particular, a large number of codes is
-      given to indicate that the the voxel data should be interpreted as
+      given to indicate that the voxel data should be interpreted as
       being drawn from a given probability distribution.
 
       VECTOR-VALUED DATASETS:
       ----------------------
       The 5th dimension of the dataset, if present (i.e., dim[0]=5 and
       dim[5] > 1), contains multiple values (e.g., a vector) to be stored
-      at each spatiotemporal location.  For example, the header values
+      at each spatio-temporal location.  For example, the header values
        - dim[0] = 5
        - dim[1] = 64
        - dim[2] = 64
