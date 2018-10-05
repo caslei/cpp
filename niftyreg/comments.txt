@@ -47,10 +47,21 @@ nu
 nv
 nw
 
-dim[]
+dim[]   // dim[0] denote the image dimension
+	// dim[1] the size along X axis
+	// dim[2] the size along Y axis
+	// dim[3] the size along Z axis
+	// dim[4] the size along T axis
+	// dim[5~7] for vector image
 ndim
-pixdim[]
+pixdim[] // pixdim[0] denotes the pixel spacing along X axis
+	 // pixdim[1] the pixel spacing along Y axis
+	 // pixdim[2] the pixel spacing along Z axis
+	 // pixdim[3] the pixel spacing along T axis
 
+xyzt_units: // the unit of pixel spacing
+	    // NIFTI_UNITS_MM 
+	    // NIFTI_UNITS_SEC
 data: 
 datatype: image datatype 
 scl_slope
