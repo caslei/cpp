@@ -1,9 +1,11 @@
 atoi()
+atof()
 memset()
 sizeof()
 printf()
 sprintf()
 vsnprintf()
+fprintf(stderr, "File: %s : %i\n", __FILE__, __LINE__);
 static_cast<>()
 reinterpret_cast<>()
 fabs()
@@ -21,7 +23,6 @@ exppression? A:B
 floor()
 error()
 std::runtime_error()
-fprintf(stderr, "File: %s : %i\n", __FILE__, __LINE__);
 exit()
 strtod()
 std::numeric_limits<T>::has_infinity
@@ -46,6 +47,18 @@ std::multimap<>()
 std::max()
 std::string
 std::pair<>()
+std::ofstream // output from file
+std::ifstream // input from file
+std::getline()
+
+FILE
+fopen()
+fclose()
+
+
+
+
+
 
 stderr
 stdout
