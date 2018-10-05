@@ -73,8 +73,43 @@ qform_code
 sform_code
 
 
+/* ***********************************************************************
+In NIFTI-1 files, dimensions 1,2,3 are for space, dimension 4 is for time,
+and dimension 5 is for storing multiple values at each spatiotemporal
+voxel.  Some examples:
+- A typical whole-brain FMRI experiment's time series:
+   - dim[0] = 4    // total number of image dimension
+   - dim[1] = 64   pixdim[1] = 3.75 xyzt_units =  NIFTI_UNITS_MM
+   - dim[2] = 64   pixdim[2] = 3.75             | NIFTI_UNITS_SEC
+   - dim[3] = 20   pixdim[3] = 5.0
+   - dim[4] = 120  pixdim[4] = 2.0
+- A typical T1-weighted anatomical volume:
+   - dim[0] = 3
+   - dim[1] = 256  pixdim[1] = 1.0  xyzt_units = NIFTI_UNITS_MM
+   - dim[2] = 256  pixdim[2] = 1.0
+   - dim[3] = 128  pixdim[3] = 1.1
+- A single slice EPI time series:
+   - dim[0] = 4
+   - dim[1] = 64   pixdim[1] = 3.75 xyzt_units =  NIFTI_UNITS_MM
+   - dim[2] = 64   pixdim[2] = 3.75             | NIFTI_UNITS_SEC
+   - dim[3] = 1    pixdim[3] = 5.0
+   - dim[4] = 1200 pixdim[4] = 0.2
+- A 3-vector stored at each point in a 3D volume:
+   - dim[0] = 5
+   - dim[1] = 256  pixdim[1] = 1.0  xyzt_units = NIFTI_UNITS_MM
+   - dim[2] = 256  pixdim[2] = 1.0
+   - dim[3] = 128  pixdim[3] = 1.1
+   - dim[4] = 1    pixdim[4] = 0.0
+   - dim[5] = 3                     intent_code = NIFTI_INTENT_VECTOR
+- A single time series with a 3x3 matrix at each point:
+   - dim[0] = 5
+   - dim[1] = 1                     xyzt_units = NIFTI_UNITS_SEC
+   - dim[2] = 1
+   - dim[3] = 1
+   - dim[4] = 1200 pixdim[4] = 0.2
+   - dim[5] = 9                     intent_code = NIFTI_INTENT_GENMATRIX
+   - intent_p1 = intent_p2 = 3.0    (indicates matrix dimensions)
+ ***********************************************************************/
 
 
 
-
-                
