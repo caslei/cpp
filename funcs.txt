@@ -1,7 +1,9 @@
 atoi()
 memset()
 sizeof()
+printf()
 sprintf()
+vsnprintf()
 static_cast<>()
 reinterpret_cast<>()
 fabs()
@@ -20,7 +22,6 @@ floor()
 error()
 std::runtime_error()
 fprintf(stderr, "File: %s : %i\n", __FILE__, __LINE__);
-printf()
 exit()
 strtod()
 std::numeric_limits<T>::has_infinity
@@ -58,6 +59,12 @@ time_t
 time()
 
 
+
+stdarg.h
+va_list
+va_start()
+va_end()
+va_copy()
 
 
 
