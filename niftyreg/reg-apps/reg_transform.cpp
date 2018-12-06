@@ -267,7 +267,7 @@ int main(int argc, char **argv)
          param->outputTransName=argv[++i];
       }
       else if(strcmp(argv[i],"-half")==0 || strcmp(argv[i],"--half")==0)
-      {
+      { // what is the means of '-half'?
          flag->halfTransFlag=true;
          param->inputTransName=argv[++i];
          param->outputTransName=argv[++i];
