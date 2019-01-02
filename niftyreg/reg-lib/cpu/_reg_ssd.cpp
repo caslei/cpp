@@ -175,7 +175,7 @@ double reg_getSSDValue(nifti_image *referenceImage,
 
          double SSD_local=0., n=0.;
 
-         for(voxel=0; voxel<voxelNumber; ++voxel) // 3D array => 1D array
+         for(voxel=0; voxel<voxelNumber; ++voxel) //3D array => 1D array
          {
             // Check if the current voxel belongs to the mask
             if(mask[voxel]>-1)
