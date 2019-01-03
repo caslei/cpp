@@ -120,3 +120,23 @@ virtual void Set##name (type _arg) \
     } \
   }
 //======================================
+
+
+
+if(argc!=5){
+    fprintf(stderr, "Usage: %s <refImage>, <inputMatrix>, <expectedField>,
+<platformCode>\n", argv[0]);
+return EXIT_FAILURE;
+}
+
+
+#include "Platform.h"
+Platform *platform = new Platform(platformCode);
+
+
+#include <stdlib.h>
+int platformCode = atoi(argv[4]);
+
+
+mat44 *inputMatrix = (mat44 *)malloc(sizeof(mat44));
+
