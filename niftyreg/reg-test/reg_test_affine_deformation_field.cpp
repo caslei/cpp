@@ -21,7 +21,7 @@
 
 void test(AladinContent *con, int platformCode)
 {
-    Platform *platform = new Platform(platformCode);
+    Platform *platform = new Platform(platformCode); // call class 'Platform' and its constructor
 
     Kernel *affineDeformKernel = platform->createKernel(AffineDeformationFieldKernel::getName(), con);
     affineDeformKernel->castTo<AffineDeformationFieldKernel>()->calculate();
